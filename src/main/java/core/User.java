@@ -48,12 +48,22 @@ public class User implements Manageable, UIData {
         return new String[]{id, password, name};
     }
 
-    public String getId() {
-        return id;
+    public boolean setName(String name) {
+        if (name.isBlank())
+            return false;
+        this.name = name;
+        return true;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean setPassword(String password) {
+        if (password.isBlank())
+            return false;
+        this.password = password;
+        return true;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {

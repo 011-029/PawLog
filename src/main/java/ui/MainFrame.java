@@ -17,6 +17,11 @@ public class MainFrame extends JFrame {
         this.loggedInUserPet = petMgr.getPetByOwner(user.getId());
     }
 
+    public void logout() {
+        this.loggedInUser = null;
+        this.loggedInUserPet = null;
+    }
+
     public User getLoggedInUser() {
         return loggedInUser;
     }

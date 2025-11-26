@@ -60,6 +60,16 @@ public class PetMgr extends DataEngineImpl<Pet> {
         return result;
     }
 
+    public boolean deletePet(String ownerId, String petName) {
+        Pet p = findPet(ownerId, petName);
+        if (p == null)
+            return false;
+
+        mList.remove(p);
+        saveToFile(FILE_PATH);
+        return true;
+    }
+
     public void loadFromFile() {
         readAll(FILE_PATH, new Factory<Pet>() {
             public Pet create() {

@@ -21,6 +21,14 @@ public class UserMgr extends DataEngineImpl<User> {
         mList.add(u);
     }
 
+    public User findUserById(String id) {
+        for (User u : mList) {
+            if (u.getId().equals(id))
+                return u;
+        }
+        return null;
+    }
+
     public boolean isDuplicatedId(String id) {
         for (User u : mList) {
             if (u.getId().equals(id))
@@ -45,6 +53,16 @@ public class UserMgr extends DataEngineImpl<User> {
                 return u;
         }
         return null;
+    }
+
+    public boolean deleteUser(String id) {
+        User u = findUserById(id);
+        if (u == null)
+            return false;
+
+        mList.remove(u);
+        saveToFile(FILE_PATH);
+        return true;
     }
 
     public void loadFromFile() {

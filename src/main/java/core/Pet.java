@@ -2,7 +2,6 @@ package core;
 
 import facade.UIData;
 import mgr.Manageable;
-import util.ReadUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -70,10 +69,6 @@ public class Pet implements Manageable, UIData {
         return name.contains(kwd) || species.contains(kwd);
     }
 
-    public void setProfileImage(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
 
     @Override
     public void set(String[] uitexts) {
@@ -105,5 +100,37 @@ public class Pet implements Manageable, UIData {
     public String getImagePath() { return imagePath; }
     public ArrayList<MedicalRecord> getMedicalRecords(){
         return medicalRecords;
+    }
+
+    public boolean setName(String name) {
+        if (name.isBlank())
+            return false;
+        this.name = name;
+        return true;
+    }
+
+    public boolean setBirthDate(LocalDate date) {
+        if (birthDate.isAfter(LocalDate.now()))
+            return false;
+        this.birthDate = date;
+        return true;
+    }
+
+    public boolean setSpecies(String species) {
+        if (species.isBlank())
+            return false;
+        this.species = species;
+        return true;
+    }
+
+    public boolean setWeight(double weight) {
+        if (weight <= 0)
+            return false;
+        this.weight = weight;
+        return true;
+    }
+
+    public void setProfileImage(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
