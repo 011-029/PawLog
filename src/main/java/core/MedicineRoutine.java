@@ -20,6 +20,10 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
     boolean isTaken = false; // 복용 여부, 기본값 false
     int lastRecordId = -1;   // 루틴 → 기록 넘길 때 인덱스 번호 기억
 
+    String hospital;
+    LocalDate startDate;
+    LocalDate endDate;
+
     public void read(Scanner scan) {
         indexId = scan.nextInt();
         ownerId = scan.next();
@@ -30,6 +34,15 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
             takenDOW.add(String.valueOf(dow.charAt(i)));
         takenTime = scan.next();
         dosage = scan.nextInt();
+
+        hospital = scan.next();
+        if (hospital.equals("0")) hospital = null;
+
+        String s = scan.next();
+        startDate = s.equals("0") ? null : LocalDate.parse(s);
+
+        String e = scan.next();
+        endDate = e.equals("0") ? null : LocalDate.parse(e);
     }
 
     public void apply(Pet pet, String medicineName,
@@ -43,9 +56,35 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
         this.dosage = dosage;
     }
 
+    public void applyFromMedicalRecord(MedicalRecord m) {
+        this.ownerId = m.ownerId;
+        this.petName = m.petName;
+        this.medicineName = m.getPrescribedMedicine();
+        this.takenTime = m.getRoutineTime();
+        this.dosage = m.getDosage();
+        this.hospital = m.getHospital();
+        this.startDate = m.getStartDate();
+        this.endDate = m.getEndDate();
+
+        // 매일 복용 → 요일 전체
+        takenDOW.clear();
+        takenDOW.add("월");
+        takenDOW.add("화");
+        takenDOW.add("수");
+        takenDOW.add("목");
+        takenDOW.add("금");
+        takenDOW.add("토");
+        takenDOW.add("일");
+    }
+
     public void print() {
         System.out.printf("#%d | %s | %s | %s | %dmg | ",
                 indexId, medicineName, takenDOW.toString(), takenTime, dosage);
+        if (hospital != null)
+            System.out.printf(" 병원:%s", hospital);
+
+        if (startDate != null && endDate != null)
+            System.out.printf(" | %s~%s |", startDate, endDate);
         System.out.print(isTaken ? "복용 완료" : "복용 전");
         System.out.println();
     }
@@ -60,7 +99,10 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
                 medicineName,
                 dow,
                 takenTime,
-                String.valueOf(dosage)
+                String.valueOf(dosage),
+                hospital == null ? "0" : hospital,
+                startDate == null ? "0" : startDate.toString(),
+                endDate == null ? "0" : endDate.toString()
         };
     }
 
