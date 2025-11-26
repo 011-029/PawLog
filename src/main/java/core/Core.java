@@ -251,9 +251,50 @@ public class Core {
         String category = scan.next();
         System.out.print(">> 진료비 입력(-1 입력시 비워둠): ");
         int cost = scan.nextInt();
-        medicalMgr.addNewRecord(loggedInUserPet, date, hospital, category, cost);
+
+        System.out.print(">> 처방이 있습니까? (y/n): ");
+        String hasPrescription = scan.next();
+
+        String medicine = null;
+        Integer dosage = null;
+        String routineTime = null;
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+
+        if (hasPrescription.equalsIgnoreCase("y")) {
+
+            System.out.print(">> 처방 약 이름 입력: ");
+            medicine = scan.next();
+
+            System.out.print(">> 용량 입력(mg): ");
+            dosage = scan.nextInt();
+
+            System.out.print(">> 복용 시간대 입력(아침/점심/저녁/자기전): ");
+            routineTime = scan.next();
+
+            System.out.print(">> 복용 시작일(yyyy-mm-dd): ");
+            startDate = ReadUtil.readDate(scan);
+
+            System.out.print(">> 복용 종료일(yyyy-mm-dd): ");
+            endDate = ReadUtil.readDate(scan);
+        }
+
+        medicalMgr.addNewRecord(loggedInUserPet, date, hospital, category, cost,
+                                medicine, dosage, routineTime,startDate,endDate);
+
         System.out.println("새 진료 기록 작성 완료");
         medicalMgr.printByOwner(loggedInUser.getId());
+        //루틴생성
+        System.out.print(">> 처방 약으로 루틴을 생성할까요? (y/n): ");
+        if (scan.next().equalsIgnoreCase("y")) {
+            MedicalRecord last = medicalMgr.mList.get(medicalMgr.mList.size() - 1);
+            MedicineRoutine r = medicineRoutineMgr.createRoutineFromMedicalRecord(last);
+
+            if (r != null)
+                System.out.println("루틴 생성 완료!");
+            else
+                System.out.println("처방 정보가 없어 루틴이 생성되지 않았습니다.");
+        }
     }
 
     private void removeRecordMenu() {
