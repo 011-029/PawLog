@@ -71,6 +71,12 @@ public class Core {
                 case 11 -> printPetsByOwner();
                 case 12 -> updatePetImage();
                 case 13 -> search();
+                case 100 -> {
+                    boolean deletePet = petMgr.deletePet(loggedInUser.getId(), loggedInUserPet.getName());
+                    System.out.println(deletePet ? "펫 삭제 성공" : "펫 삭제 실패");
+                    boolean deleteUser = userMgr.deleteUser(loggedInUser.getId());
+                    System.out.println(deleteUser ? "회원탈퇴 성공" : "회원탈퇴 실패");
+                }
                 case 0 -> { return; }
                 default -> System.out.println("잘못 입력하셨습니다.");
             }
