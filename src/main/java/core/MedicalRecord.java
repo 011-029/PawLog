@@ -74,7 +74,7 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
         System.out.printf("#%d [%s] %s | %s | %s ",
                 indexId, date, hospital, category,
                 cost== -1 ? "미정" : String.format("%,d원", cost));
-        if (!getDDayText().isEmpty()) System.out.printf("| %s\n", getDDayText());
+        if (!getDDayText().isEmpty()) System.out.printf("| %s", getDDayText());
         if (prescribedMedicine != null ) {
             System.out.printf("| 처방: %s %dmg | %s | %s~%s",
                     prescribedMedicine,
@@ -84,7 +84,7 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
                     endDate
             );
         }
-        else System.out.println();
+        System.out.print("\n");
     }
 
     @Override

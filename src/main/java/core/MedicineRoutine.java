@@ -5,7 +5,9 @@ import mgr.Manageable;
 import mgr.PetOwned;
 
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MedicineRoutine implements Manageable, UIData, PetOwned {
@@ -65,16 +67,22 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
         this.hospital = m.getHospital();
         this.startDate = m.getStartDate();
         this.endDate = m.getEndDate();
-
-        // 매일 복용 → 요일 전체
+        // 요일 계산
         takenDOW.clear();
-        takenDOW.add("월");
-        takenDOW.add("화");
-        takenDOW.add("수");
-        takenDOW.add("목");
-        takenDOW.add("금");
-        takenDOW.add("토");
-        takenDOW.add("일");
+
+        if (startDate != null && endDate != null) {
+            LocalDate cur = startDate;
+
+            while (!cur.isAfter(endDate)) {
+                String dow = cur.getDayOfWeek()
+                        .getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+
+                if (!takenDOW.contains(dow))
+                    takenDOW.add(dow);
+
+                cur = cur.plusDays(1);
+            }
+        }
     }
 
     public void print() {
@@ -84,7 +92,7 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
             System.out.printf(" 병원:%s", hospital);
 
         if (startDate != null && endDate != null)
-            System.out.printf(" | %s~%s |", startDate, endDate);
+            System.out.printf(" | %s~%s | ", startDate, endDate);
         System.out.print(isTaken ? "복용 완료" : "복용 전");
         System.out.println();
     }
