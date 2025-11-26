@@ -3,13 +3,14 @@ package core;
 import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
+import mgr.RecordSearchable;
 import util.DateUtil;
 import util.ReadUtil;
 
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class HealthRecord implements Manageable, UIData, PetOwned {
+public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -74,6 +75,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned {
         return memo != null && memo.contains(kwd);
     }
 
+    @Override
     public boolean matchesPeriod(LocalDate start, LocalDate end){
         return DateUtil.matchesInPeriod(date, start, end);
     }
@@ -96,6 +98,11 @@ public class HealthRecord implements Manageable, UIData, PetOwned {
     @Override
     public void setIndexId(int indexId) {
         this.indexId = indexId;
+    }
+
+    @Override
+    public LocalDate getRecordDate() {
+        return date;
     }
 
     @Override
