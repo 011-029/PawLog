@@ -6,7 +6,6 @@ import mgr.PetRecordMgr;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-// TODO: 클래스 필드, 메서드 작성 (현재는 필수 구현해야 하는 메서드만 자동완성해 둔 상태)
 public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
     private static MedicalMgr mgr = null;
     private final String FILE_PATH = "data/medical_records.txt";
@@ -18,9 +17,10 @@ public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
     }
 
     public void addNewRecord(Pet pet, LocalDate date,
-                             String hospital, String category, int cost) {
+                             String hospital, String category, int cost,
+                             String prescribedMedicine, Integer dosage, String routineTime, LocalDate startDate, LocalDate endDate) {
         MedicalRecord r = new MedicalRecord();
-        r.apply(pet, date, hospital, category, cost);
+        r.apply(pet, date, hospital, category, cost, prescribedMedicine, dosage, routineTime, startDate, endDate);
         saveWithIndexId(r);
     }
 
