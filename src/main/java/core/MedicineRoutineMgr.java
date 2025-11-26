@@ -26,6 +26,16 @@ public class MedicineRoutineMgr extends PetRecordMgr<MedicineRoutine> {
         saveWithIndexId(r);
     }
 
+    public MedicineRoutine createRoutineFromMedicalRecord(MedicalRecord m) {
+        if (m.getPrescribedMedicine() == null)
+            return null;
+
+        MedicineRoutine r = new MedicineRoutine();
+        r.applyFromMedicalRecord(m);
+        saveWithIndexId(r);
+        return r;
+    }
+
     public void printTodayRoutine(String ownerId) {
         // 오늘(요일)에 해당하는 루틴 출력
         String todayDOW = LocalDate.now()
