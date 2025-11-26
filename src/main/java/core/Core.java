@@ -281,7 +281,6 @@ public class Core {
 
         medicalMgr.addNewRecord(loggedInUserPet, date, hospital, category, cost,
                                 medicine, dosage, routineTime,startDate,endDate);
-
         System.out.println("새 진료 기록 작성 완료");
         medicalMgr.printByOwner(loggedInUser.getId());
         //루틴생성

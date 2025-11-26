@@ -6,6 +6,7 @@ import mgr.PetRecordMgr;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+// TODO: 클래스 필드, 메서드 작성 (현재는 필수 구현해야 하는 메서드만 자동완성해 둔 상태)
 public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
     private static MedicalMgr mgr = null;
     private final String FILE_PATH = "data/medical_records.txt";
