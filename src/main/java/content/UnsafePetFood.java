@@ -49,13 +49,13 @@ public class UnsafePetFood implements Manageable, UIData {
     }
 
     public void print() {
-        System.out.println("-------------------------------------");
         System.out.println("음식이름: " + foodName);
         System.out.println("해당동물: " + petType.toString());
         System.out.println("허용레벨: " + allowanceLevel);
         System.out.println("위험레벨: " + riskLevel);
         System.out.println("설명: " + description);
         System.out.println("이미지: " + foodImage);
+        System.out.println("-------------------------------------");
     }
 
     public boolean matches(String kwd) {

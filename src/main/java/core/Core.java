@@ -1,8 +1,6 @@
 package core;
 
-import content.PetType;
-import content.UnsafePetFood;
-import content.UnsafePetFoodMgr;
+import content.*;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.PetRecordMgr;
@@ -41,6 +39,7 @@ public class Core {
     private final WalkMgr walkMgr = WalkMgr.getInstance();
 
     private final UnsafePetFoodMgr unsafePetFoodMgr = UnsafePetFoodMgr.getInstance();
+    private final PetTipMgr petTipMgr = PetTipMgr.getInstance();
 
     private final Scanner scan = new Scanner(System.in);
 
@@ -78,6 +77,7 @@ public class Core {
                 case 12 -> updatePetImage();
                 case 13 -> unifiedSearch();
                 case 14 -> unsafePetFoodMenu();
+                case 15 -> petTipMenu();
                 case 100 -> {
                     boolean deletePet = petMgr.deletePet(loggedInUser.getId(), loggedInUserPet.getName());
                     System.out.println(deletePet ? "펫 삭제 성공" : "펫 삭제 실패");
@@ -127,6 +127,7 @@ public class Core {
         System.out.println("12. 펫 프로필 사진 등록");
         System.out.println("13. 통합 검색 기능");
         System.out.println("14. 반려동물 위험 음식 보기");
+        System.out.println("15. 반려동물 간단 팁 보기");
         System.out.println("0. 종료");
         while (true) {
             try {
@@ -347,6 +348,49 @@ public class Core {
                     for (UnsafePetFood f : unsafePetFoodMgr.mList) {
                         if (f.hasPetType(PetType.DOG))
                             f.print();
+                    }
+                }
+                case 0 -> { return; }
+                default -> System.out.println("잘못 입력하셨습니다");
+            }
+        }
+    }
+
+    private void petTipMenu() {
+        System.out.println("============= 간단 반려동물 팁 메뉴 =============");
+        while (true) {
+            System.out.println("1. 전체 목록 보기");
+            System.out.println("2. 검색하기");
+            System.out.println("3. 고양이 관련 팁 보기");
+            System.out.println("4. 강아지 관련 팁 보기");
+            System.out.print(">> 메뉴 입력: ");
+            int opt = scan.nextInt();
+            switch (opt) {
+                case 1 -> petTipMgr.printAll();
+                case 2 -> {
+                    scan.nextLine();
+                    while (true) {
+                        System.out.print(">> 키워드 입력(0 입력시 종료): ");
+                        String kwd = scan.nextLine().trim();
+                        if (kwd.equals("0")) break;
+
+                        System.out.println("====== 키워드 검색 결과 ======");
+                        for (PetTip t : petTipMgr.mList) {
+                            if (t.matches(kwd))
+                                t.print();
+                        }
+                    }
+                }
+                case 3 -> {
+                    for (PetTip t : petTipMgr.mList) {
+                        if (t.hasPetType(PetType.CAT))
+                            t.print();
+                    }
+                }
+                case 4 -> {
+                    for (PetTip t : petTipMgr.mList) {
+                        if (t.hasPetType(PetType.DOG))
+                            t.print();
                     }
                 }
                 case 0 -> { return; }

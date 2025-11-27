@@ -31,18 +31,6 @@ public class Manager<T extends Manageable> {
         fileIn.close();
     }
 
-    // readAll() 오버로드: 인풋스트림 버전(리소스 파일)
-    public void readAll(InputStream is, Factory<T> fac) {
-        Scanner fileIn = new Scanner(is);
-        T m = null;
-        while(fileIn.hasNext()) {
-            m = fac.create();
-            m.read(fileIn);
-            mList.add(m);
-        }
-        fileIn.close();
-    }
-
     // printAll(): 리스트 내 모든 객체에서 print() 실행
     public void printAll() {
         for (T m : mList) {
