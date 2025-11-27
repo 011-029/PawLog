@@ -1,5 +1,6 @@
 package util;
 
+import content.PetTipMgr;
 import content.UnsafePetFoodMgr;
 import core.*;
 
@@ -17,5 +18,6 @@ public class DataLoader {
         WalkMgr.getInstance().loadFromFile();
 
         UnsafePetFoodMgr.getInstance().loadFromFile();
+        PetTipMgr.getInstance().loadFromFile();
     }
 }

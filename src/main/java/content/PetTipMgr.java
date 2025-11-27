@@ -6,27 +6,27 @@ import mgr.Factory;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class UnsafePetFoodMgr extends DataEngineImpl<UnsafePetFood> {
-    private static UnsafePetFoodMgr mgr = null;
-    private static final String FILE_PATH = "/static_data/unsafe_pet_foods.txt";
+public class PetTipMgr extends DataEngineImpl<PetTip> {
+    private static PetTipMgr mgr = null;
+    private static final String FILE_PATH = "/static_data/pet_tips.txt";
 
-    public static UnsafePetFoodMgr getInstance() {
+    public static PetTipMgr getInstance() {
         if (mgr == null)
-            mgr = new UnsafePetFoodMgr();
+            mgr = new PetTipMgr();
         return mgr;
     }
 
     // readAll() 오버로드
-    public void readAll(InputStream is, Factory<UnsafePetFood> fac) {
+    public void readAll(InputStream is, Factory<PetTip> fac) {
         Scanner fileIn = new Scanner(is);
         while (fileIn.hasNextLine()) {
             String line = fileIn.nextLine();
             if (line.startsWith("#") || line.isBlank())
                 continue;
 
-            UnsafePetFood food = new UnsafePetFood();
-            food.readLine(line);
-            mList.add(food);
+            PetTip tip = new PetTip();
+            tip.readLine(line);
+            mList.add(tip);
         }
         fileIn.close();
     }
@@ -35,14 +35,15 @@ public class UnsafePetFoodMgr extends DataEngineImpl<UnsafePetFood> {
         InputStream is = getClass().getResourceAsStream(FILE_PATH);
         if (is == null)
             System.out.println(FILE_PATH + ": 파일 없음");
-        readAll(is, new Factory<UnsafePetFood>() {
-            public UnsafePetFood create() {
-                return new UnsafePetFood();
+        readAll(is, new Factory<PetTip>() {
+            public PetTip create() {
+                return new PetTip();
             }
         });
     }
 
     @Override
     public void addNewRow(String[] uiTexts) {
+
     }
 }

@@ -10,6 +10,10 @@ public enum PetType {
         this.koName = koName;
     }
 
+    public String getKoName() {
+        return koName;
+    }
+
     static PetType valueFromKo(String token) {
         if (token == null)
             return null;
