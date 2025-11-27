@@ -81,4 +81,25 @@ public class UnsafePetFood implements Manageable, UIData {
     public String[] getUITexts() {
         return new String[0];
     }
+
+    // getter
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public ArrayList<PetType> getPetType() {
+        return petType;
+    }
+
+    public AllowanceLevel getAllowanceLevel() {
+        return allowanceLevel;
+    }
+
+    public RiskLevel getRiskLevel() {
+        return riskLevel;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
