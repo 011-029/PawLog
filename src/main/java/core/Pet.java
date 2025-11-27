@@ -18,6 +18,8 @@ public class Pet implements Manageable, UIData {
     private double weight;
     private String imagePath;
 
+
+    private final ArrayList<String> personalityTags = new ArrayList<>();
     private final ArrayList<HealthRecord> healthRecords = new ArrayList<>();
     private final ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
     private final ArrayList<MedicineRecord> medicineRecords = new ArrayList<>();
@@ -37,9 +39,29 @@ public class Pet implements Manageable, UIData {
         birthDate = LocalDate.parse(tokens[4]);
         weight = Double.parseDouble(tokens[5]);
 
-        if (tokens.length == 7)
+        if (tokens.length >= 7)
             imagePath = tokens[6];
         else imagePath = "";
+
+        if (tokens.length >= 8) {
+            setPersonalityTagsFormCSV(tokens[7]);
+        }
+    }
+
+    private void setPersonalityTagsFormCSV(String csv) {
+        personalityTags.clear();
+        if (csv == null || csv.isBlank()) return;
+
+        String[] parts = csv.split(",");
+        for (String p : parts) {
+            String tag = p.trim();
+            if (!tag.isEmpty())
+                personalityTags.add(tag);
+        }
+    }
+
+    private String getPersonalityTagsCSV() {
+        return String.join(",", personalityTags);
     }
 
     public void addMedicalRecord(MedicalRecord r) {
@@ -67,7 +89,12 @@ public class Pet implements Manageable, UIData {
 
     @Override
     public boolean matches(String kwd) {
-        return name.contains(kwd) || species.contains(kwd);
+        if (name.contains(kwd) || species.contains(kwd)) return true;
+        for (String tag : personalityTags) {
+            if (tag.contains(kwd))
+                return true;
+        }
+        return false;
     }
 
     public void setProfileImage(String imagePath) {
@@ -84,6 +111,10 @@ public class Pet implements Manageable, UIData {
         gender = uitexts[3];
         birthDate = LocalDate.parse(uitexts[4]);
         weight = Double.parseDouble(uitexts[5]);
+
+        if (uitexts.length > 6) {
+            setPersonalityTagsFormCSV(uitexts[6]);
+        }
     }
 
     @Override
@@ -91,7 +122,7 @@ public class Pet implements Manageable, UIData {
         return new String[]{
                 ownerId, name, species, gender,
                 birthDate.toString(), Double.toString(weight),
-                imagePath == null ? "" : imagePath
+                imagePath == null ? "" : imagePath, getPersonalityTagsCSV()
         };
     }
 
@@ -105,5 +136,16 @@ public class Pet implements Manageable, UIData {
     public String getImagePath() { return imagePath; }
     public ArrayList<MedicalRecord> getMedicalRecords(){
         return medicalRecords;
+    }
+
+    public ArrayList<String> getPersonalityTags() {
+        return personalityTags;
+    }
+
+    public void setPersonalityTags(ArrayList<String> tags) {
+        personalityTags.clear();
+        if (tags != null) {
+            personalityTags.addAll(tags);
+        }
     }
 }
