@@ -1,5 +1,8 @@
 package core;
 
+import content.PetType;
+import content.UnsafePetFood;
+import content.UnsafePetFoodMgr;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.PetRecordMgr;
@@ -37,6 +40,8 @@ public class Core {
     private final VaccineMgr vaccineMgr = VaccineMgr.getInstance();
     private final WalkMgr walkMgr = WalkMgr.getInstance();
 
+    private final UnsafePetFoodMgr unsafePetFoodMgr = UnsafePetFoodMgr.getInstance();
+
     private final Scanner scan = new Scanner(System.in);
 
     public void run() {
@@ -72,6 +77,7 @@ public class Core {
                 case 11 -> printPetsByOwner();
                 case 12 -> updatePetImage();
                 case 13 -> unifiedSearch();
+                case 14 -> unsafePetFoodMenu();
                 case 100 -> {
                     boolean deletePet = petMgr.deletePet(loggedInUser.getId(), loggedInUserPet.getName());
                     System.out.println(deletePet ? "펫 삭제 성공" : "펫 삭제 실패");
@@ -120,6 +126,7 @@ public class Core {
         System.out.println("11. 내 펫 조회");
         System.out.println("12. 펫 프로필 사진 등록");
         System.out.println("13. 통합 검색 기능");
+        System.out.println("14. 반려동물 위험 음식 보기");
         System.out.println("0. 종료");
         while (true) {
             try {
@@ -303,6 +310,49 @@ public class Core {
             System.out.println("유효한 인덱스 번호가 아닙니다");
 
         mgr.printByOwner(loggedInUser.getId());
+    }
+
+    private void unsafePetFoodMenu() {
+        System.out.println("============= 동물에게 위험한 음식 메뉴 =============");
+        while (true) {
+            System.out.println("1. 전체 목록 보기");
+            System.out.println("2. 검색하기");
+            System.out.println("3. 고양이에게 위험한 음식 보기");
+            System.out.println("4. 강아지에게 위험한 음식 보기");
+            System.out.print(">> 메뉴 입력: ");
+            int opt = scan.nextInt();
+            switch (opt) {
+                case 1 -> unsafePetFoodMgr.printAll();
+                case 2 -> {
+                    scan.nextLine();
+                    while (true) {
+                        System.out.print(">> 키워드 입력(0 입력시 종료): ");
+                        String kwd = scan.nextLine().trim();
+                        if (kwd.equals("0")) break;
+
+                        System.out.println("====== 키워드 검색 결과 ======");
+                        for (UnsafePetFood f : unsafePetFoodMgr.mList) {
+                            if (f.matches(kwd))
+                                f.print();
+                        }
+                    }
+                }
+                case 3 -> {
+                    for (UnsafePetFood f : unsafePetFoodMgr.mList) {
+                        if (f.hasPetType(PetType.CAT))
+                            f.print();
+                    }
+                }
+                case 4 -> {
+                    for (UnsafePetFood f : unsafePetFoodMgr.mList) {
+                        if (f.hasPetType(PetType.DOG))
+                            f.print();
+                    }
+                }
+                case 0 -> { return; }
+                default -> System.out.println("잘못 입력하셨습니다");
+            }
+        }
     }
 
     // 건강 기록 기능
