@@ -1,5 +1,6 @@
 package util;
 
+import content.UnsafePetFoodMgr;
 import core.*;
 
 public class DataLoader {
@@ -14,5 +15,7 @@ public class DataLoader {
         PlayMgr.getInstance().loadFromFile();
         VaccineMgr.getInstance().loadFromFile();
         WalkMgr.getInstance().loadFromFile();
+
+        UnsafePetFoodMgr.getInstance().loadFromFile();
     }
 }

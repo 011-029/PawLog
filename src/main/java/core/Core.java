@@ -1,8 +1,12 @@
 package core;
 
+import content.PetType;
+import content.UnsafePetFood;
+import content.UnsafePetFoodMgr;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.PetRecordMgr;
+import mgr.RecordSearchable;
 import util.DataLoader;
 import util.ReadUtil;
 
@@ -35,6 +39,8 @@ public class Core {
     private final PlayMgr playMgr = PlayMgr.getInstance();
     private final VaccineMgr vaccineMgr = VaccineMgr.getInstance();
     private final WalkMgr walkMgr = WalkMgr.getInstance();
+
+    private final UnsafePetFoodMgr unsafePetFoodMgr = UnsafePetFoodMgr.getInstance();
 
     private final Scanner scan = new Scanner(System.in);
 
@@ -70,7 +76,14 @@ public class Core {
                 case 10 -> registerPet();
                 case 11 -> printPetsByOwner();
                 case 12 -> updatePetImage();
-                case 13 -> search();
+                case 13 -> unifiedSearch();
+                case 14 -> unsafePetFoodMenu();
+                case 100 -> {
+                    boolean deletePet = petMgr.deletePet(loggedInUser.getId(), loggedInUserPet.getName());
+                    System.out.println(deletePet ? "펫 삭제 성공" : "펫 삭제 실패");
+                    boolean deleteUser = userMgr.deleteUser(loggedInUser.getId());
+                    System.out.println(deleteUser ? "회원탈퇴 성공" : "회원탈퇴 실패");
+                }
                 case 0 -> { return; }
                 default -> System.out.println("잘못 입력하셨습니다.");
             }
@@ -112,7 +125,8 @@ public class Core {
         System.out.println("10. 내 펫 등록");
         System.out.println("11. 내 펫 조회");
         System.out.println("12. 펫 프로필 사진 등록");
-        System.out.println("13. 검색 기능");
+        System.out.println("13. 통합 검색 기능");
+        System.out.println("14. 반려동물 위험 음식 보기");
         System.out.println("0. 종료");
         while (true) {
             try {
@@ -298,6 +312,49 @@ public class Core {
         mgr.printByOwner(loggedInUser.getId());
     }
 
+    private void unsafePetFoodMenu() {
+        System.out.println("============= 동물에게 위험한 음식 메뉴 =============");
+        while (true) {
+            System.out.println("1. 전체 목록 보기");
+            System.out.println("2. 검색하기");
+            System.out.println("3. 고양이에게 위험한 음식 보기");
+            System.out.println("4. 강아지에게 위험한 음식 보기");
+            System.out.print(">> 메뉴 입력: ");
+            int opt = scan.nextInt();
+            switch (opt) {
+                case 1 -> unsafePetFoodMgr.printAll();
+                case 2 -> {
+                    scan.nextLine();
+                    while (true) {
+                        System.out.print(">> 키워드 입력(0 입력시 종료): ");
+                        String kwd = scan.nextLine().trim();
+                        if (kwd.equals("0")) break;
+
+                        System.out.println("====== 키워드 검색 결과 ======");
+                        for (UnsafePetFood f : unsafePetFoodMgr.mList) {
+                            if (f.matches(kwd))
+                                f.print();
+                        }
+                    }
+                }
+                case 3 -> {
+                    for (UnsafePetFood f : unsafePetFoodMgr.mList) {
+                        if (f.hasPetType(PetType.CAT))
+                            f.print();
+                    }
+                }
+                case 4 -> {
+                    for (UnsafePetFood f : unsafePetFoodMgr.mList) {
+                        if (f.hasPetType(PetType.DOG))
+                            f.print();
+                    }
+                }
+                case 0 -> { return; }
+                default -> System.out.println("잘못 입력하셨습니다");
+            }
+        }
+    }
+
     // 건강 기록 기능
     private void healthMenu() {
         System.out.println("================= 건강 기록 리스트 =================");
@@ -353,116 +410,65 @@ public class Core {
         System.out.printf("등록 완료! 등록된 경로: %s\n", imagePath);
     }
 
-    private void search() {
-        while (true){
-            System.out.println("\n===== 검색/테스트 메뉴 =====");
-            System.out.println("1. 진료 기록 기간 검색");
-            System.out.println("2. 산책 기록 기간 검색");
-            System.out.println("3. 진료 기록 키워드 검색");
-            System.out.println("4. 산책 기록 키워드 검색");
+    //통합 검색용 데이터 모으는 함수
+    private ArrayList<RecordSearchable> collectAllRecords(){
+        ArrayList<RecordSearchable> all = new ArrayList<>();
+
+        all.addAll(healthMgr.mList);
+        all.addAll(medicalMgr.mList);
+        all.addAll(medicineRecordMgr.mList);
+        all.addAll(playMgr.mList);
+        all.addAll(vaccineMgr.mList);
+        all.addAll(walkMgr.mList);
+
+        return all;
+    }
+
+    private void unifiedSearch() {
+        while (true) {
+            System.out.println("\n===== 통합 검색 =====");
+            System.out.println("1. 기간 검색");
+            System.out.println("2. 키워드 검색");
             System.out.println("0. 종료");
+            System.out.print(">> ");
 
             String cmd = scan.next();
 
             switch (cmd) {
+                //기간검색
                 case "1" -> {
-                    scan.nextLine();
-                    System.out.print("기간 입력 (예: 2025-01-01 2025-02-01, 0은 생략): ");
-                    String line = scan.nextLine().trim();
+                    System.out.print("시작일(0은 생략): ");
+                    LocalDate start = ReadUtil.readDate(scan);
 
-                    if (line.isEmpty()) {
-                        var list = medicalMgr.mList;   // 전체 목록
-                        System.out.println("\n== 전체 진료 기록 ==");
-                        for (MedicalRecord r : list) r.print();
-                        break;
+                    System.out.print("종료일(0은 생략): ");
+                    LocalDate end = ReadUtil.readDate(scan);
+
+                    System.out.println("\n=== 기간 검색 결과 ===");
+                    for (RecordSearchable r : collectAllRecords()) {
+                        if (r.getOwnerId().equals(loggedInUser.getId()) &&
+                                r.matchesPeriod(start, end)) {
+                            r.print();
+                        }
                     }
-
-                    String[] parts = line.split("\\s+");
-                    String s = parts.length > 0 ? parts[0] : "0";
-                    String e = parts.length > 1 ? parts[1] : "0";
-
-                    LocalDate start = s.equals("0") ? null : LocalDate.parse(s);
-                    LocalDate end   = e.equals("0") ? null : LocalDate.parse(e);
-
-                    var list = medicalMgr.searchPeriod(start, end);
-
-                    System.out.println("\n== 진료 기록 검색 결과 ==");
-                    for (MedicalRecord r : list) r.print();
                 }
 
-                // 2. 산책 기록 기간 검색 -----------------------------
+                //키워드검색
                 case "2" -> {
                     scan.nextLine();
-                    System.out.print("기간 입력 (예: 2025-01-01 2025-02-01, 0은 생략): ");
-                    String line = scan.nextLine().trim();
-
-                    if (line.isEmpty()) {
-                        var list = walkMgr.mList;
-                        System.out.println("\n== 전체 산책 기록 ==");
-                        for (WalkRecord r : list) r.print();
-                        break;
-                    }
-
-                    String[] parts = line.split("\\s+");
-                    String s = parts.length > 0 ? parts[0] : "0";
-                    String e = parts.length > 1 ? parts[1] : "0";
-
-                    LocalDate start = s.equals("0") ? null : LocalDate.parse(s);
-                    LocalDate end   = e.equals("0") ? null : LocalDate.parse(e);
-
-                    var list = walkMgr.searchPeriod(start, end);
-
-                    System.out.println("\n== 산책 기록 검색 결과 ==");
-                    for (WalkRecord r : list) r.print();
-                }
-
-                // 3. 진료 기록 키워드 검색 --------------------------
-                case "3" -> {
                     System.out.print("키워드 입력: ");
-                    scan.nextLine();
                     String kwd = scan.nextLine().trim();
 
-                    if (kwd.isEmpty()) {
-                        System.out.println("\n== 전체 진료 기록 ==");
-                        for (MedicalRecord r : medicalMgr.mList) r.print();
-                        break;
+                    System.out.println("\n=== 키워드 검색 결과 ===");
+                    for (RecordSearchable r : collectAllRecords()) {
+                        if (r.getOwnerId().equals(loggedInUser.getId()) &&
+                                ((Manageable) r).matches(kwd)) {
+                            r.print();
+                        }
                     }
-
-                    System.out.println("\n== 진료 기록 검색 결과 ==");
-                    for (MedicalRecord r : medicalMgr.mList)
-                        if (r.matches(kwd)) r.print();
                 }
 
-                // 4. 산책 기록 키워드 검색 --------------------------
-                case "4" -> {
-                    System.out.print("키워드 입력: ");
-                    scan.nextLine();
-                    String kwd = scan.nextLine().trim();
-
-                    if(kwd.isEmpty()){
-                        System.out.println("\n== 전체 산책 기록 ==");
-                        for (WalkRecord r : walkMgr.mList) r.print();
-                        break;
-                    }
-
-                    System.out.println("\n== 산책 기록 검색 결과 ==");
-                    for (WalkRecord r : walkMgr.mList)
-                        if (r.matches(kwd)) r.print();
-                }
-
-                // 5. 오늘 루틴 보기 + 체크 ---------------------------
-                case "5" -> {
-                    System.out.println("\n----------------- 오늘 복용해야 할 약 -----------------");
-                    medicineRoutineMgr.printTodayRoutine(loggedInUser.getId());
-                    medicineRoutineMgr.checkTaken(loggedInUser.getId());
-                }
-
-                // 0. 종료 --------------------------------------------
-                case "0" -> {
-                    System.out.println("메뉴 종료");
-                    return;
-                }
-                default -> System.out.println("잘못 입력했습니다.");
+                case "0" -> { return; }
+                default -> System.out.println("잘못된 입력");
             }
         }
     }

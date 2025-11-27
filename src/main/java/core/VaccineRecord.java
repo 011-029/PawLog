@@ -5,12 +5,12 @@ import java.util.Scanner;
 import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
+import mgr.RecordSearchable;
 import util.DateUtil;
 import util.ReadUtil;
 
 // 예방접종 기록 클래스
-// TODO: 클래스 필드, 메서드 작성 (현재는 필수 구현해야 하는 메서드만 자동완성해둔 상태)
-public class VaccineRecord implements Manageable, UIData, PetOwned {
+public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -130,6 +130,11 @@ public class VaccineRecord implements Manageable, UIData, PetOwned {
     @Override
     public String getOwnerId() {
         return ownerId;
+    }
+
+    @Override
+    public LocalDate getRecordDate() {
+        return date;
     }
 
     @Override

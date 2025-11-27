@@ -1,10 +1,7 @@
 // TODO: 예시 코드 임시로 붙여넣기 한 것임. 추후 수정 필요
 package mgr;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,6 +24,18 @@ public class Manager<T extends Manageable> {
         Scanner fileIn = openFile(filename);
         T m = null;
         while (fileIn.hasNext()) {
+            m = fac.create();
+            m.read(fileIn);
+            mList.add(m);
+        }
+        fileIn.close();
+    }
+
+    // readAll() 오버로드: 인풋스트림 버전(리소스 파일)
+    public void readAll(InputStream is, Factory<T> fac) {
+        Scanner fileIn = new Scanner(is);
+        T m = null;
+        while(fileIn.hasNext()) {
             m = fac.create();
             m.read(fileIn);
             mList.add(m);
