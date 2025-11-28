@@ -62,7 +62,10 @@ public class Core {
                 case 1 -> healthMenu();
                 case 2 -> medicalMenu();
                 case 3 -> medicineRecordMenu();
-                case 4 -> medicineRoutineMenu();
+                case 4 -> {
+                    medicineRoutineMgr.removeExpiredRoutines();
+                    medicineRoutineMenu();
+                }
                 case 5 -> playMenu();
                 case 6 -> vaccineMenu();
                 case 7 -> walkMenu();
