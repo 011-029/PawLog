@@ -21,9 +21,9 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
     }
 
     public void addNewRecord(Pet pet, LocalDate date, int meal,
-                             int water, String brushed, String memo) {
+                             int water, double weight, String brushed, String memo) {
         HealthRecord r = new HealthRecord();
-        r.apply(pet, date, meal, water, brushed, memo);
+        r.apply(pet, date, meal, water, weight, brushed, memo);
         saveWithIndexId(r);
     }
 
@@ -59,30 +59,16 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
         StringBuilder sb = new StringBuilder();
         String todayStr = LocalDate.now().toString();
 
+        HealthRecord latest = getLatestRecord(records);
+        if (latest != null) {
+            applyWeightRiskAlert(sb, latest, pet, todayStr);
+        }
 
         if (weeklyWalkCount < 1) {
             appendAlertBlock(
                     sb,
                     "활동 부족 위험",
                     "최근 1주일 동안 산책이 거의 없어요.",
-                    todayStr
-            );
-        }
-
-        if (isObesityRisk(records, weeklyWalkCount)) {
-            appendAlertBlock(
-                    sb,
-                    "비만 위험",
-                    "최근 2주간 식사량이 많고 산책이 부족해요.",
-                    todayStr
-            );
-        }
-
-        if (isUnderweightRisk(records)) {
-            appendAlertBlock(
-                    sb,
-                    "저체중 위험",
-                    "최근 일주일 동안 식사량이 많이 줄었어요.",
                     todayStr
             );
         }
@@ -105,64 +91,60 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
             );
         }
 
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     private void appendAlertBlock(StringBuilder sb,
                                   String title,
                                   String message,
                                   String dateStr) {
-        if (sb.length() > 0) {
+        if (sb.length() > 0)
             sb.append("\n\n");
-        }
         sb.append("⚠ ").append(title).append("\n");
         sb.append(message).append("\n");
         sb.append(dateStr);
     }
 
-    private boolean isObesityRisk(ArrayList<HealthRecord> records, int weeklWalkCount) {
-        if (weeklWalkCount >= 1) return false;
-
-        LocalDate today = LocalDate.now();
-        LocalDate from = today.minusDays(13);
-
-        int sum = 0;
-        int cnt = 0;
-
+    private HealthRecord getLatestRecord(ArrayList<HealthRecord> records) {
+        HealthRecord latest = null;
         for (HealthRecord r : records) {
-            if(!r.date.isBefore(from) && !r.date.isAfter(today)) {
-                sum += r.meal;
-                cnt++;
+            if (latest == null || r.date.isAfter(latest.date)) {
+                latest = r;
             }
         }
-
-        if (cnt == 0) return false;
-        double avg = sum / (double) cnt;
-
-        return avg >= 2.5;
+        return latest;
     }
+    private void applyWeightRiskAlert(StringBuilder sb,
+                                      HealthRecord record,
+                                      Pet pet,
+                                      String dateStr) {
 
-    private boolean isUnderweightRisk(ArrayList<HealthRecord> records) {
-        LocalDate today = LocalDate.now();
-        LocalDate from = today.minusDays(6); // 최근 7일
+        double normal = pet.getWeight();  // Pet에 정의돼 있다고 가정
+        double w = record.weight;
 
-        int sum = 0;
-        int cnt = 0;
-        int zeroDays = 0;
+        // 정상 체중 정보가 없거나, 기록에 몸무게가 없으면 스킵
+        if (normal <= 0 || w <= 0) return;
 
-        for (HealthRecord r : records) {
-            if (!r.date.isBefore(from) && !r.date.isAfter(today)) {
-                sum += r.meal;
-                cnt++;
-                if (r.meal == 0) zeroDays++;
-            }
+        double upper = normal * 1.10; // +10%
+        double lower = normal * 0.90; // -10%
+
+        if (w > upper) {
+            appendAlertBlock(
+                    sb,
+                    "비만 위험",
+                    "기준 체중보다 많이 나가고 있어요.",
+                    dateStr
+            );
+        } else if (w < lower) {
+            appendAlertBlock(
+                    sb,
+                    "저체중 위험",
+                    "기준 체중보다 너무 적게 나가고 있어요.",
+                    dateStr
+            );
         }
-
-        if (cnt == 0) return false;
-        double avg = sum / (double) cnt;
-
-        return (avg <= 1.0 && zeroDays >= 2);
     }
+
 
     private boolean isDehydrationRisk(ArrayList<HealthRecord> records) {
         LocalDate today = LocalDate.now();
