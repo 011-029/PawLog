@@ -2,7 +2,6 @@ package core;
 
 import mgr.Factory;
 import mgr.PetRecordMgr;
-import ui.LoginPanel;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
