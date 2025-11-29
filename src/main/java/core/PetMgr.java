@@ -65,6 +65,16 @@ public class PetMgr extends DataEngineImpl<Pet> {
         return result;
     }
 
+    public boolean deletePet(String ownerId, String petName) {
+        Pet p = findPet(ownerId, petName);
+        if (p == null)
+            return false;
+
+        mList.remove(p);
+        saveToFile(PET_FILE_PATH);
+        return true;
+    }
+
     public void saveToFile(String filename) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
             for (Pet p: mList) {
@@ -84,5 +94,9 @@ public class PetMgr extends DataEngineImpl<Pet> {
                 return new Pet();
             }
         });
+    }
+
+    protected String getFilePath() {
+        return PET_FILE_PATH;
     }
 }
