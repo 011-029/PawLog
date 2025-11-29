@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class PetMgr extends DataEngineImpl<Pet> {
     private static PetMgr mgr = null;
-    private static final String PET_FILE_PATH = "data/pets.txt";
+    private static final String FILE_PATH = "data/pets.txt";
 
     public static PetMgr getInstance() {
         if (mgr == null)
@@ -37,14 +37,14 @@ public class PetMgr extends DataEngineImpl<Pet> {
 
     public void registerPet(String[] uiTexts) {
         addNewRow(uiTexts);
-        saveToFile(PET_FILE_PATH);
+        saveToFile(FILE_PATH);
     }
 
     public void updateProfileImage(String ownerId, String petName, String imagePath) {
         Pet p = findPet(ownerId, petName);
         if (p != null) {
             p.setProfileImage(imagePath);
-            saveToFile(PET_FILE_PATH);
+            saveToFile(FILE_PATH);
         }
     }
 
@@ -71,7 +71,7 @@ public class PetMgr extends DataEngineImpl<Pet> {
             return false;
 
         mList.remove(p);
-        saveToFile(PET_FILE_PATH);
+        saveToFile(FILE_PATH);
         return true;
     }
 
@@ -89,7 +89,7 @@ public class PetMgr extends DataEngineImpl<Pet> {
     }
 
     public void loadFromFile() {
-        readAll(PET_FILE_PATH, new Factory<Pet>() {
+        readAll(FILE_PATH, new Factory<Pet>() {
             public Pet create() {
                 return new Pet();
             }
@@ -97,6 +97,6 @@ public class PetMgr extends DataEngineImpl<Pet> {
     }
 
     protected String getFilePath() {
-        return PET_FILE_PATH;
+        return FILE_PATH;
     }
 }
