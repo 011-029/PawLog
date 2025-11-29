@@ -10,6 +10,7 @@ import util.ReadUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -81,6 +82,7 @@ public class Core {
                 case 13 -> unifiedSearch();
                 case 14 -> unsafePetFoodMenu();
                 case 15 -> petTipMenu();
+                case 16 -> timeline();
                 case 100 -> {
                     boolean deletePet = petMgr.deletePet(loggedInUser.getId(), loggedInUserPet.getName());
                     System.out.println(deletePet ? "펫 삭제 성공" : "펫 삭제 실패");
@@ -131,6 +133,7 @@ public class Core {
         System.out.println("13. 통합 검색 기능");
         System.out.println("14. 반려동물 위험 음식 보기");
         System.out.println("15. 반려동물 간단 팁 보기");
+        System.out.println("16. 타임라인 보기");
         System.out.println("0. 종료");
         while (true) {
             try {
@@ -563,6 +566,50 @@ public class Core {
                 default -> System.out.println("잘못된 입력");
             }
         }
+    }
+
+    private void timeline(){
+        System.out.println("================= 타임라인 =================");
+        System.out.print("검색할 기간을 입력하시오(최근 7일인 경우 7 입력) : ");
+        int searchPeriod = scan.nextInt();
+
+        LocalDate end = LocalDate.now();
+        LocalDate start = end.minusDays(searchPeriod);
+
+        ArrayList<RecordSearchable> all = collectAllRecords();
+
+        ArrayList<RecordSearchable> sorted = new ArrayList<>();
+        for (RecordSearchable r : all){
+            if (r.getOwnerId().equals(loggedInUser.getId())
+                    && r.matchesPeriod(start, end)) {
+                sorted.add(r);
+            }
+        }
+
+        sorted.sort(Comparator.comparing(RecordSearchable::getRecordDate));
+
+        if (sorted.isEmpty()) {
+            System.out.printf("최근 %d일 동안의 기록이 없습니다.\n", searchPeriod);
+            return;
+        }
+
+        for (RecordSearchable r : sorted) {
+            System.out.print(getTagForRecord(r) + " ");
+            r.print();
+        }
+
+    }
+
+    private String getTagForRecord(RecordSearchable r) {
+        if (r instanceof MedicalRecord) return "[병원] ";
+        if (r instanceof MedicineRecord) return "[약] ";
+        if (r instanceof MedicineRoutine) return "[복용 루틴] ";
+        if (r instanceof VaccineRecord) return "[백신] ";
+        if (r instanceof WalkRecord) return "[산책] ️";
+        if (r instanceof PlayRecord) return "[놀이] ";
+        if (r instanceof HealthRecord) return "[건강 기록]";
+
+        return "";
     }
 
     // 등록된 펫 업데이트
