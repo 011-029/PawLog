@@ -17,6 +17,7 @@ public class Pet implements Manageable, UIData {
     private LocalDate birthDate;
     private double weight;
     private String imagePath;
+    private final ArrayList<String> personalityTags = new ArrayList<>();
 
     private final ArrayList<HealthRecord> healthRecords = new ArrayList<>();
     private final ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
@@ -25,7 +26,6 @@ public class Pet implements Manageable, UIData {
     private final ArrayList<PlayRecord> playRecords = new ArrayList<>();
     private final ArrayList<VaccineRecord> vaccineRecords = new ArrayList<>();
     private final ArrayList<WalkRecord> walkRecords = new ArrayList<>();
-    private final ArrayList<String> personalityTags = new ArrayList<>();
 
     @Override
     public void read(Scanner scan) {
@@ -59,8 +59,11 @@ public class Pet implements Manageable, UIData {
 
     @Override
     public void print() {
-        System.out.printf("[Pet] %s (%s) %.1fkg, %s\n",
+        System.out.printf("[Pet] %s (%s) %.1fkg,  %s,",
                 name, species, weight, gender);
+        if(!personalityTags.isEmpty())
+            System.out.println(" 성격태그 : " + String.join(", ", personalityTags));
+        System.out.println();
     }
 
     @Override
