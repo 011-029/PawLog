@@ -6,6 +6,7 @@ import mgr.Manageable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Pet implements Manageable, UIData {
 
@@ -24,6 +25,7 @@ public class Pet implements Manageable, UIData {
     private final ArrayList<PlayRecord> playRecords = new ArrayList<>();
     private final ArrayList<VaccineRecord> vaccineRecords = new ArrayList<>();
     private final ArrayList<WalkRecord> walkRecords = new ArrayList<>();
+    private final ArrayList<String> personalityTags = new ArrayList<>();
 
     @Override
     public void read(Scanner scan) {
@@ -36,9 +38,19 @@ public class Pet implements Manageable, UIData {
         birthDate = LocalDate.parse(tokens[4]);
         weight = Double.parseDouble(tokens[5]);
 
-        if (tokens.length == 7)
+        if (tokens.length >= 7)
             imagePath = tokens[6];
         else imagePath = "";
+
+        personalityTags.clear();
+        if (tokens.length >= 8) {               // 태그가 있을 때만
+            String[] tags = tokens[7].split(",");
+            for (String t : tags) {
+                t = t.trim();
+                if (!t.isEmpty())
+                    personalityTags.add(t);
+            }
+        }
     }
 
     public void addMedicalRecord(MedicalRecord r) {
@@ -60,7 +72,8 @@ public class Pet implements Manageable, UIData {
                 gender,
                 String.valueOf(birthDate),
                 String.valueOf(weight),
-                imagePath == null ? "" : imagePath
+                imagePath == null ? "" : imagePath,
+                joinPersonalityTags()
         };
     }
 
@@ -86,7 +99,7 @@ public class Pet implements Manageable, UIData {
         return new String[]{
                 ownerId, name, species, gender,
                 birthDate.toString(), Double.toString(weight),
-                imagePath == null ? "" : imagePath
+                imagePath == null ? "" : imagePath, joinPersonalityTags()
         };
     }
 
@@ -98,8 +111,17 @@ public class Pet implements Manageable, UIData {
     public LocalDate getBirthDate() { return birthDate; }
     public double getWeight() { return weight; }
     public String getImagePath() { return imagePath; }
-    public ArrayList<MedicalRecord> getMedicalRecords(){
-        return medicalRecords;
+    public ArrayList<MedicalRecord> getMedicalRecords(){ return medicalRecords; }
+    public ArrayList<String> getPersonalityTags() {
+        return personalityTags;
+    }
+
+    private String joinPersonalityTags() {
+        if (personalityTags.isEmpty()) return "";
+        return personalityTags.stream()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining(","));
     }
 
     public boolean setName(String name) {
