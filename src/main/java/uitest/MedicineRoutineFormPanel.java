@@ -35,40 +35,7 @@ public class MedicineRoutineFormPanel extends JPanel {
         add(contentWrapper, BorderLayout.CENTER);
     }
 
-
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
-
     /* ================== 중앙 폼 ================== */
-    // ⬇ 기존 createFormContent() 통째로 지우고 이걸로 교체!
-
     private JComponent createFormContent() {
         // 전체 스크롤 안의 세로 레이아웃
         JPanel listPanel = new JPanel();
@@ -215,14 +182,14 @@ public class MedicineRoutineFormPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(20));
 
         /* ==== 복용량 ==== */
-        JLabel doseLabel = new JLabel("복용량");
+        JLabel doseLabel = new JLabel("복용량 (mg)");
         doseLabel.setFont(UIConstants.FONT_SEMIBOLD_16);
         doseLabel.setForeground(UIConstants.TEXT_PRIMARY);
         doseLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         listPanel.add(doseLabel);
         listPanel.add(Box.createVerticalStrut(8));
 
-        doseField = new PlaceholderTextField("예) 20mg");
+        doseField = new PlaceholderTextField("예) 20");
         doseField.setPreferredSize(new Dimension(360, 45));
         doseField.setMaximumSize(new Dimension(360, 45));
         doseField.setAlignmentX(Component.LEFT_ALIGNMENT);

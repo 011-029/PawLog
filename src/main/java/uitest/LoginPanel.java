@@ -147,7 +147,7 @@ public class LoginPanel extends JPanel {
 
         /* --- 회원가입 버튼 --- */
         JButton signUpBtn = new JButton("회원가입");
-        signUpBtn.setForeground(UIConstants.TEXT_LIGHT);
+        signUpBtn.setForeground(UIConstants.TEXT_SECONDARY);
         signUpBtn.setFocusPainted(false);
         signUpBtn.setPreferredSize(new Dimension(360, 20));
         signUpBtn.setMaximumSize(new Dimension(360, 20));

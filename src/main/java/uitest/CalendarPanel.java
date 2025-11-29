@@ -52,36 +52,6 @@ public class CalendarPanel extends JPanel {
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
-
     /* ================== 가운데 내용 ================== */
     private JComponent createContent() {
         JPanel root = new JPanel();
@@ -133,7 +103,7 @@ public class CalendarPanel extends JPanel {
         scroll.setOpaque(false);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        scroll.getVerticalScrollBar().setUnitIncrement(30);
+        scroll.getVerticalScrollBar().setUnitIncrement(10);
 
         // 초기 상태 업데이트
         LocalDate today = LocalDate.now();
@@ -306,7 +276,8 @@ public class CalendarPanel extends JPanel {
         header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
 
         // ◀ 이전 달 버튼
-        JButton prevBtn = new JButton("<");
+        JButton prevBtn = new JButton();
+        prevBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 12, 12));
         prevBtn.setFocusPainted(false);
         prevBtn.setContentAreaFilled(false);
         prevBtn.setBorderPainted(false);
@@ -315,7 +286,8 @@ public class CalendarPanel extends JPanel {
         prevBtn.setFont(UIConstants.FONT_SEMIBOLD_14);
 
         // ▶ 다음 달 버튼
-        JButton nextBtn = new JButton(">");
+        JButton nextBtn = new JButton();
+        nextBtn.setIcon(new FlatSVGIcon("icons/arrow-next.svg", 12, 12));
         nextBtn.setFocusPainted(false);
         nextBtn.setContentAreaFilled(false);
         nextBtn.setBorderPainted(false);
@@ -418,7 +390,7 @@ public class CalendarPanel extends JPanel {
 
         List<RecordItem> list = recordsByDate.getOrDefault(date, Collections.emptyList());
         if (list.isEmpty()) {
-            JLabel empty = new JLabel("이 날짜에는 기록이 없어요.");
+            JLabel empty = new JLabel("이 날짜에는 기록이 없어요");
             empty.setFont(UIConstants.FONT_REGULAR_14);
             empty.setForeground(UIConstants.TEXT_SECONDARY);
             empty.setBorder(new EmptyBorder(16, 4, 0, 0));
@@ -480,93 +452,6 @@ public class CalendarPanel extends JPanel {
         }
     }
 
-
-    // ✅ 디버그용 : 모든 날짜에 점 표시해보기
-//    private void updateCalendarDots() {
-//        if (calendar == null) return;
-//
-//        JPanel dayPanel = calendar.getDayChooser().getDayPanel();
-//
-//        for (Component c : dayPanel.getComponents()) {
-//            if (!(c instanceof JButton)) continue;
-//            JButton b = (JButton) c;
-//
-//            String raw = b.getText();
-//            if (raw == null || raw.isEmpty()) continue;
-//
-//            // 이미 HTML일 수도 있으니까, 숫자만 뽑아오기
-//            String numStr = raw.replaceAll("\\D+", "");
-//            if (numStr.isEmpty()) continue;
-//
-//            int day = Integer.parseInt(numStr);
-//
-//            // 🔸 모든 날짜에 점 찍기
-//            String html =
-//                    "<html><center>" + day +
-//                            "<br><span style='font-size:9px'>●</span></center></html>";
-//            b.setText(html);
-//        }
-//    }
-
-
-
-    /* ================== 하단 탭바 ================== */
-//    private JComponent createTabbedNav() {
-//        JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
-//
-//        tabs.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-//        tabs.putClientProperty("JTabbedPane.tabAreaAlignment", "fill");
-//        tabs.setPreferredSize(new Dimension(0, 60));
-//        tabs.putClientProperty("JTabbedPane.tabHeight", 59);
-//        tabs.putClientProperty("JTabbedPane.tabAreaInsets", "0,0,0,0");
-//        tabs.putClientProperty("JTabbedPane.contentAreaInsets", "0,0,0,0");
-//        tabs.setBorder(null);
-//
-//        tabs.addTab("홈", new JPanel());
-//        tabs.setTabComponentAt(0, createTab("홈", "calendar.png"));
-//
-//        tabs.addTab("캘린더", new JPanel());
-//        tabs.setTabComponentAt(1, createTab("캘린더", "calendar.png"));
-//
-//        tabs.addTab("기록", new JPanel());
-//        tabs.setTabComponentAt(2, createTab("기록추가", "calendar.png"));
-//
-//        tabs.addTab("매거진", new JPanel());
-//        tabs.setTabComponentAt(3, createTab("펫 간단팁", "calendar.png"));
-//
-//        tabs.addTab("설정", new JPanel());
-//        tabs.setTabComponentAt(4, createTab("설정", "calendar.png"));
-//
-//        return tabs;
-//    }
-//
-//    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-//        Image img = icon.getImage();
-//        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-//        return new ImageIcon(scaled);
-//    }
-//
-//    private Component createTab(String title, String iconPath) {
-//        JPanel tab = new JPanel(new BorderLayout());
-//        tab.setOpaque(false);
-//
-//        ImageIcon original = new ImageIcon(iconPath);
-//        ImageIcon smallIcon = resizeIcon(original, 20, 20);
-//
-//        JLabel label = new JLabel(title, smallIcon, JLabel.CENTER);
-//        label.setFont(UIConstants.FONT_SEMIBOLD_12);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.BOTTOM);
-//        label.setIconTextGap(5);
-//        label.setForeground(Color.WHITE);
-//
-//        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 1, 0));
-//        tab.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-//
-//        tab.add(label, BorderLayout.CENTER);
-//        return tab;
-//    }
-
     /* ================== 기록 카드 ================== */
     private JPanel createRecordCard(RecordItem item) {
         JPanel card = new JPanel(new BorderLayout());
@@ -581,7 +466,7 @@ public class CalendarPanel extends JPanel {
 
         card.setBorder(new FlatLineBorder(
                 new Insets(16, 16, 16, 16),
-                UIConstants.GRAY_SOFT, 0.5f, 10
+                UIConstants.GRAY_SOFT, 0.5f, 20
         ));
 
         JPanel textPanel = new JPanel();

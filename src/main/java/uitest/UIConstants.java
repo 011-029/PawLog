@@ -8,7 +8,7 @@ public class UIConstants {
 
     // 포인트 컬러
     public static final Color PRIMARY = new Color(0x81B2DD);
-    public static final Color PRIMARY_LIGHT = new Color(0xC7DCEB);
+    public static final Color PRIMARY_LIGHT = new Color(0xB5D5EB);
     public static final Color GRAY_ULTRA_LIGHT = new Color(247, 247, 247);
     public static final Color GRAY_LIGHT = new Color(220, 220, 220);
     public static final Color GRAY_SOFT = new Color(200, 200, 200);

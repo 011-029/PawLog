@@ -107,27 +107,27 @@ public class AddRecordMenuPanel extends JPanel {
         // 둘째 줄: 예방접종 기록 / 복용 기록
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("예방접종 기록", "icons/syringe.svg",
+        grid.add(createRecordCard("복용 기록", "icons/pill.svg",
                 null), gbc);
 
         gbc.gridx = 1;
-        grid.add(createRecordCard("복용 기록", "icons/pill.svg",
-                null), gbc);
+        grid.add(createRecordCard("복용 루틴", "icons/reminder.svg",
+                () -> mainFrame.switchPanel(new MedicineRoutineFormPanel(mainFrame))), gbc);
 
         // 셋째 줄: 복용 루틴 / 산책 기록
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("복용 루틴", "icons/reminder.svg",
-                () -> mainFrame.switchPanel(new MedicineRoutineFormPanel(mainFrame))), gbc);
-
-        gbc.gridx = 1;
         grid.add(createRecordCard("산책 기록", "icons/dog.svg",
                 () -> mainFrame.switchPanel(new WalkFormPanel(mainFrame))), gbc);
+
+        gbc.gridx = 1;
+        grid.add(createRecordCard("놀이 기록", "icons/toy.svg",
+                null), gbc);
 
         // 넷째 줄: 놀이 기록 (왼쪽만 사용, 오른쪽은 빈칸 스페이서)
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("놀이 기록", "icons/toy.svg",
+        grid.add(createRecordCard("예방접종 기록", "icons/syringe.svg",
                 null), gbc);
 
         gbc.gridx = 1;

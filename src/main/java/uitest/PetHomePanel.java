@@ -42,35 +42,6 @@ public class PetHomePanel extends JPanel {
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
-
     /* ================== 가운데 스크롤 영역 ================== */
     private JComponent createScrollableContent() {
         JPanel content = new JPanel(new GridBagLayout());
@@ -174,9 +145,6 @@ public class PetHomePanel extends JPanel {
     private JComponent createPetCard() {
         JPanel card = new JPanel(new BorderLayout(12, 0));
         card.setBackground(Color.WHITE);
-//        card.setBorder(new CompoundBorder(
-//                new LineBorder(new Color(230, 230, 230), 1, true),
-//                new EmptyBorder(12, 12, 12, 12)));
         card.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 10),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
 
@@ -211,17 +179,6 @@ public class PetHomePanel extends JPanel {
 
         card.add(center, BorderLayout.CENTER);
 
-//        // 🔹 펫 정보 수정 아이콘 버튼 (오른쪽 상단)
-//        ImageIcon editRaw = new ImageIcon("next.png");
-//        Image editImg = editRaw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-//        JButton editBtn = new JButton(new ImageIcon(editImg));
-
-//        editBtn.setFocusPainted(false);
-//        editBtn.setContentAreaFilled(false);               // 배경 투명하게
-////        editBtn.setBorder(new LineBorder(UIConstants.PRIMARY, 1, true)); // 둥근 테두리
-//        editBtn.setPreferredSize(new Dimension(32, 32));   // 정사각형 아이콘 버튼
-//        editBtn.setToolTipText("펫 정보 수정");            // 마우스 올리면 힌트
-
         JPanel east = new JPanel();
         east.setOpaque(false);
         east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
@@ -231,8 +188,6 @@ public class PetHomePanel extends JPanel {
 
         // 위·아래 중앙 정렬 유지
         east.add(Box.createVerticalGlue());
-//        editBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        east.add(editBtn);
         east.add(Box.createVerticalGlue());
 
         card.add(east, BorderLayout.EAST);
@@ -243,9 +198,6 @@ public class PetHomePanel extends JPanel {
     /* ================== 알림 배너 ================== */
     private JComponent createAlertBanner() {
         JPanel banner = new JPanel(new BorderLayout(8, 0));
-//        banner.setBackground(new Color(255, 224, 224));
-//        banner.setBorder(new EmptyBorder(10, 12, 10, 12));
-//        banner.putClientProperty("FlatLaf.style", "arc:30");
         banner.setBackground(UIConstants.PRIMARY_LIGHT);
         banner.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 10),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
@@ -253,6 +205,7 @@ public class PetHomePanel extends JPanel {
         JLabel icon = new JLabel("⚠");
         JLabel text = new JLabel("4일 후 병원 진료가 예정되어 있습니다.");
         JButton btn = new JButton("진료 예약정보");
+        btn.setOpaque(false);
         btn.setFocusPainted(false);
         btn.setBackground(Color.WHITE);
 //        btn.setBorder(new LineBorder(new Color(255, 192, 203), 1, true));
@@ -271,19 +224,11 @@ public class PetHomePanel extends JPanel {
     private JComponent createSmallCard(String title, String[] lines, Runnable onClick) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-//        card.putClientProperty("FlatLaf.style", ""
-//                + "arc:30;"
-////                + "borderColor: #E0E0E0;"
-////                + "borderInsets: 1,1,1,1;"
-////                + "borderWidth: 1;"
-//        );
         card.setBorder(new FlatLineBorder(new Insets(15, 15, 15, 15),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
-//        card.setBackground(UIConstants.GRAY_ULTRA_LIGHT);
-//        card.setOpaque(true);
-//        card.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 손모양
+        card.setBackground(new Color(253, 253, 253));
 
         // ⭐ 카드 클릭 시 실행할 동작
         card.addMouseListener(new MouseAdapter() {
@@ -320,7 +265,7 @@ public class PetHomePanel extends JPanel {
     private JComponent createTimeline() {
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-        box.setBackground(UIConstants.GRAY_ULTRA_LIGHT);
+        box.setBackground((new Color(253, 253, 253)));
         box.putClientProperty("FlatLaf.style", "arc:20");
         box.setPreferredSize(new Dimension(360, 500));
         box.setBorder(new FlatLineBorder(new Insets(15, 15, 15, 15),
@@ -353,90 +298,4 @@ public class PetHomePanel extends JPanel {
 
         return box;
     }
-
-    /* ================== 하단 네비게이션 ================== */
-//    private JComponent createTabbedNav() {
-//        JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
-//
-//        // 폭은 균등 분배 + 전체 폭 채우기
-//        tabs.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-//        tabs.putClientProperty("JTabbedPane.tabAreaAlignment", "fill");
-//
-//        // ▶ 탭 스트립 높이 자체를 줄이기
-//        tabs.setPreferredSize(new Dimension(0, 60));              // 전체 바 높이
-//        tabs.putClientProperty("JTabbedPane.tabHeight", 59);      // 탭 셀 높이
-//
-//        // ▶ 탭 영역 위·아래 여백 최소화 (콘텐츠와 탭 사이 간격)
-//        tabs.putClientProperty("JTabbedPane.tabAreaInsets", "0,0,0,0");
-//        // 필요하면 contentAreaInsets도 0으로
-//        tabs.putClientProperty("JTabbedPane.contentAreaInsets", "0,0,0,0");
-//
-//        tabs.setBorder(null);
-//
-//        tabs.addTab("홈", new JPanel());
-//        tabs.setTabComponentAt(0, createTab("홈", "icons/home.svg"));
-//
-//        tabs.addTab("캘린더", new JPanel());
-//        tabs.setTabComponentAt(1, createTab("캘린더", "icons/calendar.svg"));
-//
-//        tabs.addTab("기록", new JPanel());
-//        tabs.setTabComponentAt(2, createTab("기록추가", "icons/add.svg"));
-//
-//        tabs.addTab("매거진", new JPanel());
-//        tabs.setTabComponentAt(3, createTab("펫 간단팁", "icons/notes.svg"));
-//
-//        tabs.addTab("설정", new JPanel());
-//        tabs.setTabComponentAt(4, createTab("설정", "icons/setting.svg"));
-//
-//        // tabs 생성/설정들 뒤에
-//        tabs.addChangeListener(e -> {
-//            int idx = tabs.getSelectedIndex();
-//
-//            if (idx == 1)
-//                mainFrame.switchPanel(new CalendarPanel(mainFrame));
-//            else if (idx == 0)
-//                mainFrame.switchPanel(new PetHomePanel(mainFrame));
-//            else if (idx == 2)
-//                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
-//            else if (idx == 3)
-//                mainFrame.switchPanel(new WalkFormPanel(mainFrame));
-//            // 다른 탭들도 필요하면 else if 로 추가~
-//        });
-//
-//        return tabs;
-//    }
-//
-//
-//    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-//        Image img = icon.getImage();
-//        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-//        return new ImageIcon(scaled);
-//    }
-//
-//    private Component createTab(String title, String iconPath) {
-//        JPanel tab = new JPanel(new BorderLayout());
-//        tab.setOpaque(false);
-//
-//        ImageIcon icon = new FlatSVGIcon(iconPath, 20, 20);
-//        JLabel label = new JLabel(title, icon, JLabel.CENTER);
-//        label.setFont(UIConstants.FONT_SEMIBOLD_12);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.BOTTOM);
-//        label.setIconTextGap(5); // 아이콘-텍스트 간격
-//        label.setForeground(Color.WHITE);
-//
-//        // 🔹 라벨 자체 위/아래 패딩 줄이기 (탭 안 여백 감소 핵심!)
-//        label.setBorder(BorderFactory.createEmptyBorder(
-//                0, 0, 1, 0   // top, left, bottom, right
-//        ));
-//
-//        // 🔹 탭 패널의 위/아래 여백도 최소화
-//        tab.setBorder(BorderFactory.createEmptyBorder(
-//                15, 0, 0, 0   // 위쪽만 살짝, 아래는 0
-//        ));
-//
-//        tab.add(label, BorderLayout.CENTER);
-//        return tab;
-//    }
-
 }

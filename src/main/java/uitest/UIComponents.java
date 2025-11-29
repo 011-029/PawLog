@@ -71,7 +71,7 @@ public final class UIComponents {
         tabs.setTabComponentAt(2, createTab("기록추가", "icons/add.svg"));
 
         tabs.addTab("매거진", new JPanel());
-        tabs.setTabComponentAt(3, createTab("펫 간단팁", "icons/notes.svg"));
+        tabs.setTabComponentAt(3, createTab("펫가이드", "icons/notes.svg"));
 
         tabs.addTab("설정", new JPanel());
         tabs.setTabComponentAt(4, createTab("설정", "icons/setting.svg"));
@@ -89,14 +89,14 @@ public final class UIComponents {
     }
 
     static public void switchTab(int idx, MainFrame mainFrame) {
-        if (idx == 0)
-            mainFrame.switchPanel(new PetHomePanel(mainFrame));
-        else if (idx == 1)
-            mainFrame.switchPanel(new CalendarPanel(mainFrame));
-        else if (idx == 2)
-            mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
-//        else if (idx == 3)
-//            mainFrame.switchPanel(new WalkFormPanel(mainFrame));
+        switch (idx) {
+            case 0 -> mainFrame.switchPanel(new PetHomePanel(mainFrame));
+            case 1 -> mainFrame.switchPanel(new CalendarPanel(mainFrame));
+            case 2 -> mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+            case 3 -> mainFrame.switchPanel(new PetTipsPanel(mainFrame));
+            case 4 -> mainFrame.switchPanel(new SettingPanel(mainFrame));
+            default -> {}
+        }
     }
 
     // 🔹 탭 하나 만드는 로직도 같이 묶어두기
