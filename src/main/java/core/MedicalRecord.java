@@ -20,6 +20,12 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
     String category;
     int cost;
 
+    String prescribedMedicine;//처방약
+    Integer dosage;
+    String routineTime;
+    LocalDate startDate;
+    LocalDate endDate;
+
     public void read(Scanner scan) {
         indexId = scan.nextInt();
         ownerId = scan.next();
@@ -28,24 +34,57 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
         hospital = ReadUtil.readHospital(scan);
         category = scan.next();
         cost = scan.nextInt(); //cost 미정일 경우 -1로 받음
+
+        String pm = scan.next();
+        prescribedMedicine = pm.equals("0") ? null : pm;
+
+        int d = scan.nextInt();
+        dosage = (d == -1 ? null : d);
+
+        String t = scan.next();
+        routineTime = t.equals("0") ? null : t;
+
+        String start = scan.next();
+        startDate = start.equals("0") ? null : LocalDate.parse(start);
+
+        String end = scan.next();
+        endDate = end.equals("0") ? null : LocalDate.parse(end);
+
     }
 
     public void apply(Pet pet, LocalDate date,
-                      String hospital, String category, int cost) {
+                      String hospital, String category, int cost,
+                      String prescribedMedicine, Integer dosage,
+                      String routineTime, LocalDate startDate, LocalDate endDate) {
         this.ownerId = pet.getOwnerId();
         this.petName = pet.getName();
         this.date = date;
         this.hospital = hospital;
         this.category = category;
         this.cost = cost;
+
+        this.prescribedMedicine = prescribedMedicine;
+        this.dosage = dosage;
+        this.routineTime = routineTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public void print() {
         System.out.printf("#%d [%s] %s | %s | %s ",
                 indexId, date, hospital, category,
                 cost== -1 ? "미정" : String.format("%,d원", cost));
-        if (!getDDayText().isEmpty()) System.out.printf("| %s\n", getDDayText());
-        else System.out.print("\n");
+        if (!getDDayText().isEmpty()) System.out.printf("| %s", getDDayText());
+        if (prescribedMedicine != null ) {
+            System.out.printf("| 처방: %s %dmg | %s | %s~%s",
+                    prescribedMedicine,
+                    dosage,
+                    routineTime,
+                    startDate,
+                    endDate
+            );
+        }
+        System.out.print("\n");
     }
 
     @Override
@@ -57,7 +96,12 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
                 String.valueOf(date),
                 hospital,
                 category,
-                String.valueOf(cost)
+                String.valueOf(cost),
+                prescribedMedicine == null ? "0" : prescribedMedicine,
+                dosage == null ? "-1" : String.valueOf(dosage),
+                routineTime == null ? "0" : routineTime,
+                startDate == null ? "0" : startDate.toString(),
+                endDate == null ? "0" : endDate.toString()
         };
     }
 
@@ -65,6 +109,11 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
         if(kwd.isEmpty())
             return true;
         if(hospital.contains(kwd) || category.contains(kwd) )
+            return true;
+        if (prescribedMedicine != null && prescribedMedicine.contains(kwd))
+            return true;
+
+        if (routineTime != null && routineTime.contains(kwd))
             return true;
         return ("" + cost).equals(kwd);
     }
@@ -118,6 +167,7 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
         } else {
             cost = -1;
         }
+        //TODO 처방약 용 set 나중에 추가 해야함
     }
 
     @Override
@@ -127,6 +177,7 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
                 hospital,
                 category,
                 cost == -1 ? "" : String.valueOf(cost)
+                //TODO 처방약용 추가
         };
     }
 
@@ -136,5 +187,20 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
     }
     public String getCategory(){
         return category;
+    }
+    public String getPrescribedMedicine() {
+        return prescribedMedicine;
+    }
+    public Integer getDosage() {
+        return dosage;
+    }
+    public String getRoutineTime() {
+        return routineTime;
+    }
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+    public LocalDate getEndDate() {
+        return endDate;
     }
 }

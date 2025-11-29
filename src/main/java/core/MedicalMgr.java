@@ -18,9 +18,10 @@ public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
     }
 
     public void addNewRecord(Pet pet, LocalDate date,
-                             String hospital, String category, int cost) {
+                             String hospital, String category, int cost,
+                             String prescribedMedicine, Integer dosage, String routineTime, LocalDate startDate, LocalDate endDate) {
         MedicalRecord r = new MedicalRecord();
-        r.apply(pet, date, hospital, category, cost);
+        r.apply(pet, date, hospital, category, cost, prescribedMedicine, dosage, routineTime, startDate, endDate);
         saveWithIndexId(r);
     }
 

@@ -5,6 +5,7 @@ import mgr.PetRecordMgr;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -24,6 +25,22 @@ public class MedicineRoutineMgr extends PetRecordMgr<MedicineRoutine> {
         MedicineRoutine r = new MedicineRoutine();
         r.apply(pet, medicineName, takenDOW, takenTime, dosage);
         saveWithIndexId(r);
+    }
+
+    public MedicineRoutine createRoutineFromMedicalRecord(MedicalRecord m) {
+        if (m.getPrescribedMedicine() == null)
+            return null;
+
+        LocalDate today = LocalDate.now();
+        if (m.getEndDate() != null && m.getEndDate().isBefore(today)) {
+            System.out.println("▶ 해당 처방 약의 복용 기간이 이미 종료되어 루틴이 생성되지 않습니다.");
+            return null;
+        }
+
+        MedicineRoutine r = new MedicineRoutine();
+        r.applyFromMedicalRecord(m);
+        saveWithIndexId(r);
+        return r;
     }
 
     public void printTodayRoutine(String ownerId) {
@@ -57,6 +74,28 @@ public class MedicineRoutineMgr extends PetRecordMgr<MedicineRoutine> {
 
             saveToFile(FILE_PATH);
             printTodayRoutine(ownerId);
+        }
+    }
+
+    public void removeExpiredRoutines(){
+        LocalDate today = LocalDate.now();
+
+        Iterator<MedicineRoutine> it = mList.iterator();
+        boolean removed = false;
+
+        while (it.hasNext()){
+            MedicineRoutine r = it.next();
+
+            // endDate가 있고, 오늘보다 이전이면 삭제
+            if (r.endDate != null && r.endDate.isBefore(today)) {
+                System.out.printf("기간 만료 루틴 자동삭제: #%d (%s)\n", r.getIndexId(), r.medicineName);
+                it.remove();
+                removed = true;
+            }
+        }
+
+        if (removed) {
+            saveToFile(getFilePath());
         }
     }
 
