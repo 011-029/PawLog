@@ -2,11 +2,11 @@ package core;
 
 import facade.UIData;
 import mgr.Manageable;
-import util.ReadUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Pet implements Manageable, UIData {
 
@@ -18,8 +18,6 @@ public class Pet implements Manageable, UIData {
     private double weight;
     private String imagePath;
 
-
-    private final ArrayList<String> personalityTags = new ArrayList<>();
     private final ArrayList<HealthRecord> healthRecords = new ArrayList<>();
     private final ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
     private final ArrayList<MedicineRecord> medicineRecords = new ArrayList<>();
@@ -27,6 +25,7 @@ public class Pet implements Manageable, UIData {
     private final ArrayList<PlayRecord> playRecords = new ArrayList<>();
     private final ArrayList<VaccineRecord> vaccineRecords = new ArrayList<>();
     private final ArrayList<WalkRecord> walkRecords = new ArrayList<>();
+    private final ArrayList<String> personalityTags = new ArrayList<>();
 
     @Override
     public void read(Scanner scan) {
@@ -43,25 +42,15 @@ public class Pet implements Manageable, UIData {
             imagePath = tokens[6];
         else imagePath = "";
 
-        if (tokens.length >= 8) {
-            setPersonalityTagsFormCSV(tokens[7]);
-        }
-    }
-
-    private void setPersonalityTagsFormCSV(String csv) {
         personalityTags.clear();
-        if (csv == null || csv.isBlank()) return;
-
-        String[] parts = csv.split(",");
-        for (String p : parts) {
-            String tag = p.trim();
-            if (!tag.isEmpty())
-                personalityTags.add(tag);
+        if (tokens.length >= 8) {               // 태그가 있을 때만
+            String[] tags = tokens[7].split(",");
+            for (String t : tags) {
+                t = t.trim();
+                if (!t.isEmpty())
+                    personalityTags.add(t);
+            }
         }
-    }
-
-    private String getPersonalityTagsCSV() {
-        return String.join(",", personalityTags);
     }
 
     public void addMedicalRecord(MedicalRecord r) {
@@ -83,22 +72,14 @@ public class Pet implements Manageable, UIData {
                 gender,
                 String.valueOf(birthDate),
                 String.valueOf(weight),
-                imagePath == null ? "" : imagePath
+                imagePath == null ? "" : imagePath,
+                joinPersonalityTags()
         };
     }
 
     @Override
     public boolean matches(String kwd) {
-        if (name.contains(kwd) || species.contains(kwd)) return true;
-        for (String tag : personalityTags) {
-            if (tag.contains(kwd))
-                return true;
-        }
-        return false;
-    }
-
-    public void setProfileImage(String imagePath) {
-        this.imagePath = imagePath;
+        return name.contains(kwd) || species.contains(kwd);
     }
 
 
@@ -111,10 +92,6 @@ public class Pet implements Manageable, UIData {
         gender = uitexts[3];
         birthDate = LocalDate.parse(uitexts[4]);
         weight = Double.parseDouble(uitexts[5]);
-
-        if (uitexts.length > 6) {
-            setPersonalityTagsFormCSV(uitexts[6]);
-        }
     }
 
     @Override
@@ -122,7 +99,7 @@ public class Pet implements Manageable, UIData {
         return new String[]{
                 ownerId, name, species, gender,
                 birthDate.toString(), Double.toString(weight),
-                imagePath == null ? "" : imagePath, getPersonalityTagsCSV()
+                imagePath == null ? "" : imagePath, joinPersonalityTags()
         };
     }
 
@@ -134,18 +111,48 @@ public class Pet implements Manageable, UIData {
     public LocalDate getBirthDate() { return birthDate; }
     public double getWeight() { return weight; }
     public String getImagePath() { return imagePath; }
-    public ArrayList<MedicalRecord> getMedicalRecords(){
-        return medicalRecords;
-    }
-
+    public ArrayList<MedicalRecord> getMedicalRecords(){ return medicalRecords; }
     public ArrayList<String> getPersonalityTags() {
         return personalityTags;
     }
 
-    public void setPersonalityTags(ArrayList<String> tags) {
-        personalityTags.clear();
-        if (tags != null) {
-            personalityTags.addAll(tags);
-        }
+    private String joinPersonalityTags() {
+        if (personalityTags.isEmpty()) return "";
+        return personalityTags.stream()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining(","));
+    }
+
+    public boolean setName(String name) {
+        if (name.isBlank())
+            return false;
+        this.name = name;
+        return true;
+    }
+
+    public boolean setBirthDate(LocalDate date) {
+        if (birthDate.isAfter(LocalDate.now()))
+            return false;
+        this.birthDate = date;
+        return true;
+    }
+
+    public boolean setSpecies(String species) {
+        if (species.isBlank())
+            return false;
+        this.species = species;
+        return true;
+    }
+
+    public boolean setWeight(double weight) {
+        if (weight <= 0)
+            return false;
+        this.weight = weight;
+        return true;
+    }
+
+    public void setProfileImage(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
