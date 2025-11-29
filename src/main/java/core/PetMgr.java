@@ -28,6 +28,19 @@ public class PetMgr extends DataEngineImpl<Pet> {
         return null;
     }
 
+    public boolean deletePet(String ownerId, String petName) {
+        Pet target = findPet(ownerId, petName);
+        if (target == null) return false;
+
+        boolean removed = mList.remove(target);
+
+        if (removed)
+            saveToFile(PET_FILE_PATH);
+
+        return removed;
+    }
+
+
     @Override
     public void addNewRow(String[] uiTexts) {
         Pet p = new Pet();
@@ -86,3 +99,5 @@ public class PetMgr extends DataEngineImpl<Pet> {
         });
     }
 }
+
+
