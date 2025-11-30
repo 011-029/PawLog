@@ -113,7 +113,6 @@ public class WalkFormPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(8));
 
         timeSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 600, 5));
-        // ▶ 에디터 안의 텍스트필드를 왼쪽 정렬로 변경!
         JFormattedTextField tf = ((JSpinner.DefaultEditor) timeSpinner.getEditor()).getTextField();
         tf.setHorizontalAlignment(SwingConstants.LEFT);
         timeSpinner.setAlignmentX(Component.LEFT_ALIGNMENT);
