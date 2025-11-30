@@ -136,4 +136,8 @@ public class VaccineFormPanel extends JPanel {
         Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
+
+    public MainFrame getMainFrame() {
+        return mainFrame;
+    }
 }
