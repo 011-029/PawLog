@@ -63,7 +63,7 @@ public class MedicalRecordListPanel extends JPanel {
 
         // 미래 기록
         if (!future.isEmpty()) {
-            JLabel upcomingLabel = new JLabel("📌 예정된 기록");
+            JLabel upcomingLabel = new JLabel("예정된 기록");
             upcomingLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
             upcomingLabel.setForeground(UIConstants.TEXT_PRIMARY);
             upcomingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
