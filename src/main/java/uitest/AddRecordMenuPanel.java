@@ -102,7 +102,7 @@ public class AddRecordMenuPanel extends JPanel {
 
         gbc.gridx = 1;
         grid.add(createRecordCard("병원 진료 기록",  "icons/medical.svg",
-                null), gbc);
+                () -> mainFrame.switchPanel(new MedicalFormPanel(mainFrame))), gbc);
 
         // 둘째 줄: 예방접종 기록 / 복용 기록
         gbc.gridy = row++;
