@@ -3,6 +3,7 @@ package uitest;
 import core.Pet;
 import core.PetMgr;
 import core.User;
+import util.DataLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,8 @@ public class MainFrame extends JFrame {
         setSize(420, 830);
         setMinimumSize(new Dimension(400, 700));
         setLocationRelativeTo(null);
+
+        DataLoader.loadAllData();
 
         // 처음에는 로그인 화면부터
         setContentPane(new LoginPanel(this));

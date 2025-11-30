@@ -40,6 +40,7 @@ public class UIConstants {
     public static final Font FONT_BOLD_28 = FontLoader.bold(28f);
     public static final Font FONT_BOLD_32 = FontLoader.bold(32f);
 
+    public static final Font FONT_EXTRABOLD_18 = FontLoader.extraBold(18f);
     public static final Font FONT_EXTRABOLD_20 = FontLoader.extraBold(20f);
     public static final Font FONT_EXTRABOLD_24 = FontLoader.extraBold(24f);
     public static final Font FONT_EXTRABOLD_28 = FontLoader.extraBold(28f);
@@ -48,4 +49,5 @@ public class UIConstants {
     public static final Font FONT_THIN_12 = FontLoader.thin(12f);
     public static final Font FONT_THIN_14 = FontLoader.thin(14f);
     public static final Font FONT_BOLD_20 = FontLoader.thin(20f);
+
 }
