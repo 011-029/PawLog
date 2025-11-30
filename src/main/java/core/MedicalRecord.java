@@ -182,12 +182,14 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
     }
 
     //getter
+    public LocalDate getDate(){ return date; }
     public String getHospital(){
         return hospital;
     }
     public String getCategory(){
         return category;
     }
+    public int getCost() { return cost;}
     public String getPrescribedMedicine() {
         return prescribedMedicine;
     }
