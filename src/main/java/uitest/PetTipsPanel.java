@@ -6,10 +6,14 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class PetTipsPanel extends JPanel {
 
     private final MainFrame mainFrame;
+    // 🔹 검색 결과 카드가 들어갈 곳
+    private JPanel searchResultContainer;
 
     public PetTipsPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -148,6 +152,16 @@ public class PetTipsPanel extends JPanel {
         listPanel.add(createSearchBox());
         listPanel.add(Box.createVerticalStrut(16));
 
+        // 🔹 검색 결과 카드들이 들어갈 영역 (처음엔 비어 있음)
+        searchResultContainer = new JPanel();
+        searchResultContainer.setOpaque(false);
+        // 행 개수는 자동(0), 한 행 최대 2개, 가로 16, 세로 16 간격
+        searchResultContainer.setLayout(new GridLayout(0, 2, 16, 16));
+        searchResultContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        listPanel.add(searchResultContainer);
+        listPanel.add(Box.createVerticalStrut(16));
+
         // 리스트를 NORTH에 붙여서 위정렬
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
@@ -168,10 +182,13 @@ public class PetTipsPanel extends JPanel {
     private JPanel createArticleCard(String text, Icon icon) {
         Color borderColor = UIConstants.GRAY_LIGHT;
 
+        Color[] g = pickRandomGradient();
+
         JPanel card = new DiagonalGradientPanel(
-                UIConstants.PRIMARY,        // 시작 색
-                new Color(212, 255, 207, 255)   // 끝 색 (원하는 색으로 바꿔도 돼요!)
+                g[0],   // 시작 색
+                g[1]    // 끝 색
         );
+
         card.setLayout(new BorderLayout());
         card.setOpaque(true);
 //        card.setBackground(UIConstants.PRIMARY);
@@ -236,7 +253,6 @@ public class PetTipsPanel extends JPanel {
     }
 
     class DiagonalGradientPanel extends JPanel {
-
         private final Color start;
         private final Color end;
 
@@ -264,6 +280,26 @@ public class PetTipsPanel extends JPanel {
             g2.fillRoundRect(0, 0, w, h, 20, 20);  // arc 20 유지
             g2.dispose();
         }
+    }
+
+    private static final Random RND = new Random();
+
+    private static final Color[][] GRADIENT_SETS = {
+            { UIConstants.PRIMARY, new Color(206, 238, 203, 255) },
+            { new Color(206, 238, 203, 255), UIConstants.PRIMARY },
+            { UIConstants.PRIMARY, UIConstants.ACCENT_PINK },
+            { new Color(0x95e0e1), new Color(0xffeac2) },
+            { new Color(0xEFB499), new Color(0x95e0e1) },
+            { new Color(0xa1cacf), new Color(0xfadbce) },
+            { new Color(0xfadbce), new Color(0xa1cacf) },
+            { new Color(0xa1cacf), new Color(0xaba4c6) },
+            { new Color(0xcdc5ec), new Color(0xc5e2ba) },
+            { new Color(0xc5e2ba), new Color(0xcdc5ec) },
+            { new Color(0xf0bfce), new Color(0xfadbce) }
+    };
+
+    private static Color[] pickRandomGradient() {
+        return GRADIENT_SETS[RND.nextInt(GRADIENT_SETS.length)];
     }
 
     /** 검색 박스 (네모 + 오른쪽 검색 아이콘) */
@@ -302,10 +338,117 @@ public class PetTipsPanel extends JPanel {
         searchBtn.setOpaque(false);
         searchBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         searchBtn.setPreferredSize(new Dimension(36, 36));
-        // TODO: 검색 기능 실제 데이터와 연결
+
+        // 🔹 아직 로직은 없으니, 눌렀을 때 더미 카드 3개 생성
+        searchBtn.addActionListener(e -> {
+            searchResultContainer.removeAll();
+
+            searchResultContainer.add(createFoodResultCard(
+                    "포도",
+                    new FlatSVGIcon("icons/dog.svg", 20, 20)
+            ));
+
+            searchResultContainer.add(createFoodResultCard(
+                    "양파",
+                    new FlatSVGIcon("icons/cat.svg", 20, 20)
+            ));
+            // searchResultContainer.add(Box.createHorizontalStrut(12));
+
+            searchResultContainer.add(createFoodResultCard(
+                    "다크초콜릿",
+                    new FlatSVGIcon("icons/dog.svg", 20, 20)
+            ));
+
+            searchResultContainer.revalidate();
+            searchResultContainer.repaint();
+        });
 
         box.add(searchBtn, BorderLayout.EAST);
 
         return box;
     }
+
+    /** 음식 검색 결과 카드 1개 */
+    private JPanel createFoodResultCard(String foodName, Icon petIcon) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setOpaque(false);
+        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        card.setPreferredSize(new Dimension(150, 190));
+        card.setMaximumSize(new Dimension(200, 190));
+        card.setBackground(UIConstants.GRAY_ULTRA_LIGHT);
+
+        card.setBorder(new FlatLineBorder(
+                new Insets(8, 8, 2, 8),
+                UIConstants.GRAY_LIGHT,
+                1.0f,
+                16
+        ));
+
+        /* ───────────── ① 음식 이미지 로드 ───────────── */
+        // 파일명은 foodName + ".jpg" 라고 가정
+        String imgPath = "/images/foods/" + foodName + ".jpg";
+        ImageIcon raw = null;
+
+        var url = getClass().getResource(imgPath);
+        if (url != null) {
+            raw = new ImageIcon(url);
+        }
+
+        // 정사각형으로 리사이징
+        Image scaled = (raw != null)
+                ? raw.getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH)
+                : new BufferedImage(140, 140, BufferedImage.TYPE_INT_RGB);
+
+        JLabel imgLabel = new JLabel(new ImageIcon(scaled));
+        imgLabel.setOpaque(false);
+        imgLabel.setAlignmentX(0.5f);
+        imgLabel.setAlignmentY(0.5f);
+        imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
+                UIConstants.GRAY_LIGHT));
+
+        JPanel overlay = new JPanel();
+        overlay.setOpaque(false);
+        overlay.setLayout(new OverlayLayout(overlay));
+        overlay.setPreferredSize(new Dimension(120, 120));
+        overlay.setBorder(new EmptyBorder(4, 2, 0, 2));
+
+        overlay.add(imgLabel);
+
+        card.add(overlay, BorderLayout.CENTER);
+
+        /* ───────────── ③ 아래쪽 정보(이름 + 위험태그 + X아이콘) ───────────── */
+        JPanel bottom = new JPanel();
+        bottom.setOpaque(false);
+        bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
+        bottom.setBorder(new EmptyBorder(10, 6, 6, 6));
+
+        JLabel nameLabel = new JLabel(foodName);
+        nameLabel.setFont(UIConstants.FONT_REGULAR_14);
+        nameLabel.setForeground(UIConstants.TEXT_PRIMARY);
+
+        /* ★ 위험 태그: 둥근 사각형 + 테두리 + TEXT_PRIMARY */
+        JLabel dangerTag = new JLabel("위험");
+        dangerTag.setFont(UIConstants.FONT_SEMIBOLD_12);
+        dangerTag.setForeground(UIConstants.TEXT_PRIMARY);
+        dangerTag.setBorder(new FlatLineBorder(
+                new Insets(4, 8, 4, 8),
+                UIConstants.TEXT_LIGHT,
+                0.5f,
+                12
+        ));
+
+        JLabel xLabel = new JLabel(new FlatSVGIcon("icons/forbidden.svg",16, 16));
+
+        bottom.add(nameLabel);
+        bottom.add(Box.createHorizontalGlue());
+        bottom.add(dangerTag);
+        bottom.add(Box.createHorizontalStrut(8));
+        bottom.add(xLabel);
+
+        card.add(bottom, BorderLayout.SOUTH);
+
+        return card;
+    }
+
+
 }
