@@ -46,4 +46,5 @@ public class UIConstants {
 
     public static final Font FONT_THIN_12 = FontLoader.thin(12f);
     public static final Font FONT_THIN_14 = FontLoader.thin(14f);
+    public static final Font FONT_BOLD_20 = FontLoader.thin(20f);
 }
