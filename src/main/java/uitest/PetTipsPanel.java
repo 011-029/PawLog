@@ -192,8 +192,8 @@ public class PetTipsPanel extends JPanel {
         card.setLayout(new BorderLayout());
         card.setOpaque(true);
 //        card.setBackground(UIConstants.PRIMARY);
-        card.setPreferredSize(new Dimension(140, 200));
-        card.setMaximumSize(new Dimension(180, 220));
+        card.setPreferredSize(new Dimension(100, 200));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
         card.setBorder(new FlatLineBorder(
                 new Insets(16, 16, 16, 16),
                 borderColor,
@@ -294,8 +294,8 @@ public class PetTipsPanel extends JPanel {
             { new Color(0xfadbce), new Color(0xa1cacf) },
             { new Color(0xa1cacf), new Color(0xaba4c6) },
             { new Color(0xcdc5ec), new Color(0xc5e2ba) },
-            { new Color(0xc5e2ba), new Color(0xcdc5ec) },
-            { new Color(0xf0bfce), new Color(0xfadbce) }
+            { new Color(0xc5e2ba), new Color(0xECC5EA) },
+            { new Color(0xEBB5C7), new Color(0xFFEEDB) }
     };
 
     private static Color[] pickRandomGradient() {

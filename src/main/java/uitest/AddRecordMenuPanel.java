@@ -31,51 +31,22 @@ public class AddRecordMenuPanel extends JPanel {
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    /* ================== 상단바 (PetHomePanel과 동일) ================== */
-//    private JComponent createHeaderBar() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new FlatLineBorder(new Insets(5, 5, 5, 5),
-//                UIConstants.GRAY_SOFT, 0.5f, 10));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
-
     /* ================== 가운데 스크롤 영역 ================== */
     private JComponent createScrollableContent() {
         JPanel root = new JPanel(new BorderLayout());
         root.setOpaque(true);
         root.setBackground(Color.WHITE);
         root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
-        root.setBorder(new EmptyBorder(24, 10, 0, 10));
+        root.setBorder(new EmptyBorder(24, 2, 0, 2));
         root.setAlignmentY(0f);   // ★ 추가
 
         // 상단 제목
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setOpaque(false);
-        titlePanel.setBorder(new EmptyBorder(24, 0, 16, 0));
+        titlePanel.setBorder(new EmptyBorder(0, 0, 16, 0));
 
         JLabel title = new JLabel("추가할 기록을 선택해주세요");
+        title.setBorder(new EmptyBorder(0, 10, 0, 0));
         title.setFont(UIConstants.FONT_EXTRABOLD_24);
         title.setForeground(UIConstants.TEXT_PRIMARY);
         titlePanel.add(title, BorderLayout.WEST);
@@ -181,7 +152,7 @@ public class AddRecordMenuPanel extends JPanel {
         card.setBackground(Color.WHITE);
         card.setBorder(new FlatLineBorder(new Insets(20, 10, 20, 10),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
-        card.setPreferredSize(new Dimension(160, 150));
+        card.setPreferredSize(new Dimension(170, 150));
 //        card.setMaximumSize(new Dimension(160, 140));
 //        card.setMinimumSize(new Dimension(100, 140));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -239,110 +210,4 @@ public class AddRecordMenuPanel extends JPanel {
 
         return card;
     }
-
-
-//    // X 표시 사각형 컴포넌트 (아이콘 자리)
-//    private static class XIconBox extends JComponent {
-//        public XIconBox() {
-//            setPreferredSize(new Dimension(140, 140));
-//        }
-//
-//        @Override
-//        protected void paintComponent(Graphics g) {
-//            super.paintComponent(g);
-//            Graphics2D g2 = (Graphics2D) g.create();
-//            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//
-//            int w = getWidth() - 1;
-//            int h = getHeight() - 1;
-//
-//            g2.setColor(Color.WHITE);
-//            g2.fillRect(0, 0, w + 1, h + 1);
-//
-//            g2.setColor(UIConstants.TEXT_PRIMARY);
-//            g2.setStroke(new BasicStroke(3f));
-//            g2.drawRect(0, 0, w, h);
-//            g2.drawLine(0, 0, w, h);
-//            g2.drawLine(0, h, w, 0);
-//
-//            g2.dispose();
-//        }
-//    }
-
-//    /* ================== 하단 네비게이션 (PetHomePanel과 동일 스타일) ================== */
-//    private JComponent createTabbedNav() {
-//        JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
-//
-//        // 폭은 균등 분배 + 전체 폭 채우기
-//        tabs.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-//        tabs.putClientProperty("JTabbedPane.tabAreaAlignment", "fill");
-//
-//        // ▶ 탭 스트립 높이 자체를 줄이기
-//        tabs.setPreferredSize(new Dimension(0, 60));              // 전체 바 높이
-//        tabs.putClientProperty("JTabbedPane.tabHeight", 59);      // 탭 셀 높이
-//
-//        // ▶ 탭 영역 위·아래 여백 최소화 (콘텐츠와 탭 사이 간격)
-//        tabs.putClientProperty("JTabbedPane.tabAreaInsets", "0,0,0,0");
-//        // 필요하면 contentAreaInsets도 0으로
-//        tabs.putClientProperty("JTabbedPane.contentAreaInsets", "0,0,0,0");
-//
-//        tabs.setBorder(null);
-//
-//        tabs.addTab("홈", new JPanel());
-//        tabs.setTabComponentAt(0, createTab("홈", "icons/home.svg"));
-//
-//        tabs.addTab("캘린더", new JPanel());
-//        tabs.setTabComponentAt(1, createTab("캘린더", "icons/calendar.svg"));
-//
-//        tabs.addTab("기록", new JPanel());
-//        tabs.setTabComponentAt(2, createTab("기록추가", "icons/add.svg"));
-//
-//        tabs.addTab("매거진", new JPanel());
-//        tabs.setTabComponentAt(3, createTab("펫 간단팁", "icons/notes.svg"));
-//
-//        tabs.addTab("설정", new JPanel());
-//        tabs.setTabComponentAt(4, createTab("설정", "icons/setting.svg"));
-//
-//        // tabs 생성/설정들 뒤에
-//        tabs.addChangeListener(e -> {
-//            int idx = tabs.getSelectedIndex();
-//
-//            if (idx == 1)
-//                mainFrame.switchPanel(new CalendarPanel(mainFrame));
-//            else if (idx == 0)
-//                mainFrame.switchPanel(new PetHomePanel(mainFrame));
-//            else if (idx == 2)
-//                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
-//            else if (idx == 3)
-//                mainFrame.switchPanel(new WalkFormPanel(mainFrame));
-//            // 다른 탭들도 필요하면 else if 로 추가~
-//        });
-//
-//        return tabs;
-//    }
-//
-//    /* ================== 공통: 아이콘 리사이즈 / 탭 컴포넌트 ================== */
-//    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-//        Image img = icon.getImage();
-//        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-//        return new ImageIcon(scaled);
-//    }
-//
-//    private Component createTab(String title, String iconPath) {
-//        JPanel tab = new JPanel(new BorderLayout());
-//        tab.setOpaque(false);
-//
-//        ImageIcon icon = new FlatSVGIcon(iconPath, 20, 20);
-//        JLabel label = new JLabel(title, icon, JLabel.CENTER);
-//        label.setFont(UIConstants.FONT_SEMIBOLD_12);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.BOTTOM);
-//        label.setIconTextGap(5);
-//        label.setForeground(Color.WHITE);
-//        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 1, 0));
-//
-//        tab.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-//        tab.add(label, BorderLayout.CENTER);
-//        return tab;
-//    }
 }
