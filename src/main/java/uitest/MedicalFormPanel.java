@@ -84,6 +84,12 @@ public class MedicalFormPanel extends JPanel {
         prescribeMedicinePanel.setOpaque(false);
         prescribeMedicinePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        JCheckBox addRoutineCheck = new JCheckBox("복용 루틴에 추가");
+        addRoutineCheck.setOpaque(false);
+        addRoutineCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
+        prescribeMedicinePanel.add(addRoutineCheck);
+        prescribeMedicinePanel.add(Box.createVerticalStrut(12));
+
         //처방약 이름
         LabeledTextField medicineNameField = new LabeledTextField("약 이름", "예) 구토방지제");
         prescribeMedicinePanel.add(medicineNameField);
