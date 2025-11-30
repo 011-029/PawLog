@@ -22,10 +22,11 @@ public class MedicalRecordListPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createList(records), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
+        add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
     private JComponent createList(List<MedicalRecord> records) {
@@ -43,9 +44,54 @@ public class MedicalRecordListPanel extends JPanel {
         listPanel.add(title);
         listPanel.add(Box.createVerticalStrut(20));
 
-        /* === 카드 리스트 === */
-        for (MedicalRecord r : records) {
+        //레코드를 미래, 과거로 분리
+        List<MedicalRecord> future = new java.util.ArrayList<>();
+        List<MedicalRecord> past = new java.util.ArrayList<>();
 
+        for (MedicalRecord r : records) {
+            if (r.getDDay() >= 0)
+                future.add(r);
+            else
+                past.add(r);
+        }
+
+        // 미래 기록: D-Day 가까운 순
+        future.sort(java.util.Comparator.comparingLong(MedicalRecord::getDDay));
+
+        // 과거 기록: 날짜 최신 순
+        past.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+
+        // 미래 기록
+        if (!future.isEmpty()) {
+            JLabel upcomingLabel = new JLabel("📌 예정된 기록");
+            upcomingLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
+            upcomingLabel.setForeground(UIConstants.TEXT_PRIMARY);
+            upcomingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            listPanel.add(upcomingLabel);
+            listPanel.add(Box.createVerticalStrut(12));
+
+            for (MedicalRecord r : future) {
+                MedicalCard card = new MedicalCard(r);
+                card.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+                listPanel.add(card);
+                listPanel.add(Box.createVerticalStrut(12));
+            }
+
+            listPanel.add(Box.createVerticalStrut(24)); // 섹션 간 여백
+        }
+
+        //과거기록
+        JLabel pastLabel = new JLabel("과거 기록");
+        pastLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
+        pastLabel.setForeground(UIConstants.TEXT_PRIMARY);
+        pastLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        listPanel.add(pastLabel);
+        listPanel.add(Box.createVerticalStrut(12));
+
+        for (MedicalRecord r : past) {
             MedicalCard card = new MedicalCard(r);
             card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
