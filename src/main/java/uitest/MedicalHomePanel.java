@@ -235,8 +235,8 @@ public class MedicalHomePanel extends JPanel {
 
         list.sort(Comparator.comparingLong(a -> a.dDay));
 
-        if (list.size() > 5)
-            return list.subList(0, 5);
+        if (list.size() > 3)
+            return list.subList(0, 3);
 
         return list;
     }
