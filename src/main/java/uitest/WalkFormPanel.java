@@ -1,6 +1,5 @@
 package uitest;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import util.PlaceholderTextField;
 
@@ -8,16 +7,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.time.LocalDate;
 
 public class WalkFormPanel extends JPanel {
 
     private final MainFrame mainFrame;
 
-    // 입력 필드들
-    private JComboBox<Integer> yearBox;
-    private JComboBox<Integer> monthBox;
-    private JComboBox<Integer> dayBox;
+    // 입력 필드들 (날짜 필드는 클래스 만들음 (여러번 쓰여서))
 
     private JSpinner timeSpinner;        // 산책 시간(분)
     private JTextField distanceField;    // 산책 거리(km 등)
@@ -94,48 +89,14 @@ public class WalkFormPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(24));
 
         /* ==== 날짜 ==== */
-        JLabel dateLabel = new JLabel("날짜");
-        dateLabel.setFont(UIConstants.FONT_SEMIBOLD_16);
-        dateLabel.setForeground(UIConstants.TEXT_PRIMARY);
-        dateLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        listPanel.add(dateLabel);
-        listPanel.add(Box.createVerticalStrut(8));
+        DatePickerPanel date = new DatePickerPanel();
+        listPanel.add(date);
 
-        JPanel dateRow = new JPanel();
-        dateRow.setOpaque(false);
-        dateRow.setLayout(new BoxLayout(dateRow, BoxLayout.X_AXIS));
-        dateRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        /*날짜 가져오고 싶을때는
+         * LocalDate selected = datePicker.getDate();
+         *쓰세요
+         */
 
-        LocalDate today = LocalDate.now();
-        int year = today.getYear();
-
-        Integer[] years = {year - 2, year - 1, year};
-        Integer[] months = new Integer[12];
-        for (int i = 0; i < 12; i++) months[i] = i + 1;
-        Integer[] days = new Integer[31];
-        for (int i = 0; i < 31; i++) days[i] = i + 1;
-
-        yearBox = new JComboBox<>(years);
-        monthBox = new JComboBox<>(months);
-        dayBox = new JComboBox<>(days);
-
-        yearBox.setSelectedItem(year);
-        monthBox.setSelectedItem(today.getMonthValue());
-        dayBox.setSelectedItem(today.getDayOfMonth());
-
-        Dimension comboSize = new Dimension(80, 36);
-        yearBox.setPreferredSize(comboSize);
-        monthBox.setPreferredSize(comboSize);
-        dayBox.setPreferredSize(comboSize);
-
-        dateRow.add(yearBox);
-        dateRow.add(Box.createHorizontalStrut(8));
-        dateRow.add(monthBox);
-        dateRow.add(Box.createHorizontalStrut(8));
-        dateRow.add(dayBox);
-
-        listPanel.add(dateRow);
-        listPanel.add(Box.createVerticalStrut(20));
 
         /*
          * 👉 나중에 JCalendar/JDateChooser 쓰고 싶으면
