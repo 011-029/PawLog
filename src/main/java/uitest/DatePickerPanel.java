@@ -6,9 +6,9 @@ import java.time.LocalDate;
 
 public class DatePickerPanel extends JPanel {
 
-    private JComboBox<Integer> yearBox;
-    private JComboBox<Integer> monthBox;
-    private JComboBox<Integer> dayBox;
+    private final JComboBox<Integer> yearBox;
+    private final JComboBox<Integer> monthBox;
+    private final JComboBox<Integer> dayBox;
 
     public DatePickerPanel() {
         this("날짜"); // 기본값
