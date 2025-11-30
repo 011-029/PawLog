@@ -21,9 +21,9 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
     }
 
     public void addNewRecord(Pet pet, LocalDate date, int meal,
-                             int water, double weight, String brushed, String memo) {
+                             int waterMl, double weight, String brushed, String memo) {
         HealthRecord r = new HealthRecord();
-        r.apply(pet, date, meal, water, weight, brushed, memo);
+        r.apply(pet, date, meal, waterMl, weight, brushed, memo);
         saveWithIndexId(r);
     }
 
@@ -73,7 +73,7 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
             );
         }
 
-        if(isDehydrationRisk(records)) {
+        if(isDehydrationRisk(records, pet)) {
             appendAlertBlock(
                     sb,
                     "탈수 위험",
@@ -146,9 +146,14 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
     }
 
 
-    private boolean isDehydrationRisk(ArrayList<HealthRecord> records) {
+    private boolean isDehydrationRisk(ArrayList<HealthRecord> records, Pet pet) {
         LocalDate today = LocalDate.now();
-        LocalDate from = today.minusDays(2); // 최근 3일
+        LocalDate from = today.minusDays(2);// 최근 3일
+
+        double weightKg = pet.getWeight();   // Pet 프로필에 저장된 체중(kg)
+        if (weightKg <= 0) return false;
+
+        int threshold = (int)(weightKg * 50);
 
         int low = 0;
         int total = 0;
@@ -156,7 +161,7 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
         for (HealthRecord r : records) {
             if (!r.date.isBefore(from) && !r.date.isAfter(today)) {
                 total++;
-                if (r.water <= 1) {
+                if (r.waterMl <= threshold) {
                     low++;
                 }
             }
