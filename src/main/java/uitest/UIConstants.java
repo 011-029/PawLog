@@ -16,6 +16,7 @@ public class UIConstants {
 
     // 텍스트 컬러
     public static final Color TEXT_PRIMARY = new Color(50, 50, 50);
+    public static final Color TEXT_DARKGRAY = new Color(80, 80, 80);
     public static final Color TEXT_SECONDARY = new Color(108, 108, 108);
     public static final Color TEXT_LIGHT = new Color(180, 180, 180);
     public static final Color TEXT_WHITE = new Color(255, 255, 255);

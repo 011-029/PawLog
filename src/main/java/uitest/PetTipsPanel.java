@@ -97,7 +97,7 @@ public class PetTipsPanel extends JPanel {
 
         JPanel card2 = createArticleCard(
                 "사료를\n갑자기 바꾸면\n안 되는 이유",
-                new FlatSVGIcon("icons/heart.svg", 24, 24) // 하트 아이콘
+                new FlatSVGIcon("icons/dog.svg", 22, 22)
         );
 
         cardRow.add(card1);
@@ -184,7 +184,12 @@ public class PetTipsPanel extends JPanel {
                 20   // ← 카드 네모 둥근 모서리
         ));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                mainFrame.switchPanel(new PetTipsDetailPanel(mainFrame));
+            }
+        });
 
         // 제목 텍스트 (왼쪽 상단)
         JLabel label = new JLabel("<html>" + text.replace("\n", "<br>") + "</html>");

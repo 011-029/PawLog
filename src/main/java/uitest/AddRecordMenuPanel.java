@@ -117,7 +117,7 @@ public class AddRecordMenuPanel extends JPanel {
         // 셋째 줄: 복용 루틴 / 산책 기록
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("산책 기록", "icons/dog.svg",
+        grid.add(createRecordCard("산책 기록", "icons/walking-dog.svg",
                 () -> mainFrame.switchPanel(new WalkFormPanel(mainFrame))), gbc);
 
         gbc.gridx = 1;
