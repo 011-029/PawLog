@@ -1,6 +1,9 @@
 package uitest;
 
+import core.MedicalMgr;
 import core.MedicineRecord;
+import core.MedicineRecordMgr;
+import core.VaccineMgr;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +25,10 @@ public class MedicineRecordListPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new MedicalHomePanel(mainFrame,
+                        MedicalMgr.getInstance().mList,
+                        VaccineMgr.getInstance().mList,
+                        MedicineRecordMgr.getInstance().mList))), BorderLayout.NORTH);
         contentWrapper.add(createList(records), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);

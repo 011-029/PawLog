@@ -98,10 +98,10 @@ public class PetHomePanel extends JPanel {
         gbc.insets = cardInsets;
         content.add(createSmallCard("의료 기록",
                 new String[]{"더미내용 더미내용", "임시 더미 D-10"},
-            () -> //mainFrame.switchPanel(new VaccineRecordListPanel(mainFrame, VaccineMgr.getInstance().mList))
-                        //mainFrame.switchPanel(new MedicineRecordListPanel(mainFrame, MedicineRecordMgr.getInstance().mList))
-                    mainFrame.switchPanel(new MedicalRecordListPanel(mainFrame, MedicalMgr.getInstance().mList))
-        //mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
+            () -> mainFrame.switchPanel(new MedicalHomePanel(mainFrame,
+                            MedicalMgr.getInstance().mList,
+                            VaccineMgr.getInstance().mList,
+                            MedicineRecordMgr.getInstance().mList))
             ),
     gbc);
 
