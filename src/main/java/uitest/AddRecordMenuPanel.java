@@ -97,37 +97,51 @@ public class AddRecordMenuPanel extends JPanel {
         // 첫 줄: 건강 기록 / 병원 진료 기록
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("건강 기록", "icons/heart.svg",
+        grid.add(createRecordCard("건강 기록",
+                "체중, 식사량, 이상증상 등",
+                "icons/heart.svg",
                 null), gbc); // TODO: onClick 연결
 
         gbc.gridx = 1;
-        grid.add(createRecordCard("병원 진료 기록",  "icons/medical.svg",
+        grid.add(createRecordCard("병원 진료 기록",
+                "예약된 진료, 과거 진료 이력",
+                "icons/medical.svg",
                 () -> mainFrame.switchPanel(new MedicalFormPanel(mainFrame))), gbc);
 
         // 둘째 줄: 예방접종 기록 / 복용 기록
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("복용 기록", "icons/pill.svg",
+        grid.add(createRecordCard("복용 기록",
+                "약 이름, 용량 등 복약 이력",
+                "icons/pill.svg",
                 null), gbc);
 
         gbc.gridx = 1;
-        grid.add(createRecordCard("복용 루틴", "icons/reminder.svg",
+        grid.add(createRecordCard("복용 루틴",
+                "주기적인 복약 시 리마인더",
+                "icons/reminder.svg",
                 () -> mainFrame.switchPanel(new MedicineRoutineFormPanel(mainFrame))), gbc);
 
         // 셋째 줄: 복용 루틴 / 산책 기록
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("산책 기록", "icons/walking-dog.svg",
+        grid.add(createRecordCard("산책 기록",
+                "산책 시간, 산책 거리 등",
+                "icons/walking-dog.svg",
                 () -> mainFrame.switchPanel(new WalkFormPanel(mainFrame))), gbc);
 
         gbc.gridx = 1;
-        grid.add(createRecordCard("놀이 기록", "icons/toy.svg",
+        grid.add(createRecordCard("놀이 기록",
+                "놀이 시간, 놀이 방식 등",
+                "icons/toy.svg",
                 null), gbc);
 
         // 넷째 줄: 놀이 기록 (왼쪽만 사용, 오른쪽은 빈칸 스페이서)
         gbc.gridy = row++;
         gbc.gridx = 0;
-        grid.add(createRecordCard("예방접종 기록", "icons/syringe.svg",
+        grid.add(createRecordCard("예방접종 기록",
+                "예정된 접종, 과거 접종 이력",
+                "icons/syringe.svg",
                 null), gbc);
 
         gbc.gridx = 1;
@@ -160,7 +174,8 @@ public class AddRecordMenuPanel extends JPanel {
     }
 
     /* ================== 기록 선택 카드 ================== */
-    private JComponent createRecordCard(String labelText, String iconPath, Runnable onClick) {
+    private JComponent createRecordCard(String labelText, String description,
+                                        String iconPath, Runnable onClick) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);
@@ -209,11 +224,18 @@ public class AddRecordMenuPanel extends JPanel {
         label.setForeground(UIConstants.TEXT_PRIMARY);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        card.add(Box.createVerticalStrut(8));
-        card.add(iconLabel);
-        card.add(Box.createVerticalStrut(12));
-        card.add(label);
+        JLabel descLabel = new JLabel(description);
+        descLabel.setFont(UIConstants.FONT_REGULAR_12);
+        descLabel.setForeground(UIConstants.TEXT_SECONDARY);
+        descLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         card.add(Box.createVerticalStrut(4));
+        card.add(iconLabel);
+        card.add(Box.createVerticalStrut(9));
+        card.add(label);
+        card.add(Box.createVerticalStrut(3));
+        card.add(descLabel);
+//        card.add(Box.createVerticalStrut(2));
 
         return card;
     }
