@@ -204,4 +204,7 @@ public class MedicalFormPanel extends JPanel {
         return bar;
     }
 
+    public MainFrame getMainFrame() {
+        return mainFrame;
+    }
 }

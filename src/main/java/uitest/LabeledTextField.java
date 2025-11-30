@@ -7,8 +7,7 @@ import java.awt.*;
 
 public class LabeledTextField extends JPanel {
 
-    private JLabel label;
-    private PlaceholderTextField textField;
+    private final PlaceholderTextField textField;
 
     public LabeledTextField(String labelText, String placeholder) {
         setOpaque(false);
@@ -16,7 +15,7 @@ public class LabeledTextField extends JPanel {
         setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // 라벨
-        label = new JLabel(labelText);
+        JLabel label = new JLabel(labelText);
         label.setFont(UIConstants.FONT_SEMIBOLD_16);
         label.setForeground(UIConstants.TEXT_PRIMARY);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
