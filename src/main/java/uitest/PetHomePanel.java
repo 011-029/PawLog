@@ -2,9 +2,7 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import core.MedicalMgr;
-import core.Pet;
-import core.User;
+import core.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -100,7 +98,9 @@ public class PetHomePanel extends JPanel {
         gbc.insets = cardInsets;
         content.add(createSmallCard("의료 기록",
                 new String[]{"더미내용 더미내용", "임시 더미 D-10"},
-            () -> mainFrame.switchPanel(new MedicalRecordListPanel(mainFrame, MedicalMgr.getInstance().mList))
+            () -> //mainFrame.switchPanel(new VaccineRecordListPanel(mainFrame, VaccineMgr.getInstance().mList))
+                        //mainFrame.switchPanel(new MedicineRecordListPanel(mainFrame, MedicineRecordMgr.getInstance().mList))
+                    mainFrame.switchPanel(new MedicalRecordListPanel(mainFrame, MedicalMgr.getInstance().mList))
         //mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
             ),
     gbc);
