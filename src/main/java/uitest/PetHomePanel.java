@@ -8,6 +8,7 @@ import core.User;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -147,6 +148,13 @@ public class PetHomePanel extends JPanel {
         card.setBackground(Color.WHITE);
         card.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 10),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
+        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 손모양
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                mainFrame.switchPanel(new PetInfoPanel(mainFrame));
+            }
+        });
 
         JLabel photo = new JLabel("사진", SwingConstants.CENTER);
         photo.setPreferredSize(new Dimension(96, 96));

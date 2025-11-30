@@ -29,7 +29,7 @@ public class LoginPanel extends JPanel {
         centerWrapper.setBorder(new EmptyBorder(20, 50, 32, 50));
 
         // 위 여백 조금
-        centerWrapper.add(Box.createVerticalStrut(120));
+        centerWrapper.add(Box.createVerticalStrut(80));
 
         // 로고
         JComponent logo = createLogoArea();

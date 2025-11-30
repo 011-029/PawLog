@@ -164,11 +164,11 @@ public class AddRecordMenuPanel extends JPanel {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);
-        card.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 10),
+        card.setBorder(new FlatLineBorder(new Insets(20, 10, 20, 10),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
-        card.setPreferredSize(new Dimension(160, 140));
-        card.setMaximumSize(new Dimension(160, 140));
-        card.setMinimumSize(new Dimension(100, 140));
+        card.setPreferredSize(new Dimension(160, 150));
+//        card.setMaximumSize(new Dimension(160, 140));
+//        card.setMinimumSize(new Dimension(100, 140));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // 호버 효과
