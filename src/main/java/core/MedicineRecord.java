@@ -114,4 +114,20 @@ public class MedicineRecord implements Manageable, UIData, PetOwned, RecordSearc
                 (""+dosage)//4
         };
     }
+
+    public String getMedicineName() {
+        return medicineName;
+    }
+
+    public int getDosage() {
+        return dosage;
+    }
+
+    public LocalDate getTakenDate() {
+        return takenDate;
+    }
+
+    public String getTakenTime() {
+        return takenTime;
+    }
 }

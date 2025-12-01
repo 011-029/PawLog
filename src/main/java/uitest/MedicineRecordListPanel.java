@@ -62,7 +62,7 @@ public class MedicineRecordListPanel extends JPanel {
         /* === 카드 리스트 === */
         for (MedicineRecord r : records) {
 
-            MedicineCard card = new MedicineCard(r);
+            MedicineCard card = new MedicineCard(r, mainFrame);
             card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             listPanel.add(card);
@@ -90,13 +90,24 @@ public class MedicineRecordListPanel extends JPanel {
 
     private static class MedicineCard extends BaseCard {
 
-        public MedicineCard(MedicineRecord r) {
+        public MedicineCard(MedicineRecord r, MainFrame mainFrame) {
 
             String title = r.getUITexts()[1];
             addTitle(title);
 
             addLine("날짜: " + r.getUITexts()[2]);
             addLine("복용량: " + r.getUITexts()[4] +"ml");
+
+            // 클릭하면 상세 페이지
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+            addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent e) {
+                    System.out.println("카드 클릭됨, record = " + r);
+                    mainFrame.switchPanel(new MedicineDetailPanel(mainFrame, r));
+                }
+            });
         }
     }
 
