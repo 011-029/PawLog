@@ -36,36 +36,6 @@ public class WalkFormPanel extends JPanel {
         add(contentWrapper, BorderLayout.CENTER);
     }
 
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
-
     /* ================== 중앙 폼 ================== */
     private JComponent createFormContent() {
         JPanel listPanel = new JPanel();
@@ -253,7 +223,6 @@ public class WalkFormPanel extends JPanel {
     }
 
     /* ================== 유틸 ================== */
-
     private void openFileChooser() {
         JFileChooser chooser = new JFileChooser();
         int result = chooser.showOpenDialog(this);

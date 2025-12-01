@@ -6,7 +6,6 @@ import util.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class SearchPanel extends JPanel {
@@ -33,38 +32,6 @@ public class SearchPanel extends JPanel {
         // ⬇ 하단 탭바는 패딩 없는 SOUTH에 바로!
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
-
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
 
     /** 가운데 전체 영역 */
     private JComponent createContent() {
@@ -249,75 +216,10 @@ public class SearchPanel extends JPanel {
         return btn;
     }
 
-
-    /* ================== 하단 네비게이션 ================== */
-//    private JComponent createTabbedNav() {
-//        JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
-//
-//        // 폭은 균등 분배 + 전체 폭 채우기
-//        tabs.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-//        tabs.putClientProperty("JTabbedPane.tabAreaAlignment", "fill");
-//
-//        // ▶ 탭 스트립 높이 자체를 줄이기
-//        tabs.setPreferredSize(new Dimension(0, 60));              // 전체 바 높이
-//        tabs.putClientProperty("JTabbedPane.tabHeight", 59);      // 탭 셀 높이
-//
-//        // ▶ 탭 영역 위·아래 여백 최소화 (콘텐츠와 탭 사이 간격)
-//        tabs.putClientProperty("JTabbedPane.tabAreaInsets", "0,0,0,0");
-//        // 필요하면 contentAreaInsets도 0으로
-//        tabs.putClientProperty("JTabbedPane.contentAreaInsets", "0,0,0,0");
-//
-//        tabs.setBorder(null);
-//
-//        tabs.addTab("홈", new JPanel());
-//        tabs.setTabComponentAt(0, createTab("홈", "calendar.png"));
-//
-//        tabs.addTab("캘린더", new JPanel());
-//        tabs.setTabComponentAt(1, createTab("캘린더", "calendar.png"));
-//
-//        tabs.addTab("기록", new JPanel());
-//        tabs.setTabComponentAt(2, createTab("기록추가", "calendar.png"));
-//
-//        tabs.addTab("매거진", new JPanel());
-//        tabs.setTabComponentAt(3, createTab("펫 간단팁", "calendar.png"));
-//
-//        tabs.addTab("설정", new JPanel());
-//        tabs.setTabComponentAt(4, createTab("설정", "calendar.png"));
-//
-//        return tabs;
-//    }
-
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage();
         Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
 
-//    private Component createTab(String title, String iconPath) {
-//        JPanel tab = new JPanel(new BorderLayout());
-//        tab.setOpaque(false);
-//
-//        ImageIcon original = new ImageIcon(iconPath);
-//        ImageIcon smallIcon = resizeIcon(original, 20, 20);
-//
-//        JLabel label = new JLabel(title, smallIcon, JLabel.CENTER);
-//        label.setFont(UIConstants.FONT_SEMIBOLD_12);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.BOTTOM);
-//        label.setIconTextGap(5); // 아이콘-텍스트 간격
-//        label.setForeground(Color.WHITE);
-//
-//        // 🔹 라벨 자체 위/아래 패딩 줄이기 (탭 안 여백 감소 핵심!)
-//        label.setBorder(BorderFactory.createEmptyBorder(
-//                0, 0, 1, 0   // top, left, bottom, right
-//        ));
-//
-//        // 🔹 탭 패널의 위/아래 여백도 최소화
-//        tab.setBorder(BorderFactory.createEmptyBorder(
-//                15, 0, 0, 0   // 위쪽만 살짝, 아래는 0
-//        ));
-//
-//        tab.add(label, BorderLayout.CENTER);
-//        return tab;
-//    }
 }

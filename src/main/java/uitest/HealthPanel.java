@@ -5,7 +5,6 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.geom.Path2D;
 
@@ -30,36 +29,6 @@ public class HealthPanel extends JPanel {
         add(contentWrapper, BorderLayout.CENTER);
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
-
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
 
     /* ================== 가운데 내용 ================== */
     private JComponent createContent() {
@@ -340,60 +309,9 @@ public class HealthPanel extends JPanel {
         return btn;
     }
 
-    /* ================== 하단 탭바 ================== */
-//    private JComponent createTabbedNav() {
-//        JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
-//
-//        tabs.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-//        tabs.putClientProperty("JTabbedPane.tabAreaAlignment", "fill");
-//        tabs.setPreferredSize(new Dimension(0, 60));
-//        tabs.putClientProperty("JTabbedPane.tabHeight", 59);
-//        tabs.putClientProperty("JTabbedPane.tabAreaInsets", "0,0,0,0");
-//        tabs.putClientProperty("JTabbedPane.contentAreaInsets", "0,0,0,0");
-//        tabs.setBorder(null);
-//
-//        tabs.addTab("홈", new JPanel());
-//        tabs.setTabComponentAt(0, createTab("홈", "calendar.png"));
-//
-//        tabs.addTab("캘린더", new JPanel());
-//        tabs.setTabComponentAt(1, createTab("캘린더", "calendar.png"));
-//
-//        tabs.addTab("기록", new JPanel());
-//        tabs.setTabComponentAt(2, createTab("기록추가", "calendar.png"));
-//
-//        tabs.addTab("매거진", new JPanel());
-//        tabs.setTabComponentAt(3, createTab("펫 간단팁", "calendar.png"));
-//
-//        tabs.addTab("설정", new JPanel());
-//        tabs.setTabComponentAt(4, createTab("설정", "calendar.png"));
-//
-//        return tabs;
-//    }
-//
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage();
         Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
-//
-//    private Component createTab(String title, String iconPath) {
-//        JPanel tab = new JPanel(new BorderLayout());
-//        tab.setOpaque(false);
-//
-//        ImageIcon original = new ImageIcon(iconPath);
-//        ImageIcon smallIcon = resizeIcon(original, 20, 20);
-//
-//        JLabel label = new JLabel(title, smallIcon, JLabel.CENTER);
-//        label.setFont(UIConstants.FONT_SEMIBOLD_12);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.BOTTOM);
-//        label.setIconTextGap(5);
-//        label.setForeground(Color.WHITE);
-//
-//        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 1, 0));
-//        tab.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-//
-//        tab.add(label, BorderLayout.CENTER);
-//        return tab;
-//    }
 }
