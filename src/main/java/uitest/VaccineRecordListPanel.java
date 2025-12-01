@@ -62,7 +62,7 @@ public class VaccineRecordListPanel extends JPanel {
         /* === 카드 리스트 === */
         for (VaccineRecord r : records) {
 
-            VaccineCard card = new VaccineCard(r);
+            VaccineCard card = new VaccineCard(r, mainFrame);
             card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             listPanel.add(card);
@@ -90,7 +90,7 @@ public class VaccineRecordListPanel extends JPanel {
 
     private static class VaccineCard extends BaseCard {
 
-        public VaccineCard(VaccineRecord r) {
+        public VaccineCard(VaccineRecord r, MainFrame mainFrame) {
             String title = r.getUITexts()[0];
             String dday = r.getDDayText();
 
@@ -102,6 +102,17 @@ public class VaccineRecordListPanel extends JPanel {
 
             addLine("날짜: " + r.getUITexts()[1]);
             addLine("병원: " + r.getUITexts()[2]);
+
+            // 클릭하면 상세 페이지
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+            addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent e) {
+                    System.out.println("카드 클릭됨, record = " + r);
+                    mainFrame.switchPanel(new VaccineDetailPanel(mainFrame, r));
+                }
+            });
         }
 
 
