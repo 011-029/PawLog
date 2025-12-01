@@ -47,7 +47,16 @@ public class MedicineRecordListPanel extends JPanel {
         title.setForeground(UIConstants.TEXT_PRIMARY);
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        listPanel.add(title);
+        JPanel header = new JPanel();
+        header.setOpaque(false);
+        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        header.add(title);
+        header.add(Box.createHorizontalGlue());
+        header.add(UIComponents.createSearchButton(mainFrame, this));
+
+        listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(20));
 
         /* === 카드 리스트 === */

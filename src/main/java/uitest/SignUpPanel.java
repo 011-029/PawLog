@@ -61,13 +61,13 @@ public class SignUpPanel extends JPanel {
     }
 
     /* 발바닥 아이콘 영역 (가운데 정렬) */
-    private JComponent createLogoArea() {
-        // 그냥 라벨 하나로 충분!
-        ImageIcon icon = new ImageIcon("logo.png");
-        Image scaled = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        JLabel logo = new JLabel(new ImageIcon(scaled));
-        return logo;
-    }
+//    private JComponent createLogoArea() {
+//        // 그냥 라벨 하나로 충분!
+//        ImageIcon icon = new ImageIcon("logo.png");
+//        Image scaled = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+//        JLabel logo = new JLabel(new ImageIcon(scaled));
+//        return logo;
+//    }
 
     private JComponent createWelcomeText() {
         // 전체 폭을 쓰되, 글씨는 왼쪽에 붙게 할 래퍼 패널

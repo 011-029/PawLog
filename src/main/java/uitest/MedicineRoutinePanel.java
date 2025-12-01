@@ -65,8 +65,7 @@ public class MedicineRoutinePanel extends JPanel {
         header.add(Box.createHorizontalGlue());
         header.add(filterBtn);   // ⬅ 이거!
         header.add(Box.createHorizontalStrut(8));   // ← 여기에 8px 여백 추가!
-        header.add(createSearchButton());
-
+        header.add(UIComponents.createSearchButton(mainFrame, this));
 
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
@@ -222,22 +221,22 @@ public class MedicineRoutinePanel extends JPanel {
         return card;
     }
 
-    private JButton createSearchButton() {
-        JButton btn = new JButton();
-        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        // 살짝 여유
-        btn.setPreferredSize(new Dimension(32, 32));
-        btn.setMargin(new Insets(0, 0, 0, 0));
-
-        // TODO: 눌렀을 때 검색 기능 연결
-        btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame)));
-
-        return btn;
-    }
+//    private JButton createSearchButton() {
+//        JButton btn = new JButton();
+//        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
+//        btn.setBorderPainted(false);
+//        btn.setContentAreaFilled(false);
+//        btn.setFocusPainted(false);
+//        btn.setOpaque(false);
+//        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//
+//        // 살짝 여유
+//        btn.setPreferredSize(new Dimension(32, 32));
+//        btn.setMargin(new Insets(0, 0, 0, 0));
+//
+//        // TODO: 눌렀을 때 검색 기능 연결
+//        btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame, this)));
+//
+//        return btn;
+//    }
 }

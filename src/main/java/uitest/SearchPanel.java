@@ -11,9 +11,11 @@ import java.awt.*;
 public class SearchPanel extends JPanel {
     private final MainFrame mainFrame;
     private PlaceholderTextField searchField;   // ⬅ 추가
+    private final JPanel prevPanel; // 이전 화면 (접근경로)
 
-    public SearchPanel(MainFrame mainFrame) {
+    public SearchPanel(MainFrame mainFrame, JPanel prevPanel) {
         this.mainFrame = mainFrame;
+        this.prevPanel = prevPanel;
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);   // 없으면 Color.WHITE 써도 됨
@@ -47,15 +49,15 @@ public class SearchPanel extends JPanel {
         header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        searchField = new PlaceholderTextField("검색어를 입력하세요");
-        searchField.setPreferredSize(new Dimension(320, 45));
-        searchField.setMaximumSize(new Dimension(320, 45));
-        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        searchField.putClientProperty("FlatLaf.style", "arc:10");
-        header.add(searchField);
+//        searchField = new PlaceholderTextField("검색어를 입력하세요");
+//        searchField.setPreferredSize(new Dimension(320, 45));
+//        searchField.setMaximumSize(new Dimension(320, 45));
+//        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
+//        searchField.putClientProperty("FlatLaf.style", "arc:10");
+//        header.add(searchField);
 
-        ImageIcon rawFilter = new ImageIcon("filter.png");
-        ImageIcon filterIcon = resizeIcon(rawFilter, 24, 24);
+//        ImageIcon rawFilter = new ImageIcon("filter.png");
+//        ImageIcon filterIcon = resizeIcon(rawFilter, 24, 24);
 
 //        JButton filterBtn = new JButton(filterIcon);
 //        filterBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -69,7 +71,8 @@ public class SearchPanel extends JPanel {
         header.add(Box.createHorizontalGlue());
 //        header.add(filterBtn);   // ⬅ 이거!
 //        header.add(Box.createHorizontalStrut(4));   // ← 여기에 8px 여백 추가!
-        header.add(createSearchButton());
+//        header.add(createSearchButton());
+        header.add(createSearchBox());
 
 
         listPanel.add(header);
@@ -129,92 +132,145 @@ public class SearchPanel extends JPanel {
 
 
     /** 개별 복용 루틴 카드 */
-    private JPanel createRoutineCard(String title, String desc, String timeText) {
-        JPanel card = new JPanel(new BorderLayout());
-        card.setOpaque(true);
-        card.setBackground(Color.WHITE);
-        card.setAlignmentX(Component.LEFT_ALIGNMENT);
-        card.setPreferredSize(new Dimension(310, 100));
-        card.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16),
-                UIConstants.GRAY_SOFT, 0.5f, 10));
+//    private JPanel createRoutineCard(String title, String desc, String timeText) {
+//        JPanel card = new JPanel(new BorderLayout());
+//        card.setOpaque(true);
+//        card.setBackground(Color.WHITE);
+//        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+//        card.setPreferredSize(new Dimension(310, 100));
+//        card.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16),
+//                UIConstants.GRAY_SOFT, 0.5f, 10));
+//
+//        // 텍스트 영역 (왼쪽)
+//        JPanel textPanel = new JPanel();
+//        textPanel.setOpaque(false);
+//        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+//
+//        JLabel titleLabel = new JLabel(title);
+//        titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
+//        titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
+//
+//        JLabel descLabel = new JLabel(desc);
+//        descLabel.setFont(UIConstants.FONT_REGULAR_14);
+//        descLabel.setForeground(UIConstants.TEXT_SECONDARY);
+//
+//        textPanel.add(titleLabel);
+//        textPanel.add(Box.createVerticalStrut(4));
+//        textPanel.add(descLabel);
+//
+//        if (!timeText.isEmpty()) {
+//            JLabel timeLabel = new JLabel(timeText);
+//            timeLabel.setFont(UIConstants.FONT_REGULAR_14);
+//            timeLabel.setForeground(UIConstants.TEXT_SECONDARY);
+//            textPanel.add(Box.createVerticalStrut(4));
+//            textPanel.add(timeLabel);
+//        }
+//
+//        card.add(textPanel, BorderLayout.CENTER);
+//
+//        // 삭제( X ) 버튼 영역 (오른쪽)
+//        JButton checkBtn = new JButton("○");
+//        checkBtn.setFocusPainted(false);
+//        checkBtn.setBorder(null);
+//        checkBtn.setContentAreaFilled(false);
+//        checkBtn.setFont(UIConstants.FONT_REGULAR_20);
+//        checkBtn.setForeground(UIConstants.TEXT_LIGHT);
+//        checkBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        checkBtn.setToolTipText("복용 완료 체크");
+//
+//        // 나중에 실제 삭제 로직 연결
+//        // checkBtn.addActionListener(e -> checkRoutine(...));
+//
+//        JPanel right = new JPanel();
+//        right.setOpaque(false);
+//        right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
+//        right.add(Box.createVerticalGlue());
+//        right.add(checkBtn);
+//        right.add(Box.createVerticalGlue());
+//        right.setBorder(new EmptyBorder(0, 8, 0, 0)); // 카드 오른쪽 여백 조금만
+//
+//        card.add(right, BorderLayout.EAST);
+//
+//        return card;
+//    }
 
-        // 텍스트 영역 (왼쪽)
-        JPanel textPanel = new JPanel();
-        textPanel.setOpaque(false);
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+    /** 검색 박스 (네모 + 오른쪽 검색 아이콘) */
+    private JComponent createSearchBox() {
+        JPanel box = new JPanel(new BorderLayout());
+        box.setOpaque(true);
+        box.setBackground(Color.WHITE);
+        box.setAlignmentX(Component.LEFT_ALIGNMENT);
+        box.setPreferredSize(new Dimension(310, 44));
+        box.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        box.setBorder(new FlatLineBorder(
+                new Insets(8, 12, 8, 4),
+                UIConstants.GRAY_LIGHT,
+                1.0f,
+                16   // ← 검색 네모 둥근 모서리
+        ));
 
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
-        titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
+        JTextField field = new JTextField();
+        field.setBorder(null);
+        field.setOpaque(false);
+        field.setFont(UIConstants.FONT_REGULAR_14);
+        field.setForeground(UIConstants.TEXT_PRIMARY);
+        field.setCaretColor(UIConstants.TEXT_PRIMARY);
+        field.setColumns(10);
+        field.putClientProperty("JTextField.placeholderText", "검색어를 입력하세요");
 
-        JLabel descLabel = new JLabel(desc);
-        descLabel.setFont(UIConstants.FONT_REGULAR_14);
-        descLabel.setForeground(UIConstants.TEXT_SECONDARY);
+        box.add(field, BorderLayout.CENTER);
 
-        textPanel.add(titleLabel);
-        textPanel.add(Box.createVerticalStrut(4));
-        textPanel.add(descLabel);
+        JButton searchBtn = new JButton();
+        searchBtn.setIcon(new FlatSVGIcon("icons/search.svg", 20, 20));
+        searchBtn.setContentAreaFilled(false);
+        searchBtn.setBorderPainted(false);
+        searchBtn.setFocusPainted(false);
+        searchBtn.setOpaque(false);
+        searchBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        searchBtn.setPreferredSize(new Dimension(36, 36));
 
-        if (!timeText.isEmpty()) {
-            JLabel timeLabel = new JLabel(timeText);
-            timeLabel.setFont(UIConstants.FONT_REGULAR_14);
-            timeLabel.setForeground(UIConstants.TEXT_SECONDARY);
-            textPanel.add(Box.createVerticalStrut(4));
-            textPanel.add(timeLabel);
-        }
-
-        card.add(textPanel, BorderLayout.CENTER);
-
-        // 삭제( X ) 버튼 영역 (오른쪽)
-        JButton checkBtn = new JButton("○");
-        checkBtn.setFocusPainted(false);
-        checkBtn.setBorder(null);
-        checkBtn.setContentAreaFilled(false);
-        checkBtn.setFont(UIConstants.FONT_REGULAR_20);
-        checkBtn.setForeground(UIConstants.TEXT_LIGHT);
-        checkBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        checkBtn.setToolTipText("복용 완료 체크");
-
-        // 나중에 실제 삭제 로직 연결
-        // checkBtn.addActionListener(e -> checkRoutine(...));
-
-        JPanel right = new JPanel();
-        right.setOpaque(false);
-        right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-        right.add(Box.createVerticalGlue());
-        right.add(checkBtn);
-        right.add(Box.createVerticalGlue());
-        right.setBorder(new EmptyBorder(0, 8, 0, 0)); // 카드 오른쪽 여백 조금만
-
-        card.add(right, BorderLayout.EAST);
-
-        return card;
-    }
-
-    private JButton createSearchButton() {
-        JButton btn = new JButton();
-        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(32, 32));
-        btn.setMargin(new Insets(0, 0, 0, 0));
-
-        // 🔹 클릭 시 동작
-        btn.addActionListener(e -> {
-            String text = searchField.getText().trim();
-            if (text.isEmpty()) {
-                // 검색어가 없으면 복용 루틴 화면으로 돌아가기
-                mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame));
-            } else {
-                // TODO: 검색어 있을 때의 검색 로직
+        searchBtn.addActionListener(e -> {
+            // 아무것도 입력 안하면 전 화면으로 돌아감
+            if (field.getText().isBlank()) {
+                mainFrame.switchPanel(prevPanel);
             }
+
+            // TODO: 검색 로직 구현
+//
+//            searchResultContainer.revalidate();
+//            searchResultContainer.repaint();
         });
 
-        return btn;
+        box.add(searchBtn, BorderLayout.EAST);
+
+        return box;
     }
+
+//    private JButton createSearchButton() {
+//        JButton btn = new JButton();
+//        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
+//        btn.setBorderPainted(false);
+//        btn.setContentAreaFilled(false);
+//        btn.setFocusPainted(false);
+//        btn.setOpaque(false);
+//        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        btn.setPreferredSize(new Dimension(32, 32));
+//        btn.setMargin(new Insets(0, 0, 0, 0));
+//
+//        // 🔹 클릭 시 동작
+//        btn.addActionListener(e -> {
+//            String text = searchField.getText().trim();
+//            if (text.isEmpty()) {
+//                // TODO: 연결
+//                // 검색어가 없으면 이전 화면으로 돌아가기
+//                mainFrame.switchPanel(prevPanel);
+//            } else {
+//                // TODO: 검색어 있을 때의 검색 로직
+//            }
+//        });
+//
+//        return btn;
+//    }
 
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage();

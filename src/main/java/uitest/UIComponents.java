@@ -117,4 +117,23 @@ public final class UIComponents {
         tab.add(label, BorderLayout.CENTER);
         return tab;
     }
+
+    public static JButton createSearchButton(MainFrame mainFrame, JPanel thisPanel) {
+        JButton btn = new JButton();
+        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setFocusPainted(false);
+        btn.setOpaque(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // 살짝 여유
+        btn.setPreferredSize(new Dimension(32, 32));
+        btn.setMargin(new Insets(0, 0, 0, 0));
+
+        // TODO: 눌렀을 때 검색 기능 연결
+        btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame, thisPanel)));
+
+        return btn;
+    }
 }

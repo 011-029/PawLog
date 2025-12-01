@@ -47,7 +47,7 @@ public class WalkPanel extends JPanel {
         header.add(title);
 
         header.add(Box.createHorizontalGlue());
-        header.add(createSearchButton());
+        header.add(UIComponents.createSearchButton(mainFrame, this));
 
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
@@ -152,22 +152,22 @@ public class WalkPanel extends JPanel {
         return card;
     }
 
-    private JButton createSearchButton() {
-        JButton btn = new JButton();
-        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(32, 32));
-        btn.setMargin(new Insets(0, 0, 0, 0));
-
-        // 나중에 검색 기능 연결
-        // btn.addActionListener(...);
-
-        return btn;
-    }
+//    private JButton createSearchButton() {
+//        JButton btn = new JButton();
+//        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
+//        btn.setBorderPainted(false);
+//        btn.setContentAreaFilled(false);
+//        btn.setFocusPainted(false);
+//        btn.setOpaque(false);
+//        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        btn.setPreferredSize(new Dimension(32, 32));
+//        btn.setMargin(new Insets(0, 0, 0, 0));
+//
+//        // 나중에 검색 기능 연결
+//        // btn.addActionListener(...);
+//
+//        return btn;
+//    }
 
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage();

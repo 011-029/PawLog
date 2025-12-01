@@ -91,6 +91,8 @@ public class PetTipsDetailPanel extends JPanel {
         bodyArea.setForeground(UIConstants.TEXT_DARKGRAY);
         bodyArea.setBorder(new EmptyBorder(8, 16, 16, 16));
         bodyArea.setAlignmentX(Component.LEFT_ALIGNMENT);
+        bodyArea.setHighlighter(null);
+        bodyArea.setFocusable(false);
 
         container.add(bodyArea);
 
