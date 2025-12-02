@@ -9,6 +9,8 @@ import core.User;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -98,26 +100,9 @@ public class MedicineRoutinePanel extends Base {
 
         // 데이터 불러와서 카드 리스트 생성
         for (MedicineRoutine m : records) {
-            String medicineName = m.getMedicineName();
             ArrayList<String> takenDOW = m.getTakenDOW();
-            String takenDOWString;
-            if (takenDOW.size() == 7) {
-                takenDOWString = "매일";
-            } else {
-                takenDOWString = takenDOW.stream()
-                        .map(d -> d + "요일")
-                        .collect(Collectors.joining(", "));
-            }
-            String dosage = String.format("%dmg", m.getDosage());
-            boolean isTaken = m.getIsTaken();
             if (takenDOW.contains(todayDOW)) {
-                JPanel card = createRoutineCard(
-                        medicineName,
-                        takenDOWString,
-                        dosage,
-                        isTaken,
-                        m
-                );
+                JPanel card = createRoutineCard(m);
                 listPanel.add(card);
                 listPanel.add(Box.createVerticalStrut(16));
             }
@@ -144,13 +129,7 @@ public class MedicineRoutinePanel extends Base {
             String dosage = String.format("%dmg", m.getDosage());
             boolean isTaken = m.getIsTaken();
 
-            JPanel card = createRoutineCard(
-                    medicineName,
-                    takenDOWString,
-                    dosage,
-                    isTaken,
-                    m
-            );
+            JPanel card = createRoutineCard(m);
             listPanel.add(card);
             listPanel.add(Box.createVerticalStrut(16));
         }
@@ -183,14 +162,27 @@ public class MedicineRoutinePanel extends Base {
     }
 
     /** 개별 복용 루틴 카드 */
-    private JPanel createRoutineCard(String title, String desc, String timeText,
-                                     boolean isTaken, MedicineRoutine m) {
+    private JPanel createRoutineCard(MedicineRoutine m) {
+        String medicineName = m.getMedicineName();
+        String takenTime = m.getTakenTime();
+        ArrayList<String> takenDOW = m.getTakenDOW();
+        String takenDOWString;
+        if (takenDOW.size() == 7) {
+            takenDOWString = "매일";
+        } else {
+            takenDOWString = takenDOW.stream()
+                    .map(d -> d + "요일")
+                    .collect(Collectors.joining(", "));
+        }
+        String dosage = String.format("%dmg", m.getDosage());
+
+        boolean isTaken = m.getIsTaken();
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
         card.setBackground(Color.WHITE);
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
-        card.setPreferredSize(new Dimension(310, 105));
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 105));
+        card.setPreferredSize(new Dimension(310, 102));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 102));
         card.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16),
                 UIConstants.GRAY_SOFT, 0.5f, 10));
 
@@ -199,25 +191,25 @@ public class MedicineRoutinePanel extends Base {
         textPanel.setOpaque(false);
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
-        JLabel titleLabel = new JLabel(title);
+        JLabel titleLabel = new JLabel(medicineName);
         titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
         titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel descLabel = new JLabel(desc);
-        descLabel.setFont(UIConstants.FONT_REGULAR_14);
-        descLabel.setForeground(UIConstants.TEXT_SECONDARY);
+        JLabel label1 = new JLabel(takenDOWString);
+        label1.setFont(UIConstants.FONT_REGULAR_14);
+        label1.setForeground(UIConstants.TEXT_SECONDARY);
+
+
+        String line = dosage + "  |  " + takenTime;
+        JLabel label2 = new JLabel(line);
+        label2.setFont(UIConstants.FONT_REGULAR_14);
+        label2.setForeground(UIConstants.TEXT_SECONDARY);
 
         textPanel.add(titleLabel);
         textPanel.add(Box.createVerticalStrut(4));
-        textPanel.add(descLabel);
-
-        if (!timeText.isEmpty()) {
-            JLabel timeLabel = new JLabel(timeText);
-            timeLabel.setFont(UIConstants.FONT_REGULAR_14);
-            timeLabel.setForeground(UIConstants.TEXT_SECONDARY);
-            textPanel.add(Box.createVerticalStrut(4));
-            textPanel.add(timeLabel);
-        }
+        textPanel.add(label1);
+        textPanel.add(Box.createVerticalStrut(2));
+        textPanel.add(label2);
 
         card.add(textPanel, BorderLayout.CENTER);
 
@@ -250,6 +242,23 @@ public class MedicineRoutinePanel extends Base {
         right.setBorder(new EmptyBorder(0, 8, 0, 0)); // 카드 오른쪽 여백 조금만
 
         card.add(right, BorderLayout.EAST);
+
+        // hover 효과
+        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        card.addMouseListener(new MouseAdapter() {
+            Color normalBg = Color.WHITE;
+            Color hoverBg = new Color(250, 250, 250);
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(hoverBg);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(normalBg);
+            }
+        });
 
         return card;
     }
