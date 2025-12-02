@@ -1,14 +1,15 @@
 package uitest;
 
-import core.Pet;
-import core.PetMgr;
-import core.User;
+import content.PetTipMgr;
+import content.UnsafePetFoodMgr;
+import core.*;
 import util.DataLoader;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
+
     private User loggedInUser;
     private Pet loggedInUserPet;
 
@@ -20,16 +21,7 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
         DataLoader.loadAllData();
-
-        // 처음에는 로그인 화면부터
         setContentPane(new LoginPanel(this));
-
-        // TODO: 나중에 로그인 붙이면
-        //  1) setLoggedInUser(...) 먼저 호출하고
-        //  2) new PetHomePanel(this)로 바꾸면 됨
-
-        // 지금은 테스트용으로 로그인 없이 바로 홈 화면
-//        setContentPane(new PetHomePanel(this));
     }
 
     /* ===== 로그인 유저/펫 관리 ===== */
@@ -44,7 +36,6 @@ public class MainFrame extends JFrame {
     public void logout() {
         this.loggedInUser = null;
         this.loggedInUserPet = null;
-        // 나중에: switchPanel(new LoginPanel(this)); 이런 식으로 처리 가능
     }
 
     public User getLoggedInUser() {
@@ -56,7 +47,6 @@ public class MainFrame extends JFrame {
     }
 
     /* ===== 화면 전환 ===== */
-
     public void switchPanel(JPanel panel) {
         setContentPane(panel);
         revalidate();

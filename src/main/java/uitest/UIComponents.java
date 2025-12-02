@@ -4,16 +4,14 @@ package uitest;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public final class UIComponents {
 
-    private UIComponents() { } // 유틸 클래스이니까 생성 막기
+    private UIComponents() { }
 
-    // 🔹 상단바
     public static JComponent createHeader(Runnable onBackClick) {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
@@ -49,7 +47,6 @@ public final class UIComponents {
         return header;
     }
 
-    // 🔹 하단 탭바 (메인 프레임 필요하면 매개변수로 받기)
     public static JComponent createTabbedNav(MainFrame mainFrame) {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
 
@@ -99,7 +96,6 @@ public final class UIComponents {
         }
     }
 
-    // 🔹 탭 하나 만드는 로직도 같이 묶어두기
     private static Component createTab(String title, String iconPath) {
         JPanel tab = new JPanel(new BorderLayout());
         tab.setOpaque(false);
@@ -127,11 +123,9 @@ public final class UIComponents {
         btn.setOpaque(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // 살짝 여유
         btn.setPreferredSize(new Dimension(32, 32));
         btn.setMargin(new Insets(0, 0, 0, 0));
 
-        // TODO: 눌렀을 때 검색 기능 연결
         btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame, thisPanel)));
 
         return btn;

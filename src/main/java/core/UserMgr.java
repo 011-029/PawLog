@@ -39,11 +39,11 @@ public class UserMgr extends DataEngineImpl<User> {
 
     public boolean signUp(String id, String pw, String name) {
         if (isDuplicatedId(id)) return false;
-
-        String[] arr = {id, pw, name};
-        addNewRow(arr);
-        saveToFile(FILE_PATH);
-
+        else {
+            String[] arr = {id, pw, name};
+            addNewRow(arr);
+            saveToFile(FILE_PATH);
+        }
         return true;
     }
 

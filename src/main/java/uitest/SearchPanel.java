@@ -2,7 +2,6 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import util.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,8 +9,9 @@ import java.awt.*;
 
 public class SearchPanel extends JPanel {
     private final MainFrame mainFrame;
-    private PlaceholderTextField searchField;   // ⬅ 추가
+//    private PlaceholderTextField searchField;
     private final JPanel prevPanel; // 이전 화면 (접근경로)
+    private JPanel searchResultContainer; // 검색 결과 컨테이너
 
     public SearchPanel(MainFrame mainFrame, JPanel prevPanel) {
         this.mainFrame = mainFrame;
@@ -25,7 +25,7 @@ public class SearchPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(prevPanel)), BorderLayout.NORTH);
         contentWrapper.add(createContent(), BorderLayout.CENTER);
 
         // 가운데는 패딩 있는 래퍼
@@ -77,6 +77,10 @@ public class SearchPanel extends JPanel {
 
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
+
+        searchResultContainer = new JPanel();
+//        searchResultContainer.add(MedicalRecordListPanel.create)
+
 
 //        // --- 아래는 그대로 카드들 추가 ---
 //        JPanel card1 = createRoutineCard(
@@ -233,6 +237,8 @@ public class SearchPanel extends JPanel {
             // 아무것도 입력 안하면 전 화면으로 돌아감
             if (field.getText().isBlank()) {
                 mainFrame.switchPanel(prevPanel);
+            } else {
+
             }
 
             // TODO: 검색 로직 구현
