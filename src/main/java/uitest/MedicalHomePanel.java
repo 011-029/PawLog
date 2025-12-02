@@ -62,16 +62,9 @@ public class MedicalHomePanel extends JPanel {
         listPanel.add(title);
         listPanel.add(Box.createVerticalStrut(16));
 
-        /* 검색 필드 */
-        PlaceholderTextField searchField =
-                new PlaceholderTextField("통합 검색 (증상/병원/약 이름 등)");
-        searchField.setPreferredSize(new Dimension(310, 40));
-        searchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));   // ★ 수정
-        searchField.putClientProperty("FlatLaf.style", "arc:10");
-        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);                // ★ 수정
-
-        listPanel.add(searchField);
-        listPanel.add(Box.createVerticalStrut(28));
+        // ── 검색 박스 ──────────────────────────────────
+        listPanel.add(createSearchBox());
+        listPanel.add(Box.createVerticalStrut(16));
 
         /* 🔔 임박한 일정 */
         List<UpcomingCardData> upcoming = collectUpcoming(medical);
@@ -140,6 +133,46 @@ public class MedicalHomePanel extends JPanel {
         return scroll;
     }
 
+    private JComponent createSearchBox() {
+        Color borderColor = UIConstants.GRAY_LIGHT;
+
+        JPanel box = new JPanel(new BorderLayout());
+        box.setOpaque(true);
+        box.setBackground(Color.WHITE);
+        box.setAlignmentX(Component.LEFT_ALIGNMENT);
+        box.setPreferredSize(new Dimension(310, 44));
+        box.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        box.setBorder(new FlatLineBorder(
+                new Insets(8, 12, 8, 4),
+                borderColor,
+                1.0f,
+                16   // ← 검색 네모 둥근 모서리
+        ));
+
+        JTextField field = new JTextField();
+        field.setBorder(null);
+        field.setOpaque(false);
+        field.setFont(UIConstants.FONT_REGULAR_14);
+        field.setForeground(UIConstants.TEXT_PRIMARY);
+        field.setCaretColor(UIConstants.TEXT_PRIMARY);
+        field.setColumns(10);
+        field.putClientProperty("JTextField.placeholderText", "통합 검색 (증상/병원/약 이름 등)");
+
+        box.add(field, BorderLayout.CENTER);
+
+        JButton searchBtn = new JButton();
+        searchBtn.setIcon(new FlatSVGIcon("icons/search.svg", 20, 20));
+        searchBtn.setContentAreaFilled(false);
+        searchBtn.setBorderPainted(false);
+        searchBtn.setFocusPainted(false);
+        searchBtn.setOpaque(false);
+        searchBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        searchBtn.setPreferredSize(new Dimension(36, 36));
+
+        box.add(searchBtn, BorderLayout.EAST);
+
+        return box;
+    }
 
     private JLabel createSectionLabel(String text) {
         JLabel label = new JLabel(text);
