@@ -1,6 +1,8 @@
 package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import core.Pet;
+import core.User;
 import util.PlaceholderTextField;
 
 import javax.swing.*;
@@ -8,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class MedicineRoutineFormPanel extends JPanel {
+public class MedicineRoutineFormPanel extends Base {
 
     private final MainFrame mainFrame;
 
@@ -17,8 +19,14 @@ public class MedicineRoutineFormPanel extends JPanel {
     private JToggleButton[] dayButtons;
     private JToggleButton[] timeButtons;
 
+    private User user;
+    private Pet pet;
+
     public MedicineRoutineFormPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -234,8 +242,93 @@ public class MedicineRoutineFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // TODO: 실제 저장 로직 연결
-        // saveBtn.addActionListener(e -> { ... });
+        saveBtn.addActionListener(e -> {
+            try {
+                // 1️⃣ 유저/펫 체크 (전제: 무조건 존재)
+                if (user == null || pet == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
+                    return;
+                }
+
+                // 2️⃣ 약 이름
+                String medicineName = nameField.getText().trim();
+                if (medicineName.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "약 이름을 입력해주세요.");
+                    return;
+                }
+
+                // 3️⃣ 요일 (최소 1개)
+                StringBuilder sbDOW = new StringBuilder();
+                for (JToggleButton btn : dayButtons) {
+                    if (btn.isSelected()) {
+                        sbDOW.append(btn.getText());   // 예: 월,화,수 → "월화수"
+                    }
+                }
+                if (sbDOW.length() == 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "복용 요일을 최소 1개 이상 선택해주세요.");
+                    return;
+                }
+                String takenDOW = sbDOW.toString();
+
+                // 4️⃣ 복용 시간대 (필수, 1개)
+                String takenTime = "";
+                for (JToggleButton btn : timeButtons) {
+                    if (btn.isSelected()) {
+                        takenTime = btn.getText();
+                    }
+                }
+                if (takenTime.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "복용 시간대를 선택해주세요.");
+                    return;
+                }
+
+                // 5️⃣ 복용량 (필수, 숫자)
+                int dosage;
+                try {
+                    dosage = Integer.parseInt(doseField.getText().trim());
+                } catch (Exception ex2) {
+                    JOptionPane.showMessageDialog(mainFrame, "복용량은 숫자로 입력해야 합니다.");
+                    return;
+                }
+
+                if (dosage <= 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "복용량을 정확히 입력해주세요.");
+                    return;
+                }
+
+                // 6️⃣ 디버그 출력
+                System.out.println("===== [RoutineForm] 입력 디버그 =====");
+                System.out.println("medicineName = " + medicineName);
+                System.out.println("takenDOW = " + takenDOW);
+                System.out.println("takenTime = " + takenTime);
+                System.out.println("dosage = " + dosage);
+                System.out.println("====================================");
+
+                // 7️⃣ 실제 저장
+                medicineRoutineMgr.addNewRoutine(
+                        pet,
+                        medicineName,
+                        takenDOW,
+                        takenTime,
+                        dosage
+                );
+
+                // 8️⃣ 성공 메시지 + 기록 추가 메뉴로 이동
+                JOptionPane.showMessageDialog(mainFrame, "복용 루틴이 저장되었습니다!");
+                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        mainFrame,
+                        "저장 중 오류 발생: " + ex.getMessage(),
+                        "오류",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
