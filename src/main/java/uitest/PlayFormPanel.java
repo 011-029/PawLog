@@ -1,16 +1,30 @@
 package uitest;
 
+import core.Pet;
+import core.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.time.LocalDate;
 
-public class PlayFormPanel extends JPanel {
+public class PlayFormPanel extends Base {
     private final MainFrame mainFrame;
     private JTextArea memoArea;
+    private DatePickerPanel dateField;
+    private LabeledTextField timeField;
+    private LabeledTextField typeField;
+
+    private User user;
+    private Pet pet;
 
     public PlayFormPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -47,15 +61,15 @@ public class PlayFormPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(24));
 
         //날짜
-        DatePickerPanel dateField = new DatePickerPanel();
+        dateField = new DatePickerPanel();
         listPanel.add(dateField);
 
         //놀이 시간
-        LabeledTextField timeField = new LabeledTextField("놀이시간(분)", "예) 20 ");
+        timeField = new LabeledTextField("놀이시간(분)", "예) 20 ");
         listPanel.add(timeField);
 
         //놀이 종류
-        LabeledTextField typeField = new LabeledTextField("놀이종류", "예) 레이저포인터");
+        typeField = new LabeledTextField("놀이종류", "예) 레이저포인터");
         listPanel.add(typeField);
 
         /* ==== 메모 ==== */
@@ -122,8 +136,52 @@ public class PlayFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // TODO: 실제 저장 로직 연결
-        // saveBtn.addActionListener(e -> { ... });
+        saveBtn.addActionListener(e -> {
+            try {
+                // 유저·펫 체크는 동일
+                if (user == null || pet == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
+                    return;
+                }
+
+                // 날짜
+                LocalDate date = dateField.getDate();
+
+                // 놀이 시간 (숫자)
+                int playTime = timeField.getIntOrDefault(-1);
+                if (playTime <= 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "놀이 시간을 숫자로 입력해주세요.");
+                    return;
+                }
+
+                // ⭐ 놀이 종류 (입력 없으면 0)
+                String playType = typeField.getText().trim();
+                if (playType.isEmpty()) playType = "0";
+
+                // 메모
+                String memo = memoArea.getText().trim();
+                if (memo.isEmpty()) memo = "0";
+
+                // 디버그
+                System.out.println("======= [PlayForm DEBUG] =======");
+                System.out.println("date = " + date);
+                System.out.println("playTime = " + playTime);
+                System.out.println("playType = " + playType);
+                System.out.println("memo = " + memo);
+                System.out.println("================================");
+
+                // 저장
+                playMgr.addNewRecord(pet, date, playTime, playType, memo);
+
+                JOptionPane.showMessageDialog(mainFrame, "놀이 기록이 저장되었습니다!");
+                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(mainFrame, "저장 중 오류 발생: " + ex.getMessage());
+            }
+        });
+
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
