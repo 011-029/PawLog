@@ -23,7 +23,7 @@ public class MedicineDetailPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new MedicineRecordListPanel(mainFrame, MedicineRecordMgr.getInstance().mList))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new MedicineRecordListPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createContent(r), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);

@@ -1,20 +1,29 @@
 package uitest;
 
-import core.MedicalMgr;
-import core.MedicineRecord;
-import core.MedicineRecordMgr;
-import core.VaccineMgr;
+import core.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.List;
+import java.util.ArrayList;
 
-public class MedicineRecordListPanel extends JPanel {
+public class MedicineRecordListPanel extends Base {
     private final MainFrame mainFrame;
+    private ArrayList<MedicineRecord> records;
+    private User user;
+    private Pet pet;
 
-    public MedicineRecordListPanel(MainFrame mainFrame, List<MedicineRecord> records) {
+    public MedicineRecordListPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+        this.records = medicineRecordMgr.getAllByOwner(user);
+
+        // TODO: 아래 테스트용 코드 추후 삭제 (2줄)
+        System.out.println("복용기록패널 ID: " + user.getId());
+        System.out.println("복용기록패널 펫: " + pet.getName());
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -29,13 +38,13 @@ public class MedicineRecordListPanel extends JPanel {
                         MedicalMgr.getInstance().mList,
                         VaccineMgr.getInstance().mList,
                         MedicineRecordMgr.getInstance().mList))), BorderLayout.NORTH);
-        contentWrapper.add(createList(records), BorderLayout.CENTER);
+        contentWrapper.add(createList(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    private JComponent createList(List<MedicineRecord> records) {
+    private JComponent createList() {
         JPanel listPanel = new JPanel();
         listPanel.setOpaque(false);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
