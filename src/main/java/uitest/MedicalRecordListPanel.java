@@ -91,7 +91,7 @@ public class MedicalRecordListPanel extends Base {
 
         // 미래 기록
         if (!future.isEmpty()) {
-            JLabel upcomingLabel = new JLabel("예정된 기록");
+            JLabel upcomingLabel = new JLabel("예정된 일정");
             upcomingLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
             upcomingLabel.setForeground(UIConstants.TEXT_PRIMARY);
             upcomingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -110,7 +110,7 @@ public class MedicalRecordListPanel extends Base {
         }
 
         // 과거 기록
-        JLabel pastLabel = new JLabel("과거 기록");
+        JLabel pastLabel = new JLabel("과거 진료 기록");
         pastLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
         pastLabel.setForeground(UIConstants.TEXT_PRIMARY);
         pastLabel.setAlignmentX(Component.LEFT_ALIGNMENT);

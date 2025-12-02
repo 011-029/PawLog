@@ -1,18 +1,29 @@
 package uitest;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import core.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class HealthPanel extends JPanel {
+public class HealthPanel extends Base {
 
     private final MainFrame mainFrame;
+    private User user;
+    private Pet pet;
+    private ArrayList<HealthRecord> records;
 
     public HealthPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+        this.records = healthMgr.getAllByOwner(user);
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -57,6 +68,21 @@ public class HealthPanel extends JPanel {
         JPanel chartCard = createWeightChartCard();
         listPanel.add(chartCard);
         listPanel.add(Box.createVerticalStrut(24));
+
+        for (HealthRecord r : records) {
+            LocalDate date = r.getDate();
+            int meal = r.getMeal();
+            int water = r.getWater();
+            double weight = r.getWeight();
+            boolean isBrushed = r.getIsBrushed();
+            String memo = r.getMemo();
+
+            //TODO: 카드생성
+//            JPanel card = createHealthCard(
+//                    date,
+//
+//            )
+        }
 
         // 🔹 예시 건강 기록 카드들
         JPanel h1 = createHealthCard(

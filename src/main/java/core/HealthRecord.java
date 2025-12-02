@@ -99,6 +99,30 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
         return indexId;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public int getMeal() {
+        return meal;
+    }
+
+    public int getWater() {
+        return water;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public boolean getIsBrushed() {
+        return brushed.equals("yes");
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
     @Override
     public void setIndexId(int indexId) {
         this.indexId = indexId;
