@@ -1,18 +1,21 @@
 package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.ui.FlatLineBorder;
+import content.PetTip;
+import content.PetType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
-public class PetTipsDetailPanel extends JPanel {
+public class PetTipsDetailPanel extends Base {
 
     private final MainFrame mainFrame;
+    private ArrayList<PetTip> petTips = petTipMgr.getAll();
+    private PetTip tip;
+    private PetType petType;
 
     private static final String[] HERO_IMAGE_PATHS = {
             "/images/pet_tips/cat-1.jpg",
@@ -27,8 +30,18 @@ public class PetTipsDetailPanel extends JPanel {
 
     private static final Random RND = new Random();
 
-    public PetTipsDetailPanel(MainFrame mainFrame) {
+    public PetTipsDetailPanel(MainFrame mainFrame, String title) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        String inputTitle = title.replace(" ", "")
+                .replace("\\n", "");
+        for (PetTip t : petTips) {
+            String thisTitle = t.getTitle().replace(" ", "")
+                    .replace("\\n", "");
+            if (inputTitle.equals(thisTitle)) {
+                        tip = t;
+            }
+        }
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -68,8 +81,8 @@ public class PetTipsDetailPanel extends JPanel {
 
         HeroPanel heroPanel = new HeroPanel(
                 heroImage,
-                "행동",
-                "고양이는 왜\n높은 곳을 좋아할까?"
+                tip.getCategory().getKoName(),
+                tip.getTitle()
         );
         heroPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         container.add(heroPanel);
@@ -77,10 +90,7 @@ public class PetTipsDetailPanel extends JPanel {
         container.add(Box.createVerticalStrut(32));
 
         // ── 본문 텍스트 ─────────────────────────────────
-        String bodyText =
-                "고양이는 높은 곳에서 주변을 내려다보면 안정감을 느끼고 영역을 파악하기 쉬워요. " +
-                        "또 잠재적인 위험을 피할 수 있다고 느끼기 때문에 자연스럽게 높은 곳을 찾게 돼요.\n" +
-                        "캣타워나 선반 같은 수직 공간을 충분히 제공하면 스트레스 감소와 안정감 향상에 큰 도움이 됩니다.";
+        String bodyText = tip.getContent();
 
         JTextArea bodyArea = new JTextArea(bodyText);
         bodyArea.setEditable(false);
@@ -162,7 +172,7 @@ public class PetTipsDetailPanel extends JPanel {
             badge.putClientProperty("FlatLaf.style", "arc:999");
 
             // 제목
-            JLabel titleLabel = new JLabel("<html>" + title.replace("\n", "<br>") + "</html>");
+            JLabel titleLabel = new JLabel("<html>" + title.replace("\\n", "<br>") + "</html>");
             titleLabel.setFont(UIConstants.FONT_EXTRABOLD_28);
             titleLabel.setForeground(Color.WHITE);
 
@@ -199,7 +209,8 @@ public class PetTipsDetailPanel extends JPanel {
             circleWrap.setBorder(new EmptyBorder(20, 0, 0, 20)); // 오른쪽 위 위치
             circleWrap.add(circle, BorderLayout.NORTH);
 
-            add(circleWrap, BorderLayout.EAST);
+            //보류
+//            add(circleWrap, BorderLayout.EAST);
         }
 
 
