@@ -9,6 +9,8 @@ import core.WalkRecord;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -158,6 +160,23 @@ public class WalkPanel extends Base {
                 card.add(photoPanel, BorderLayout.EAST);
             }
         }
+
+        // hover 효과
+        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        card.addMouseListener(new MouseAdapter() {
+            Color normalBg = Color.WHITE;
+            Color hoverBg = new Color(250, 250, 250);
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(hoverBg);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(normalBg);
+            }
+        });
         return card;
     }
 
