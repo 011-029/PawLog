@@ -282,7 +282,7 @@ public class MedicalFormPanel extends Base {
                 }
 
                 JOptionPane.showMessageDialog(mainFrame, "저장 완료!");
-                mainFrame.switchPanel(new MedicalHomePanel(mainFrame));
+                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
 
             } catch (Exception ex) {
                 ex.printStackTrace();
