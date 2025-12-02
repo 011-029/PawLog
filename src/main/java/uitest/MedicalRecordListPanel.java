@@ -36,10 +36,7 @@ public class MedicalRecordListPanel extends Base {
         contentWrapper.add(
                 UIComponents.createHeader(() ->
                         mainFrame.switchPanel(new MedicalHomePanel(
-                                mainFrame,
-                                MedicalMgr.getInstance().mList,
-                                VaccineMgr.getInstance().mList,
-                                MedicineRecordMgr.getInstance().mList
+                                mainFrame
                         ))),
                 BorderLayout.NORTH
         );

@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class MedicalHomePanel extends JPanel {
+public class MedicalHomePanel extends Base {
 
     private final MainFrame mainFrame;
 
-    public MedicalHomePanel(MainFrame mainFrame,
-                            List<MedicalRecord> medicalRecords,
-                            List<VaccineRecord> vaccineRecords,
-                            List<MedicineRecord> medicineRecords) {
+    public MedicalHomePanel(MainFrame mainFrame) {
+        super(mainFrame);
 
         this.mainFrame = mainFrame;
 
@@ -33,7 +31,7 @@ public class MedicalHomePanel extends JPanel {
         contentWrapper.add(UIComponents.createHeader(() ->
                 mainFrame.switchPanel(new HomePanel(mainFrame))), BorderLayout.NORTH);
 
-        contentWrapper.add(createContent(medicalRecords), BorderLayout.CENTER);
+        contentWrapper.add(createContent(MedicalMgr.getInstance().mList), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);

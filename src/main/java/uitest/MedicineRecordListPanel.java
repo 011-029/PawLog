@@ -34,10 +34,8 @@ public class MedicineRecordListPanel extends Base {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new MedicalHomePanel(mainFrame,
-                        MedicalMgr.getInstance().mList,
-                        VaccineMgr.getInstance().mList,
-                        MedicineRecordMgr.getInstance().mList))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new MedicalHomePanel(mainFrame
+                ))), BorderLayout.NORTH);
         contentWrapper.add(createList(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
