@@ -258,6 +258,7 @@ public class WalkFormPanel extends Base {
                         pet,
                         date,
                         walkTime,
+                        distance,
                         savedPath,
                         memo
                 );
