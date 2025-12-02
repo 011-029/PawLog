@@ -1,7 +1,5 @@
 package uitest;
 
-import content.PetTipMgr;
-import content.UnsafePetFoodMgr;
 import core.*;
 import util.DataLoader;
 

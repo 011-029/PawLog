@@ -87,7 +87,7 @@ public final class UIComponents {
 
     static public void switchTab(int idx, MainFrame mainFrame) {
         switch (idx) {
-            case 0 -> mainFrame.switchPanel(new PetHomePanel(mainFrame));
+            case 0 -> mainFrame.switchPanel(new HomePanel(mainFrame));
             case 1 -> mainFrame.switchPanel(new CalendarPanel(mainFrame));
             case 2 -> mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
             case 3 -> mainFrame.switchPanel(new PetTipsPanel(mainFrame));

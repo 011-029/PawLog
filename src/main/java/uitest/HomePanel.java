@@ -1,6 +1,5 @@
 package uitest;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import core.*;
 
@@ -10,13 +9,13 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class PetHomePanel extends JPanel {
+public class HomePanel extends JPanel {
 
     private final MainFrame mainFrame;
     User user;  // 로그인한 유저
     Pet pet;    // 로그인한 유저의 펫
 
-    public PetHomePanel(MainFrame mainFrame) {
+    public HomePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
 
         // 로그인한 user, pet 받아오기 (없으면 null일 수 있음)

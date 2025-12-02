@@ -29,7 +29,7 @@ public class PetTipsPanel extends JPanel {
         // 상단 공용 헤더 (뒤로가기 → PetHomePanel 예시)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
-                        mainFrame.switchPanel(new PetHomePanel(mainFrame))
+                        mainFrame.switchPanel(new HomePanel(mainFrame))
                 ),
                 BorderLayout.NORTH
         );

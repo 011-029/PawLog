@@ -24,7 +24,7 @@ public class AddRecordMenuPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new HomePanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createScrollableContent(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);

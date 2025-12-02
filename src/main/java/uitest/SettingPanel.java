@@ -27,7 +27,7 @@ public class SettingPanel extends JPanel {
         // 상단 바 (뒤로가기 → 이전 화면으로)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
-                        mainFrame.switchPanel(new PetHomePanel(mainFrame))
+                        mainFrame.switchPanel(new HomePanel(mainFrame))
                 ),
                 BorderLayout.NORTH
         );

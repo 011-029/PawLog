@@ -32,7 +32,7 @@ public class MedicalHomePanel extends JPanel {
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
 
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new HomePanel(mainFrame))), BorderLayout.NORTH);
 
         contentWrapper.add(createContent(medicalRecords), BorderLayout.CENTER);
 
