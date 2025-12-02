@@ -63,12 +63,12 @@ public abstract class BaseCard extends JPanel {
     private void applyHoverStyle(boolean on) {
         if (on) {
             // 위쪽 padding 줄이고 아래 padding 늘림 → 실제로 카드가 떠보임
-            setBorder(new FlatLineBorder(
-                    new Insets(8, 16, 24, 16),
-                    UIConstants.GRAY_SOFT,
-                    0.5f,
-                    10
-            ));
+//            setBorder(new FlatLineBorder(
+//                    new Insets(8, 16, 24, 16),
+//                    UIConstants.GRAY_SOFT,
+//                    0.5f,
+//                    10
+//            ));
 
             setBackground(new Color(250, 250, 250)); // 살짝 밝게
         } else {
@@ -88,17 +88,18 @@ public abstract class BaseCard extends JPanel {
     }
 
     /* ========= 기존 BaseCard 기능 유지 ========= */
-
     protected void addTitle(String text) {
         JLabel titleLabel = new JLabel(text);
         titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
         titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
         textPanel.add(titleLabel);
-        textPanel.add(Box.createVerticalStrut(4));
+        textPanel.add(Box.createVerticalStrut(2));
     }
 
     protected void addLine(String text) {
+        textPanel.add(Box.createVerticalStrut(2));
+
         JLabel label = new JLabel(text);
         label.setFont(UIConstants.FONT_REGULAR_14);
         label.setForeground(UIConstants.TEXT_SECONDARY);
@@ -115,6 +116,16 @@ public abstract class BaseCard extends JPanel {
 
         rightPanel.add(Box.createVerticalGlue());
         rightPanel.add(checkBox);
+        rightPanel.add(Box.createVerticalGlue());
+    }
+
+    protected void addDDayLabel(String dDay) {
+        JLabel label = new JLabel(dDay);
+        label.setFont(UIConstants.FONT_SEMIBOLD_16);
+        label.setForeground(UIConstants.PRIMARY);
+
+        rightPanel.add(Box.createVerticalGlue());
+        rightPanel.add(label);
         rightPanel.add(Box.createVerticalGlue());
     }
 }

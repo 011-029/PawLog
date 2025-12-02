@@ -1,20 +1,31 @@
 package uitest;
 
-import core.MedicalMgr;
-import core.MedicalRecord;
-import core.MedicineRecordMgr;
-import core.VaccineMgr;
+import core.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MedicalRecordListPanel extends JPanel {
-    private final MainFrame mainFrame;
+public class MedicalRecordListPanel extends Base {
 
-    public MedicalRecordListPanel(MainFrame mainFrame, List<MedicalRecord> records) {
+    private final MainFrame mainFrame;
+    private ArrayList<MedicalRecord> records;
+    private User user;
+    private Pet pet;
+
+    public MedicalRecordListPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+        this.records = medicalMgr.getAllByOwner(user);
+
+        // TODO: 아래 테스트용 코드 추후 삭제 (2줄)
+        System.out.println("진료패널 ID: " + user.getId());
+        System.out.println("진료패널 펫: " + pet.getName());
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -33,13 +44,13 @@ public class MedicalRecordListPanel extends JPanel {
                 BorderLayout.NORTH
         );
 
-        contentWrapper.add(createList(records), BorderLayout.CENTER);
+        contentWrapper.add(createList(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    private JComponent createList(List<MedicalRecord> records) {
+    private JComponent createList() {
         JPanel listPanel = new JPanel();
         listPanel.setOpaque(false);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
@@ -142,13 +153,14 @@ public class MedicalRecordListPanel extends JPanel {
             String title = r.getCategory();
             String dday = r.getDDayText();
 
-            if (dday != null && !dday.isBlank()) {
-                title += "  (" + dday + ")";
-            }
+//            if (dday != null && !dday.isBlank()) {
+//                title += "  (" + dday + ")";
+//            }
 
             addTitle(title);
             addLine("날짜: " + r.getDate());
             addLine("병원: " + r.getHospital());
+            addDDayLabel(dday);
 
             // 클릭하면 상세 페이지
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

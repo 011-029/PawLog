@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 public class MedicineRoutinePanel extends Base {
 
     private final MainFrame mainFrame;
-    User user;
-    Pet pet;
-    ArrayList<MedicineRoutine> records;
+    private User user;
+    private Pet pet;
+    private ArrayList<MedicineRoutine> records;
 
     public MedicineRoutinePanel(MainFrame mainFrame) {
         super(mainFrame);

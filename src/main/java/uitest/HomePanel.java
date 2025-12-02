@@ -13,8 +13,8 @@ import java.awt.event.MouseEvent;
 public class HomePanel extends JPanel {
 
     private final MainFrame mainFrame;
-    User user;  // 로그인한 유저
-    Pet pet;    // 로그인한 유저의 펫
+    private User user;  // 로그인한 유저
+    private Pet pet;    // 로그인한 유저의 펫
 
     public HomePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;

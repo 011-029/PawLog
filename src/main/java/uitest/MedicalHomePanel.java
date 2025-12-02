@@ -98,9 +98,11 @@ public class MedicalHomePanel extends JPanel {
         listPanel.add(menu);
         listPanel.add(Box.createVerticalStrut(12));
 
-        JPanel btn1 = createMenuButton("진료 기록", "icons/medical.svg",
-                () -> mainFrame.switchPanel(
-                        new MedicalRecordListPanel(mainFrame, MedicalMgr.getInstance().mList)));
+        JPanel btn1 = createMenuButton(
+                "진료 기록",
+                "icons/medical.svg",
+                () -> mainFrame.switchPanel(new MedicalRecordListPanel(mainFrame))
+        );
         btn1.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel btn2 = createMenuButton("복용 기록", "icons/pill.svg",
