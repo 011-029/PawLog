@@ -1,73 +1,71 @@
 package uitest;
 
-import core.MedicalMgr;
 import core.MedicalRecord;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.LocalDate;
 
-public class MedicalDetailPanel extends JPanel {
+public class MedicalDetailPanel extends Base {
 
     private final MainFrame mainFrame;
+    private final MedicalRecord r;
 
     public MedicalDetailPanel(MainFrame mainFrame, MedicalRecord r) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.r = r;
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단 헤더 + 내용
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
+
         contentWrapper.add(
                 UIComponents.createHeader(
                         () -> mainFrame.switchPanel(new MedicalRecordListPanel(mainFrame))
-                ), BorderLayout.NORTH);
+                ),
+                BorderLayout.NORTH
+        );
 
-        contentWrapper.add(createContent(r), BorderLayout.CENTER);
+        contentWrapper.add(createContent(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    private JComponent createContent(MedicalRecord r) {
+    private JComponent createContent() {
+
         JPanel listPanel = new JPanel();
         listPanel.setOpaque(false);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(24, 10, 24, 10));
 
-        // 제목 행
-        JPanel header = new JPanel();
-        header.setOpaque(false);
-        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
-        header.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        /* ========= 제목 ========= */
         JLabel title = new JLabel("세부 기록");
         title.setFont(UIConstants.FONT_EXTRABOLD_24);
         title.setForeground(UIConstants.TEXT_PRIMARY);
-        header.add(title);
-
-        listPanel.add(header);
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        listPanel.add(title);
         listPanel.add(Box.createVerticalStrut(24));
 
-        // ====== 내용 표시 ======
-        listPanel.add(makeInfoRow("증상", r.getCategory() + "   /  " + r.getDate()));
+        /* ========= 기본 정보 ========= */
+        listPanel.add(withLeft(makeInfoRow("증상", r.getCategory() + " / " + r.getDate())));
         listPanel.add(Box.createVerticalStrut(12));
 
-        listPanel.add(makeInfoRow("병원", r.getHospital()));
+        listPanel.add(withLeft(makeInfoRow("병원", r.getHospital())));
         listPanel.add(Box.createVerticalStrut(8));
 
         String costText = (r.getCost() == -1) ? "미정" : r.getCost() + "원";
-        listPanel.add(makeInfoRow("비용", costText));
-        listPanel.add(Box.createVerticalStrut(24));
+        listPanel.add(withLeft(makeInfoRow("비용", costText)));
 
-// 구분선
+        listPanel.add(Box.createVerticalStrut(24));
         listPanel.add(new JSeparator());
         listPanel.add(Box.createVerticalStrut(24));
 
-// ====== 처방약 정보 ======
+        /* ========= 처방약 ========= */
         JLabel medTitle = new JLabel("처방약");
         medTitle.setFont(UIConstants.FONT_EXTRABOLD_20);
         medTitle.setForeground(UIConstants.TEXT_PRIMARY);
@@ -82,59 +80,90 @@ public class MedicalDetailPanel extends JPanel {
             noMed.setAlignmentX(Component.LEFT_ALIGNMENT);
             listPanel.add(noMed);
         } else {
-            // 약 이름 + 용량
             String medLine = r.getPrescribedMedicine();
             if (r.getDosage() != null)
-                medLine += "   (" + r.getDosage() + "mg)";
+                medLine += " (" + r.getDosage() + "mg)";
 
-            listPanel.add(makeInfoRow("약 이름", medLine));
+            listPanel.add(withLeft(makeInfoRow("약 이름", medLine)));
             listPanel.add(Box.createVerticalStrut(10));
 
-            // 먹는 시간
             if (r.getRoutineTime() != null)
-                listPanel.add(makeInfoRow("복용 시간", r.getRoutineTime()));
-
+                listPanel.add(withLeft(makeInfoRow("복용 시간", r.getRoutineTime())));
             listPanel.add(Box.createVerticalStrut(10));
 
-            // 기간
-            String period = "";
-            if (r.getStartDate() != null)
-                period += r.getStartDate().toString();
-            else
-                period += "-";
+            String period = (r.getStartDate() != null ? r.getStartDate() : "-")
+                    + " ~ "
+                    + (r.getEndDate() != null ? r.getEndDate() : "-");
 
-            period += "  ~  ";
-
-            if (r.getEndDate() != null)
-                period += r.getEndDate().toString();
-            else
-                period += "-";
-
-            listPanel.add(makeInfoRow("복용 기간", period));
+            listPanel.add(withLeft(makeInfoRow("복용 기간", period)));
         }
 
         listPanel.add(Box.createVerticalStrut(24));
-
-// 구분선
         listPanel.add(new JSeparator());
         listPanel.add(Box.createVerticalStrut(24));
 
-// ====== 버튼 영역 ======
+        /* ========= 버튼들 ========= */
+
         JButton registerBtn = new JButton("처방약 루틴으로 등록하기");
-        registerBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         registerBtn.setFont(UIConstants.FONT_SEMIBOLD_16);
-        registerBtn.addActionListener(e -> {
-            System.out.println("루틴 등록 클릭됨");
-            // TODO: 루틴 연결 기능 넣기
+        registerBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        registerBtn.addActionListener(ev -> {
+            try {
+                if (r.getPrescribedMedicine() == null) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "이 진료 기록에는 처방약 정보가 없습니다.");
+                    return;
+                }
+
+                LocalDate today = LocalDate.now();
+                if (r.getEndDate() != null && r.getEndDate().isBefore(today)) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "복용 기간이 이미 종료되었습니다.");
+                    return;
+                }
+
+                var routine = medicineRoutineMgr.createRoutineFromMedicalRecord(r);
+
+                if (routine == null) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "루틴 생성 실패 (처방 정보 부족)");
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "루틴 생성 완료!");
+                    mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(mainFrame,
+                        "오류: " + ex.getMessage());
+            }
         });
 
         JButton deleteBtn = new JButton("삭제");
-        deleteBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         deleteBtn.setFont(UIConstants.FONT_SEMIBOLD_16);
         deleteBtn.setForeground(Color.RED);
-        deleteBtn.addActionListener(e -> {
-            System.out.println("삭제 클릭됨");
-            // TODO: 삭제 기능 넣기
+        deleteBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        deleteBtn.addActionListener(ev -> {
+
+            int confirm = JOptionPane.showConfirmDialog(
+                    mainFrame, "정말 삭제하시겠습니까?", "삭제", JOptionPane.YES_NO_OPTION);
+
+            if (confirm != JOptionPane.YES_OPTION) return;
+
+            boolean removed = medicalMgr.removeByIndexId(r.getIndexId());
+
+            if (!removed) {
+                JOptionPane.showMessageDialog(mainFrame, "삭제 실패");
+                return;
+            }
+
+            medicalMgr.saveAll();
+            JOptionPane.showMessageDialog(mainFrame, "삭제 완료!");
+
+            mainFrame.switchPanel(new MedicalRecordListPanel(mainFrame));
         });
 
         listPanel.add(registerBtn);
@@ -143,41 +172,44 @@ public class MedicalDetailPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(40));
 
 
-        // 스크롤에 감싸기 + 항상 위에 붙게 래퍼 사용
-        JPanel listWrapper = new JPanel(new BorderLayout());
-        listWrapper.setOpaque(false);
-        listWrapper.add(listPanel, BorderLayout.NORTH);
+        /* ========= 스크롤 ========= */
 
-        JScrollPane scroll = new JScrollPane(listWrapper);
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+        wrapper.add(listPanel, BorderLayout.NORTH);
+
+        JScrollPane scroll = new JScrollPane(wrapper);
         scroll.setBorder(null);
         scroll.getViewport().setOpaque(false);
         scroll.setOpaque(false);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        scroll.getVerticalScrollBar().setUnitIncrement(30);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         return scroll;
     }
 
+    /* ========= 헬퍼: 왼쪽정렬 강제 ========= */
+    private JComponent withLeft(JComponent c) {
+        c.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return c;
+    }
+
     private JPanel makeInfoRow(String title, String value) {
-        JPanel p = new JPanel();
-        p.setOpaque(false);
-        p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-        p.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel row = new JPanel();
+        row.setOpaque(false);
+        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+        row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel t = new JLabel(title + ": ");
         t.setFont(UIConstants.FONT_SEMIBOLD_16);
-        t.setForeground(UIConstants.TEXT_PRIMARY);
 
         JLabel v = new JLabel(value);
         v.setFont(UIConstants.FONT_REGULAR_16);
-        v.setForeground(UIConstants.TEXT_PRIMARY);
 
-        p.add(t);
-        p.add(Box.createHorizontalStrut(8));
-        p.add(v);
+        row.add(t);
+        row.add(Box.createHorizontalStrut(8));
+        row.add(v);
 
-        return p;
+        return row;
     }
-
 }
+

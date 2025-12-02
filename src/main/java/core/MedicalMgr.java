@@ -58,6 +58,10 @@ public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
         initNextIndexId();
     }
 
+    public void saveAll() {
+        saveToFile(FILE_PATH);
+    }
+
     @Override
     protected String getFilePath() {
         return FILE_PATH;
