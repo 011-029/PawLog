@@ -1,13 +1,11 @@
 package uitest;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import core.Pet;
 import core.User;
 import util.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class MedicineRoutineFormPanel extends Base {
