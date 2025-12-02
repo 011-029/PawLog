@@ -63,24 +63,6 @@ public class MedicalHomePanel extends Base {
         listPanel.add(createSearchBox());
         listPanel.add(Box.createVerticalStrut(16));
 
-        /* 🔔 임박한 일정 */
-        List<UpcomingCardData> upcoming = collectUpcoming(medical);
-
-        if (!upcoming.isEmpty()) {
-            JLabel up = createSectionLabel("임박한 일정");
-            up.setAlignmentX(Component.LEFT_ALIGNMENT);
-            listPanel.add(up);
-            listPanel.add(Box.createVerticalStrut(10));
-
-            for (UpcomingCardData data : upcoming) {
-                JPanel c = createUpcomingCard(data);
-                c.setAlignmentX(Component.LEFT_ALIGNMENT);
-                listPanel.add(c);
-                listPanel.add(Box.createVerticalStrut(12));
-            }
-
-            listPanel.add(Box.createVerticalStrut(28));
-        }
 
         /* 메뉴 섹션 */
         JLabel menu = createSectionLabel("의료 기록 목록");
@@ -111,6 +93,25 @@ public class MedicalHomePanel extends Base {
         listPanel.add(Box.createVerticalStrut(16));
         listPanel.add(btn3);
         listPanel.add(Box.createVerticalStrut(16));
+
+        /* 🔔 임박한 일정 */
+        List<UpcomingCardData> upcoming = collectUpcoming(medical);
+
+        if (!upcoming.isEmpty()) {
+            JLabel up = createSectionLabel("임박한 일정");
+            up.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(up);
+            listPanel.add(Box.createVerticalStrut(10));
+
+            for (UpcomingCardData data : upcoming) {
+                JPanel c = createUpcomingCard(data);
+                c.setAlignmentX(Component.LEFT_ALIGNMENT);
+                listPanel.add(c);
+                listPanel.add(Box.createVerticalStrut(12));
+            }
+
+            listPanel.add(Box.createVerticalStrut(28));
+        }
 
         /* 래퍼: BoxLayout 폭 제한 해결 */
         JPanel listWrapper = new JPanel(new BorderLayout());

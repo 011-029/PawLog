@@ -131,7 +131,7 @@ public class MedicalDetailPanel extends Base {
                 } else {
                     JOptionPane.showMessageDialog(mainFrame,
                             "루틴 생성 완료!");
-                    mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+                    mainFrame.switchPanel(new MedicalDetailPanel(mainFrame,r));
                 }
 
             } catch (Exception ex) {
