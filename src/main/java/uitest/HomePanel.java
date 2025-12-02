@@ -10,13 +10,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class HomePanel extends JPanel {
+public class HomePanel extends Base {
 
     private final MainFrame mainFrame;
     private User user;  // 로그인한 유저
     private Pet pet;    // 로그인한 유저의 펫
 
     public HomePanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
         this.user = mainFrame.getLoggedInUser();
         this.pet = mainFrame.getLoggedInUserPet();
@@ -78,8 +79,11 @@ public class HomePanel extends JPanel {
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.insets = cardInsets;
-        content.add(createSmallCard("오늘 복용 체크",
-                        new String[]{"● 복용 루틴 1", "○ 복용 루틴 2"},
+        content.add(createSmallCard("오늘 복용 루틴",
+                        new String[]{
+                                "● 복용 루틴 1",
+                                "○ 복용 루틴 2"
+                        },
                         () -> mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
                 ),
                 gbc
@@ -277,6 +281,7 @@ public class HomePanel extends JPanel {
             contentLabel.setFont(UIConstants.FONT_REGULAR_14);
             contentLabel.setForeground(UIConstants.TEXT_SECONDARY);
             card.add(contentLabel);
+            card.add(Box.createVerticalStrut(2));
         }
 
         card.setPreferredSize(new Dimension(160, 150));
