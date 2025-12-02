@@ -262,6 +262,12 @@ public class SearchPanel extends JPanel {
             } else {
                 searchResultContainer.removeAll();
 
+                if(prevPanel instanceof MedicalHomePanel){
+                    searchMedicalRecord(kwd);
+                    searchMedicineRecord(kwd);
+                    searchVaccineRecord(kwd);
+                }
+
                 if (prevPanel instanceof MedicalRecordListPanel) {
                     // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
                     System.out.println("@ 메디컬레코드 검색 실행");
