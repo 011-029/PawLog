@@ -1,7 +1,5 @@
 package uitest;
 
-import core.MedicalMgr;
-import core.VaccineMgr;
 import core.VaccineRecord;
 
 import javax.swing.*;
