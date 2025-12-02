@@ -3,7 +3,6 @@ package uitest;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import core.*;
-import util.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
