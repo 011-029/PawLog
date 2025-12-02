@@ -1,6 +1,5 @@
 package uitest;
 
-import com.formdev.flatlaf.ui.FlatLineBorder;
 import util.WrapLayout;
 
 import javax.swing.*;
@@ -25,7 +24,7 @@ public class PetInfoPanel extends JPanel {
         // 상단 헤더 (뒤로가기 → 펫 홈으로 가정)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
-                        mainFrame.switchPanel(new PetHomePanel(mainFrame))
+                        mainFrame.switchPanel(new HomePanel(mainFrame))
                 ),
                 BorderLayout.NORTH
         );

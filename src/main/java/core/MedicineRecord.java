@@ -100,8 +100,34 @@ public class MedicineRecord implements Manageable, UIData, PetOwned, RecordSearc
 
     }
 
+    //String medicineName;  // 약품명
+    //    LocalDate takenDate;  // 복용일
+    //    String takenTime;     // 복용 시간대 (아침, 점심, 저녁, 자기전)
+    //    int dosage;
     @Override
     public String[] getUITexts() {
-        return new String[0];
+        return new String[]{
+                String.valueOf(indexId),//0
+                String.valueOf(medicineName),//1
+                takenDate.toString(),//2
+                String.valueOf(takenTime),//3
+                (""+dosage)//4
+        };
+    }
+
+    public String getMedicineName() {
+        return medicineName;
+    }
+
+    public int getDosage() {
+        return dosage;
+    }
+
+    public LocalDate getTakenDate() {
+        return takenDate;
+    }
+
+    public String getTakenTime() {
+        return takenTime;
     }
 }

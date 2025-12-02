@@ -1,15 +1,29 @@
 package uitest;
 
+import core.Pet;
+import core.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.LocalDate;
 
-public class MedicineFormPanel extends JPanel {
+public class MedicineFormPanel extends Base {
     private final MainFrame mainFrame;
     private JToggleButton[] timeButtons;
+    private DatePickerPanel dateField;
+    private LabeledTextField medicineField;
+    private LabeledTextField doseField;
+
+    private User user;
+    private Pet pet;
 
     public MedicineFormPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -46,15 +60,15 @@ public class MedicineFormPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(24));
 
         //날짜
-        DatePickerPanel dateField = new DatePickerPanel();
+        dateField = new DatePickerPanel();
         listPanel.add(dateField);
 
         //약품명
-        LabeledTextField medicineField = new LabeledTextField("약 이름", "예) 심장사상충약");
+        medicineField = new LabeledTextField("약 이름", "예) 심장사상충약");
         listPanel.add(medicineField);
 
         //복용량
-        LabeledTextField doseField = new LabeledTextField("복용량 (mg)", "예) 20");
+        doseField = new LabeledTextField("복용량 (mg)", "예) 20");
         listPanel.add(doseField);
 
         /* ==== 복용 시간대 ==== */
@@ -134,8 +148,81 @@ public class MedicineFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // TODO: 실제 저장 로직 연결
-        // saveBtn.addActionListener(e -> { ... });
+        saveBtn.addActionListener(e -> {
+            try {
+                // 유저/펫 체크
+                if (user == null || pet == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
+                    return;
+                }
+
+                // 날짜
+                LocalDate date = dateField.getDate();
+                if (date == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "날짜를 선택해주세요.");
+                    return;
+                }
+
+                // 약 이름
+                String medicineName = medicineField.getText().trim();
+                if (medicineName.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "약 이름을 입력해주세요.");
+                    return;
+                }
+
+                //  복용량
+                int dosage = doseField.getIntOrDefault(-1);
+                if (dosage <= 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "복용량을 입력해주세요.");
+                    return;
+                }
+
+                // 복용 시간대
+                String takenTime = "";
+                for (JToggleButton btn : timeButtons) {
+                    if (btn.isSelected()) {
+                        takenTime = btn.getText();
+                    }
+                }
+
+                if (takenTime.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "복용 시간대를 선택해주세요.");
+                    return;
+                }
+
+                // 디버그 출력
+                System.out.println("===== [MedicineForm] 입력 디버그 =====");
+                System.out.println("Pet = " + pet.getName());
+                System.out.println("Date = " + date);
+                System.out.println("Medicine = " + medicineName);
+                System.out.println("Dosage = " + dosage);
+                System.out.println("Time = " + takenTime);
+                System.out.println("=====================================");
+
+                // 실제 저장
+                medicineRecordMgr.addNewRecord(
+                        pet,
+                        medicineName,
+                        date,
+                        takenTime,
+                        dosage
+                );
+
+                //완료 메시지 + 이동
+                JOptionPane.showMessageDialog(mainFrame, "복용 기록이 저장되었습니다!");
+                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        mainFrame,
+                        "저장 중 오류 발생: " + ex.getMessage(),
+                        "오류",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;

@@ -4,16 +4,14 @@ package uitest;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public final class UIComponents {
 
-    private UIComponents() { } // 유틸 클래스이니까 생성 막기
+    private UIComponents() { }
 
-    // 🔹 상단바
     public static JComponent createHeader(Runnable onBackClick) {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
@@ -49,7 +47,6 @@ public final class UIComponents {
         return header;
     }
 
-    // 🔹 하단 탭바 (메인 프레임 필요하면 매개변수로 받기)
     public static JComponent createTabbedNav(MainFrame mainFrame) {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
 
@@ -90,7 +87,7 @@ public final class UIComponents {
 
     static public void switchTab(int idx, MainFrame mainFrame) {
         switch (idx) {
-            case 0 -> mainFrame.switchPanel(new PetHomePanel(mainFrame));
+            case 0 -> mainFrame.switchPanel(new HomePanel(mainFrame));
             case 1 -> mainFrame.switchPanel(new CalendarPanel(mainFrame));
             case 2 -> mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
             case 3 -> mainFrame.switchPanel(new PetTipsPanel(mainFrame));
@@ -99,7 +96,6 @@ public final class UIComponents {
         }
     }
 
-    // 🔹 탭 하나 만드는 로직도 같이 묶어두기
     private static Component createTab(String title, String iconPath) {
         JPanel tab = new JPanel(new BorderLayout());
         tab.setOpaque(false);
@@ -116,5 +112,22 @@ public final class UIComponents {
         tab.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         tab.add(label, BorderLayout.CENTER);
         return tab;
+    }
+
+    public static JButton createSearchButton(MainFrame mainFrame, JPanel thisPanel) {
+        JButton btn = new JButton();
+        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setFocusPainted(false);
+        btn.setOpaque(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btn.setPreferredSize(new Dimension(32, 32));
+        btn.setMargin(new Insets(0, 0, 0, 0));
+
+        btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame, thisPanel)));
+
+        return btn;
     }
 }

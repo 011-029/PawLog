@@ -1,17 +1,33 @@
 package uitest;
 
+import core.Pet;
+import core.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.time.LocalDate;
 
-public class HealthFormPanel extends JPanel {
-    private final MainFrame mainFrame;
+public class HealthFormPanel extends Base {
+    private DatePickerPanel dateField;
+    private LabeledTextField mealField;
+    private LabeledTextField waterField;
+    private LabeledTextField weightField;
     private JTextArea memoArea;
     private JToggleButton[] brushButtons;
 
+    private User user;
+    private Pet pet;
+
+    private final MainFrame mainFrame;
+
     public HealthFormPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -48,19 +64,19 @@ public class HealthFormPanel extends JPanel {
         listPanel.add(Box.createVerticalStrut(24));
 
         //날짜
-        DatePickerPanel dateField = new DatePickerPanel();
+        dateField = new DatePickerPanel();
         listPanel.add(dateField);
 
         //식사량
-        LabeledTextField mealField = new LabeledTextField("식사 횟수", "예) 3 ");
+        mealField = new LabeledTextField("식사 횟수", "예) 3 ");
         listPanel.add(mealField);
 
         //음수량
-        LabeledTextField waterField = new LabeledTextField("음수량 (ml)", "예) 100" );
+        waterField = new LabeledTextField("음수량 (ml)", "예) 100" );
         listPanel.add(waterField);
 
         //몸무게
-        LabeledTextField weightField = new LabeledTextField("몸무게", "예) 3.5");
+        weightField = new LabeledTextField("몸무게", "예) 3.5");
         listPanel.add(weightField);
 
         //빗질 여부
@@ -73,6 +89,10 @@ public class HealthFormPanel extends JPanel {
 
         String[] brushed = {"YES", "NO"};
         brushButtons = new JToggleButton[brushed.length];
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(brushButtons[0]); // YES
+        group.add(brushButtons[1]); // NO
 
         JPanel brushRow = new JPanel();
         brushRow.setOpaque(false);
@@ -170,8 +190,96 @@ public class HealthFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // TODO: 실제 저장 로직 연결
-        // saveBtn.addActionListener(e -> { ... });
+        saveBtn.addActionListener(e -> {
+            try {
+                // 1️⃣ 유저/펫 기본 전제 체크 (항상 있음)
+                if (user == null || pet == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
+                    return;
+                }
+
+                // 2️⃣ 날짜 읽기
+                LocalDate date = dateField.getDate();
+                if (date == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "날짜를 선택해주세요.");
+                    return;
+                }
+
+                // 3️⃣ 숫자값 파싱
+                int meal = mealField.getIntOrDefault(-1);
+                int water = waterField.getIntOrDefault(-1);
+
+                double weight;
+                try {
+                    weight = Double.parseDouble(weightField.getText().trim());
+                } catch (Exception ex2) {
+                    JOptionPane.showMessageDialog(mainFrame, "몸무게는 숫자로 입력해야 합니다.");
+                    return;
+                }
+
+                // 4️⃣ 필수 입력 유효성 검사
+                if (meal < 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "식사 횟수를 입력해주세요.");
+                    return;
+                }
+                if (water < 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "음수량을 입력해주세요.");
+                    return;
+                }
+                if (weight <= 0) {
+                    JOptionPane.showMessageDialog(mainFrame, "몸무게를 입력해주세요.");
+                    return;
+                }
+
+                // 5️⃣ 빗질 여부 처리 (YES/NO 두 개 중 하나만 선택)
+                String brushed = null;
+                if (brushButtons[0].isSelected()) brushed = "yes";
+                if (brushButtons[1].isSelected()) brushed = "no";
+
+                if (brushed == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "빗질 여부를 선택해주세요.");
+                    return;
+                }
+
+                // 6️⃣ 메모 (없으면 "0")
+                String memo = memoArea.getText().trim();
+                if (memo.isEmpty()) memo = "0";
+
+                // 7️⃣ 디버그 출력
+                System.out.println("===== [HealthForm] 입력 디버그 =====");
+                System.out.println("date = " + date);
+                System.out.println("meal = " + meal);
+                System.out.println("water = " + water);
+                System.out.println("weight = " + weight);
+                System.out.println("brushed = " + brushed);
+                System.out.println("memo = " + memo);
+                System.out.println("=================================");
+
+                // 8️⃣ 실제 저장
+                healthMgr.addNewRecord(
+                        pet,
+                        date,
+                        meal,
+                        water,
+                        weight,
+                        brushed,
+                        memo
+                );
+
+                // 성공 메시지 + 이동
+                JOptionPane.showMessageDialog(mainFrame, "건강 기록이 저장되었습니다!");
+                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        mainFrame,
+                        "저장 중 오류 발생: " + ex.getMessage(),
+                        "오류",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;

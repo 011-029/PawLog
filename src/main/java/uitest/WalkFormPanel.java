@@ -1,26 +1,38 @@
 package uitest;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import core.Pet;
+import core.User;
 import util.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 
-public class WalkFormPanel extends JPanel {
+public class WalkFormPanel extends Base {
 
     private final MainFrame mainFrame;
 
     // 입력 필드들 (날짜 필드는 클래스 만들음 (여러번 쓰여서))
-
+    private DatePickerPanel dateField;
     private JSpinner timeSpinner;        // 산책 시간(분)
     private JTextField distanceField;    // 산책 거리(km 등)
     private JTextArea memoArea;          // 메모
     private JTextField photoField;       // 사진 경로
 
+    private User user;
+    private Pet pet;
+
     public WalkFormPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -35,36 +47,6 @@ public class WalkFormPanel extends JPanel {
 
         add(contentWrapper, BorderLayout.CENTER);
     }
-
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
 
     /* ================== 중앙 폼 ================== */
     private JComponent createFormContent() {
@@ -245,15 +227,57 @@ public class WalkFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // TODO: 실제 저장 로직 연결
-        // saveBtn.addActionListener(e -> { ... });
+        saveBtn.addActionListener(e -> {
+            try {
+                User user = mainFrame.getLoggedInUser();
+                Pet pet = mainFrame.getLoggedInUserPet();
+                if (user == null || pet == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보가 없습니다.");
+                    return;
+                }
+
+                LocalDate date = dateField.getDate();
+
+                int walkTime = (int) timeSpinner.getValue();
+
+                // 거리 (선택사항 → 없으면 0)
+                double distance = 0;
+                if (!distanceField.getText().trim().isEmpty()) {
+                    distance = Double.parseDouble(distanceField.getText().trim());
+                }
+
+                // 사진 저장
+                String inputPath = photoField.getText().trim();
+                String savedPath = savePhotoToLocal(inputPath);
+
+                // 메모
+                String memo = memoArea.getText().trim();
+                if (memo.isEmpty()) memo = "0";
+
+                walkMgr.addNewRecord(
+                        pet,
+                        date,
+                        walkTime,
+                        distance,
+                        savedPath,
+                        memo
+                );
+
+                JOptionPane.showMessageDialog(mainFrame, "산책 기록이 저장되었습니다!");
+                mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(mainFrame, "저장 중 오류: " + ex.getMessage());
+            }
+        });
+
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
     }
 
     /* ================== 유틸 ================== */
-
     private void openFileChooser() {
         JFileChooser chooser = new JFileChooser();
         int result = chooser.showOpenDialog(this);
@@ -261,6 +285,34 @@ public class WalkFormPanel extends JPanel {
             photoField.setText(chooser.getSelectedFile().getAbsolutePath());
         }
     }
+
+    private String savePhotoToLocal(String originalPath) {
+        if (originalPath == null || originalPath.isEmpty())
+            return "0";  // 사진 없는 경우
+
+        try {
+            File src = new File(originalPath);
+            if (!src.exists()) return "0";
+
+            // 저장 폴더 (없으면 자동 생성)
+            File dir = new File("data/walk_photos");
+            if (!dir.exists()) dir.mkdirs();
+
+            // 저장될 파일 이름 => timestamp_원본이름
+            String newFileName = System.currentTimeMillis() + "_" + src.getName();
+            File dest = new File(dir, newFileName);
+
+            // 파일 복사
+            Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            return dest.getPath();   // 실제 저장된 경로 문자열 반환
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "0";
+        }
+    }
+
 
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage();

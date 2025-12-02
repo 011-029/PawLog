@@ -2,7 +2,7 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import core.User;
-import core.UserMgr;
+import util.DataLoader;
 import util.PlaceholderPasswordField;
 import util.PlaceholderTextField;
 
@@ -10,13 +10,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class LoginPanel extends JPanel {
+public class LoginPanel extends Base {
     private final MainFrame mainFrame;
 
     private JTextField idField;
     private JPasswordField pwField;
 
     public LoginPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
 
         setLayout(new BorderLayout());
@@ -69,7 +70,6 @@ public class LoginPanel extends JPanel {
         wrapper.setOpaque(false);
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
 
-
         // ⭐ 왼쪽·오른쪽 여백 확보
         wrapper.add(Box.createHorizontalGlue());
 
@@ -79,13 +79,6 @@ public class LoginPanel extends JPanel {
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setMaximumSize(new Dimension(360, Integer.MAX_VALUE));
         form.setAlignmentX(Component.LEFT_ALIGNMENT);  // 이게 핵심!
-
-        /* --- ID 라벨 (왼쪽 정렬) --- */
-//        JLabel idLabel = new JLabel("ID");
-//        idLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        form.add(idLabel);
-
-//        form.add(Box.createVerticalStrut(4));
 
         /* --- ID 입력창 (가운데 정렬) --- */
         idField = new PlaceholderTextField("아이디 입력");
@@ -102,13 +95,6 @@ public class LoginPanel extends JPanel {
         form.add(idField);
 
         form.add(Box.createVerticalStrut(5));
-
-//        /* --- PW 라벨 (왼쪽 정렬) --- */
-//        JLabel pwLabel = new JLabel("PW");
-//        pwLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        form.add(pwLabel);
-
-//        form.add(Box.createVerticalStrut(4));
 
         /* --- PW 입력창 --- */
         pwField = new PlaceholderPasswordField("비밀번호 입력");
@@ -136,10 +122,8 @@ public class LoginPanel extends JPanel {
         loginBtn.setBackground(UIConstants.PRIMARY);
         loginBtn.setForeground(UIConstants.TEXT_WHITE);
         loginBtn.setFont(UIConstants.FONT_BOLD_14);
-
-//        loginBtn.putClientProperty("JButton.buttonType", "roundRect");
+        pwField.addActionListener(e -> loginBtn.doClick());
         loginBtn.putClientProperty("FlatLaf.style", "arc:10");
-
         loginBtn.addActionListener(e -> doLogin());
         form.add(loginBtn);
 
@@ -155,9 +139,6 @@ public class LoginPanel extends JPanel {
         signUpBtn.setBackground(Color.WHITE);
         signUpBtn.setBorder(BorderFactory.createEmptyBorder());
         signUpBtn.setFont(UIConstants.FONT_REGULAR_12);
-
-//        signUpBtn.putClientProperty("JButton.buttonType", "roundRect");
-//        signUpBtn.putClientProperty("FlatLaf.style", "arc:15; borderColor:#DDDDDD; borderWidth:1");
 
         signUpBtn.addActionListener(e -> mainFrame.switchPanel(new SignUpPanel(mainFrame)));
         form.add(signUpBtn);
@@ -175,21 +156,32 @@ public class LoginPanel extends JPanel {
         requestFocusInWindow(); // 패널 자체에 포커스 요청 (패널은 포커스 불가 → 아무 곳에도 안 감)
     }
 
-
     /* 로그인 로직 */
     private void doLogin() {
         String id = idField.getText().trim();
         String pw = new String(pwField.getPassword());
 
-        UserMgr userMgr = UserMgr.getInstance();
         User user = userMgr.login(id, pw);
 
-//        if (user == null) {
-//            JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호를 확인해주세요.");
-//            return;
-//        }
+        if(id.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "아이디를 입력하세요.");
+            return;
+        }
+        if (pw.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "비밀번호를 입력하세요.");
+            return;
+        }
 
-//        mainFrame.setLoggedInUser(user);
-        mainFrame.switchPanel(new PetHomePanel(mainFrame));
+        if (user == null) {
+            JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호를 확인해주세요.");
+            idField.setText("");
+            pwField.setText("");
+            idField.requestFocus();
+        } else {
+            mainFrame.setLoggedInUser(user);
+            mainFrame.switchPanel(new HomePanel(mainFrame));
+            // TODO: 아래 테스트용 코드 추후 삭제 (1줄)
+            System.out.println("로그인 ID: " + user.getId());
+        }
     }
 }

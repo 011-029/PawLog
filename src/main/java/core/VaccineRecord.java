@@ -155,5 +155,21 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
     private String safe(String s) {
         return (s == null ? "" : s.trim());
     }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getVaccine() {
+        return vaccine;
+    }
+
+    public void setVaccine(String vaccine) {
+        this.vaccine = vaccine;
+    }
 }
 

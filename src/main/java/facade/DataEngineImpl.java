@@ -1,6 +1,7 @@
 // TODO: 예시 코드 임시로 붙여넣기 한 것임. 추후 수정 필요
 package facade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mgr.Manageable;
@@ -41,4 +42,11 @@ public abstract class DataEngineImpl<T extends Manageable> extends Manager<T> im
         Manageable s = find(kwd);
         mList.remove(s);
     }
+
+    public ArrayList<T> getAll() {
+        ArrayList<T> records = new ArrayList<>();
+        records.addAll(mList);
+        return records;
+    }
+
 }

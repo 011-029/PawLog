@@ -17,9 +17,9 @@ public class WalkMgr extends PetRecordMgr<WalkRecord> {
     }
 
     public void addNewRecord(Pet pet, LocalDate date, int walkTime,
-                             String photoPath, String memo) {
+                             double distance, String photoPath, String memo) {
         WalkRecord r = new WalkRecord();
-        r.apply(pet, date, walkTime, photoPath, memo);
+        r.apply(pet, date, walkTime, distance, photoPath, memo);
         saveWithIndexId(r);
     }
 

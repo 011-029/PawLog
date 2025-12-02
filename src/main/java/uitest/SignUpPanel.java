@@ -1,7 +1,5 @@
 package uitest;
 
-import core.User;
-import core.UserMgr;
 import util.PlaceholderPasswordField;
 import util.PlaceholderTextField;
 
@@ -9,14 +7,16 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class SignUpPanel extends JPanel {
+public class SignUpPanel extends Base {
     private final MainFrame mainFrame;
 
     private JTextField idField;
     private JPasswordField pwField;
     private JTextField nameField;
+    private boolean idCheck = false;
 
     public SignUpPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
 
         setLayout(new BorderLayout());
@@ -60,15 +60,6 @@ public class SignUpPanel extends JPanel {
         add(centerWrapper, BorderLayout.CENTER);
     }
 
-    /* 발바닥 아이콘 영역 (가운데 정렬) */
-    private JComponent createLogoArea() {
-        // 그냥 라벨 하나로 충분!
-        ImageIcon icon = new ImageIcon("logo.png");
-        Image scaled = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        JLabel logo = new JLabel(new ImageIcon(scaled));
-        return logo;
-    }
-
     private JComponent createWelcomeText() {
         // 전체 폭을 쓰되, 글씨는 왼쪽에 붙게 할 래퍼 패널
         JPanel wrapper = new JPanel();
@@ -108,7 +99,6 @@ public class SignUpPanel extends JPanel {
         form.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         /* ===================== ID 입력 + 중복확인 버튼 ===================== */
-
         JPanel idRow = new JPanel();
         idRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         idRow.setMinimumSize(new Dimension(0, 45));
@@ -137,7 +127,6 @@ public class SignUpPanel extends JPanel {
         checkBtn.setBackground(UIConstants.PRIMARY_LIGHT);
         checkBtn.setForeground(UIConstants.TEXT_PRIMARY);
         checkBtn.setOpaque(true);
-//        checkBtn.setBorderPainted(false);
         // 안쪽 여백(패딩 느낌) 줄이기
         checkBtn.setMargin(new Insets(0, 0, 0, 0));  // top, left, bottom, right
         checkBtn.setFocusPainted(false);
@@ -145,6 +134,7 @@ public class SignUpPanel extends JPanel {
         checkBtn.setMaximumSize(new Dimension(80, 45));
         checkBtn.putClientProperty("FlatLaf.style", "arc:10; borderColor:#DDDDDD; borderWidth:1");
         checkBtn.setBackground(Color.WHITE);
+        checkBtn.addActionListener(e -> doDuplicatedCheck());
 
         idRow.add(checkBtn);
 
@@ -182,7 +172,7 @@ public class SignUpPanel extends JPanel {
         form.add(nameField);
         form.add(Box.createVerticalStrut(20));
 
-        /* --- 로그인 버튼 --- */
+        /* --- 회원가입 버튼 --- */
         JButton signUpBtn = new JButton("회원가입");
         signUpBtn.setFocusPainted(false);
         signUpBtn.setPreferredSize(new Dimension(360, 48));
@@ -191,13 +181,71 @@ public class SignUpPanel extends JPanel {
         signUpBtn.setBackground(UIConstants.PRIMARY);
         signUpBtn.putClientProperty("FlatLaf.style", "arc:10");
 
-        signUpBtn.addActionListener(e -> mainFrame.switchPanel(new LoginPanel(mainFrame)));
+        signUpBtn.addActionListener(e -> doSignUp());
         form.add(signUpBtn);
         form.add(Box.createVerticalStrut(10));
 
         return form;
     }
 
+    private void doSignUp() {
+        String id = idField.getText().trim();
+        String pw = new String(pwField.getPassword()).trim();
+        String name = nameField.getText();
+
+        if(id.isBlank()) {
+            JOptionPane.showMessageDialog(this, "아이디를 입력하세요.");
+            return;
+        }
+        if (pw.isBlank()) {
+            JOptionPane.showMessageDialog(this, "비밀번호를 입력하세요.");
+            return;
+        }
+        if (name.isBlank()) {
+            JOptionPane.showMessageDialog(this, "이름을 입력하세요.");
+            return;
+        }
+
+        if (!idCheck) {
+            JOptionPane.showMessageDialog(this,
+                    "아이디 중복 확인을 해주세요.",
+                    "회원가입 실패",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        boolean result = userMgr.signUp(id, pw, name);
+
+        if (result) {
+            JOptionPane.showMessageDialog(this,
+                    "회원가입 성공!\n"
+                    + name +"님 환영합니다.");
+            mainFrame.switchPanel(new LoginPanel(mainFrame));
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "회원가입에 실패하였습니다.",
+                    "회원가입 실패",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    private void doDuplicatedCheck() {
+        String id = idField.getText().trim();
+        boolean result = userMgr.isDuplicatedId(id);
+        if (!result) {
+            JOptionPane.showMessageDialog(this,
+                    "사용 가능한 아이디입니다.",
+                    "중복 확인",
+                    JOptionPane.INFORMATION_MESSAGE);
+            idCheck = true;
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "중복된 아이디입니다.",
+                    "중복 확인",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
     @Override
     public void addNotify() {

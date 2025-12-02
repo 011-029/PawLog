@@ -1,6 +1,10 @@
 package mgr;
 
+import core.User;
 import facade.DataEngineImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PetRecordMgr<T extends PetOwned & Manageable>
         extends DataEngineImpl<T> {
@@ -13,6 +17,15 @@ public abstract class PetRecordMgr<T extends PetOwned & Manageable>
             if (m.getOwnerId().equals(ownerId))
                 m.print();
         }
+    }
+
+    public ArrayList<T> getAllByOwner(User u) {
+        ArrayList<T> result = new ArrayList<>();
+        for (T m : mList) {
+            if (m.getOwnerId().equals(u.getId()))
+                result.add(m);
+        }
+        return result;
     }
 
     public T findByIndexId(int indexId) {

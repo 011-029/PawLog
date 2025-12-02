@@ -40,6 +40,10 @@ public class MedicineRoutineMgr extends PetRecordMgr<MedicineRoutine> {
         MedicineRoutine r = new MedicineRoutine();
         r.applyFromMedicalRecord(m);
         saveWithIndexId(r);
+
+        System.out.println("[DEBUG] createRoutineFromMedicalRecord 호출됨");
+        System.out.println("[DEBUG] 대상 MedicalRecord id = " + m.getIndexId());
+
         return r;
     }
 

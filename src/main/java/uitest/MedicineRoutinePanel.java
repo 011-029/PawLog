@@ -2,33 +2,51 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import core.MedicineRoutine;
+import core.Pet;
+import core.User;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
-public class MedicineRoutinePanel extends JPanel {
+public class MedicineRoutinePanel extends Base {
 
     private final MainFrame mainFrame;
+    private User user;
+    private Pet pet;
+    protected ArrayList<MedicineRoutine> records;
 
     public MedicineRoutinePanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+        this.records = medicineRoutineMgr.getAllByOwner(user);
+
+        // TODO: 아래 테스트용 코드 추후 삭제 (2줄)
+        System.out.println("루틴패널 ID: " + user.getId());
+        System.out.println("루틴패널 펫: " + pet.getName());
 
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);   // 없으면 Color.WHITE 써도 됨
+        setBackground(Color.WHITE);
 
-        // ⬇ 헤더 + 스크롤 콘텐츠만 패딩을 주는 래퍼
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new HomePanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createContent(), BorderLayout.CENTER);
 
-        // 가운데는 패딩 있는 래퍼
         add(contentWrapper, BorderLayout.CENTER);
 
-        // ⬇ 하단 탭바는 패딩 없는 SOUTH에 바로!
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
@@ -39,19 +57,21 @@ public class MedicineRoutinePanel extends JPanel {
         listPanel.setOpaque(false);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(24, 10, 24, 10));
-        listPanel.setAlignmentY(0f);   // ★ 추가
+        listPanel.setAlignmentY(0f);
 
-        // 🔹 제목 + 검색 아이콘 한 줄
+        // 헤더: 제목 + 검색버튼 + 필터버튼
         JPanel header = new JPanel();
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // 제목
         JLabel title = new JLabel("복용 루틴");
         title.setFont(UIConstants.FONT_EXTRABOLD_24);
         title.setForeground(UIConstants.TEXT_PRIMARY);
         header.add(title);
 
+        // 필터 버튼
         JButton filterBtn = new JButton();
         filterBtn.setIcon(new FlatSVGIcon("icons/filter.svg", 22, 22));
         filterBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -61,82 +81,52 @@ public class MedicineRoutinePanel extends JPanel {
         filterBtn.setOpaque(false);
         filterBtn.setPreferredSize(new Dimension(32, 32));
 
-        // 오른쪽 정렬 후 버튼 추가
         header.add(Box.createHorizontalGlue());
-        header.add(filterBtn);   // ⬅ 이거!
-        header.add(Box.createHorizontalStrut(8));   // ← 여기에 8px 여백 추가!
-        header.add(createSearchButton());
-
+        header.add(filterBtn);
+        header.add(Box.createHorizontalStrut(8));
+        header.add(UIComponents.createSearchButton(mainFrame, this));
 
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
 
-        // 🔹 오늘 복용 루틴 섹션
+        // 오늘 복용 루틴 섹션 -----------------------
         JLabel todayLabel = createSectionLabel("오늘 복용 루틴");
         listPanel.add(todayLabel);
         listPanel.add(Box.createVerticalStrut(10));
 
-        // --- 아래는 그대로 카드들 추가 ---
-        JPanel card1 = createRoutineCard(
-                "복용루틴 1",
-                "심장사상충약 / 하루 2알",
-                "10:00AM , 2:00PM"
-        );
-        listPanel.add(card1);
-        listPanel.add(Box.createVerticalStrut(16));
+        String todayDOW = LocalDate.now()
+                .getDayOfWeek()
+                .getDisplayName(TextStyle.SHORT, Locale.KOREAN);
 
-        JPanel card2 = createRoutineCard(
-                "복용루틴 2",
-                "약 정보를 입력해주세요",
-                ""
-        );
-        listPanel.add(card2);
-        listPanel.add(Box.createVerticalStrut(16));
+        // 데이터 불러와서 카드 리스트 생성
+        for (MedicineRoutine m : records) {
+            ArrayList<String> takenDOW = m.getTakenDOW();
+            if (takenDOW.contains(todayDOW)) {
+                JPanel card = createRoutineCard(m);
+                listPanel.add(card);
+                listPanel.add(Box.createVerticalStrut(16));
+            }
+        }
 
-        // 🔹 전체 루틴 섹션
+        // 전체 루틴 섹션 -----------------------
         listPanel.add(Box.createVerticalStrut(8));
         JLabel allLabel = createSectionLabel("전체 루틴");
         listPanel.add(allLabel);
         listPanel.add(Box.createVerticalStrut(10));
 
+        // 데이터 불러와서 카드 리스트 생성
+        for (MedicineRoutine m : records) {
+            JPanel card = createRoutineCard(m);
+            listPanel.add(card);
+            listPanel.add(Box.createVerticalStrut(16));
+        }
 
-        JPanel card3 = createRoutineCard(
-                "복용루틴 2",
-                "약 정보를 입력해주세요",
-                ""
-        );
-        listPanel.add(card3);
-        listPanel.add(Box.createVerticalStrut(16));
-
-        JPanel card4 = createRoutineCard(
-                "복용루틴 2",
-                "약 정보를 입력해주세요",
-                ""
-        );
-        listPanel.add(card4);
-        listPanel.add(Box.createVerticalStrut(16));
-
-        JPanel card5 = createRoutineCard(
-                "복용루틴 2",
-                "약 정보를 입력해주세요",
-                ""
-        );
-        listPanel.add(card5);
-        listPanel.add(Box.createVerticalStrut(16));
-
-        JPanel card6 = createRoutineCard(
-                "복용루틴 2",
-                "약 정보를 입력해주세요",
-                ""
-        );
-        listPanel.add(card6);
-        listPanel.add(Box.createVerticalStrut(16));
-
-        // 🔹 리스트를 한 번 더 싸서 항상 위쪽에 붙도록
+        // 리스트를 한 번 더 싸서 항상 위쪽에 붙도록
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
-        listWrapper.add(listPanel, BorderLayout.NORTH);   // ⭐ 중요: NORTH에 붙이기
+        listWrapper.add(listPanel, BorderLayout.NORTH);
 
+        // 스크롤 옵션: 스크롤바 X, 속도 30
         JScrollPane scroll = new JScrollPane(listWrapper);
         scroll.setBorder(null);
         scroll.getViewport().setOpaque(false);
@@ -154,60 +144,81 @@ public class MedicineRoutinePanel extends JPanel {
         label.setFont(UIConstants.FONT_SEMIBOLD_18);
         label.setForeground(UIConstants.TEXT_PRIMARY);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setBorder(new EmptyBorder(0, 4, 4, 4)); // 살짝 패딩만
+        label.setBorder(new EmptyBorder(0, 4, 4, 4));
         return label;
     }
 
     /** 개별 복용 루틴 카드 */
-    private JPanel createRoutineCard(String title, String desc, String timeText) {
+    protected JPanel createRoutineCard(MedicineRoutine m) {
+        String medicineName = m.getMedicineName();
+        String takenTime = m.getTakenTime();
+        ArrayList<String> takenDOW = m.getTakenDOW();
+        String takenDOWString;
+        if (takenDOW.size() == 7) {
+            takenDOWString = "매일";
+        } else {
+            takenDOWString = takenDOW.stream()
+                    .map(d -> d + "요일")
+                    .collect(Collectors.joining(", "));
+        }
+        String dosage = String.format("%dmg", m.getDosage());
+
+        boolean isTaken = m.getIsTaken();
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
         card.setBackground(Color.WHITE);
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
-        card.setPreferredSize(new Dimension(310, 100));
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        card.setPreferredSize(new Dimension(310, 102));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 102));
         card.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16),
                 UIConstants.GRAY_SOFT, 0.5f, 10));
 
-        // 텍스트 영역 (왼쪽)
+        // 텍스트 영역
         JPanel textPanel = new JPanel();
         textPanel.setOpaque(false);
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
-        JLabel titleLabel = new JLabel(title);
+        JLabel titleLabel = new JLabel(medicineName);
         titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
         titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel descLabel = new JLabel(desc);
-        descLabel.setFont(UIConstants.FONT_REGULAR_14);
-        descLabel.setForeground(UIConstants.TEXT_SECONDARY);
+        JLabel label1 = new JLabel(takenDOWString);
+        label1.setFont(UIConstants.FONT_REGULAR_14);
+        label1.setForeground(UIConstants.TEXT_SECONDARY);
+
+
+        String line = dosage + "  |  " + takenTime;
+        JLabel label2 = new JLabel(line);
+        label2.setFont(UIConstants.FONT_REGULAR_14);
+        label2.setForeground(UIConstants.TEXT_SECONDARY);
 
         textPanel.add(titleLabel);
         textPanel.add(Box.createVerticalStrut(4));
-        textPanel.add(descLabel);
-
-        if (!timeText.isEmpty()) {
-            JLabel timeLabel = new JLabel(timeText);
-            timeLabel.setFont(UIConstants.FONT_REGULAR_14);
-            timeLabel.setForeground(UIConstants.TEXT_SECONDARY);
-            textPanel.add(Box.createVerticalStrut(4));
-            textPanel.add(timeLabel);
-        }
+        textPanel.add(label1);
+        textPanel.add(Box.createVerticalStrut(2));
+        textPanel.add(label2);
 
         card.add(textPanel, BorderLayout.CENTER);
 
+        // 복용 체크 체크박스
         JCheckBox checkBox = new JCheckBox();
         checkBox.setOpaque(false);
         checkBox.setFocusPainted(false);
         checkBox.setBorderPainted(false);
         checkBox.setContentAreaFilled(false);
-
-        // 둥근 스타일 유지
         checkBox.putClientProperty("JCheckBox[styleClass]", "round");
+        checkBox.setSelected(isTaken);
 
+        // 루틴 체크박스 체크/해제 시 복용기록 생성/삭제
+        checkBox.addItemListener(e -> {
+            boolean newCheck = checkBox.isSelected();
+            m.toggleTaken();
+            System.out.println(m.getIsTaken());
 
-        // 나중에 실제 삭제 로직 연결
-        // checkBtn.addActionListener(e -> checkRoutine(...));
+            if (!newCheck) {
+                medicineRecordMgr.removeIfUnChecked(m);
+            }
+        });
 
         JPanel right = new JPanel();
         right.setOpaque(false);
@@ -219,25 +230,23 @@ public class MedicineRoutinePanel extends JPanel {
 
         card.add(right, BorderLayout.EAST);
 
+        // hover 효과
+        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        card.addMouseListener(new MouseAdapter() {
+            Color normalBg = Color.WHITE;
+            Color hoverBg = new Color(250, 250, 250);
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(hoverBg);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(normalBg);
+            }
+        });
+
         return card;
-    }
-
-    private JButton createSearchButton() {
-        JButton btn = new JButton();
-        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        // 살짝 여유
-        btn.setPreferredSize(new Dimension(32, 32));
-        btn.setMargin(new Insets(0, 0, 0, 0));
-
-        // TODO: 눌렀을 때 검색 기능 연결
-        btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame)));
-
-        return btn;
     }
 }

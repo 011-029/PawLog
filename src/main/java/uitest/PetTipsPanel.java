@@ -2,20 +2,23 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import content.PetTip;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 
-public class PetTipsPanel extends JPanel {
+public class PetTipsPanel extends Base {
 
     private final MainFrame mainFrame;
-    // 🔹 검색 결과 카드가 들어갈 곳
     private JPanel searchResultContainer;
+    private ArrayList<PetTip> petTips = petTipMgr.getAll();
 
     public PetTipsPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
 
         setLayout(new BorderLayout());
@@ -29,7 +32,7 @@ public class PetTipsPanel extends JPanel {
         // 상단 공용 헤더 (뒤로가기 → PetHomePanel 예시)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
-                        mainFrame.switchPanel(new PetHomePanel(mainFrame))
+                        mainFrame.switchPanel(new HomePanel(mainFrame))
                 ),
                 BorderLayout.NORTH
         );
@@ -94,15 +97,21 @@ public class PetTipsPanel extends JPanel {
         cardRow.setLayout(new BoxLayout(cardRow, BoxLayout.X_AXIS));
         cardRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        String title1 = "고양이는 왜 높은 곳을 좋아할까?";
+        String title2 = "강아지가 배를 보이며 눕는 이유";
+
         JPanel card1 = createArticleCard(
-                "고양이도\n산책이\n필요할까?",
-                new FlatSVGIcon("icons/cat.svg", 28, 28)  // 고양이 아이콘
+                "고양이는 왜\n높은 곳을\n좋아할까?",
+                new FlatSVGIcon("icons/cat.svg", 28, 28),
+                title1
         );
 
         JPanel card2 = createArticleCard(
-                "사료를\n갑자기 바꾸면\n안 되는 이유",
-                new FlatSVGIcon("icons/dog.svg", 22, 22)
+                "강아지가\n배를 보이며\n눕는 이유",
+                new FlatSVGIcon("icons/dog.svg", 22, 22),
+                title2
         );
+
 
         cardRow.add(card1);
         cardRow.add(Box.createHorizontalStrut(16));
@@ -179,7 +188,7 @@ public class PetTipsPanel extends JPanel {
     }
 
     /** 기사 카드 1개 (큰 네모 + 아래 원형 아이콘) */
-    private JPanel createArticleCard(String text, Icon icon) {
+    private JPanel createArticleCard(String text, Icon icon, String title) {
         Color borderColor = UIConstants.GRAY_LIGHT;
 
         Color[] g = pickRandomGradient();
@@ -204,7 +213,7 @@ public class PetTipsPanel extends JPanel {
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                mainFrame.switchPanel(new PetTipsDetailPanel(mainFrame));
+                mainFrame.switchPanel(new PetTipsDetailPanel(mainFrame, title));
             }
         });
 

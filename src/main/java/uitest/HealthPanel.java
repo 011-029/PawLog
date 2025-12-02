@@ -1,20 +1,36 @@
 package uitest;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import core.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
-public class HealthPanel extends JPanel {
+public class HealthPanel extends Base {
 
     private final MainFrame mainFrame;
+    private User user;
+    private Pet pet;
+    protected ArrayList<HealthRecord> records;
 
     public HealthPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
+        this.records = healthMgr.getAllByOwner(user);
+
+        // TODO: 아래 테스트용 코드 추후 삭제 (2줄)
+        System.out.println("건강패널 ID: " + user.getId());
+        System.out.println("건강패널 펫: " + pet.getName());
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -24,42 +40,12 @@ public class HealthPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new PetHomePanel(mainFrame))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new HomePanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createContent(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
-
-    /* ================== 상단바 ================== */
-//    private JComponent createHeader() {
-//        JPanel header = new JPanel(new BorderLayout());
-//        header.setOpaque(false);
-//
-//        JButton backBtn = new JButton();
-//        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
-//        backBtn.setFocusPainted(false);
-//        backBtn.setBorderPainted(false);
-//        backBtn.setContentAreaFilled(false);
-//        backBtn.addActionListener(e -> mainFrame.switchPanel(new PetHomePanel(mainFrame)));
-//        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JButton bellBtn = new JButton("아이콘");
-//        bellBtn.setFocusPainted(false);
-//        bellBtn.setPreferredSize(new Dimension(40, 40));
-//        bellBtn.setBackground(Color.WHITE);
-//        bellBtn.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
-//
-//        header.add(backBtn, BorderLayout.WEST);
-//        header.add(logo, BorderLayout.CENTER);
-//        header.add(bellBtn, BorderLayout.EAST);
-//
-//        return header;
-//    }
 
     /* ================== 가운데 내용 ================== */
     private JComponent createContent() {
@@ -80,7 +66,7 @@ public class HealthPanel extends JPanel {
         header.add(title);
 
         header.add(Box.createHorizontalGlue());
-        header.add(createSearchButton());
+        header.add(UIComponents.createSearchButton(mainFrame, this));
 
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
@@ -90,22 +76,13 @@ public class HealthPanel extends JPanel {
         listPanel.add(chartCard);
         listPanel.add(Box.createVerticalStrut(24));
 
-        // 🔹 예시 건강 기록 카드들
-        JPanel h1 = createHealthCard(
-                "2025-11-29",
-                "체중 6.2kg · 식사량 보통",
-                "오늘은 산책도 길게 해서 컨디션 좋아 보임"
-        );
-        listPanel.add(h1);
-        listPanel.add(Box.createVerticalStrut(16));
+        // 데이터 불러와서 리스트 생성
+        for (HealthRecord r : records) {
+            JPanel card = createHealthCard(r);
 
-        JPanel h2 = createHealthCard(
-                "2025-11-28",
-                "체중 6.0kg · 식사량 적음",
-                "사료를 조금 남김 · 물은 평소보다 많이 마심"
-        );
-        listPanel.add(h2);
-        listPanel.add(Box.createVerticalStrut(16));
+            listPanel.add(card);
+            listPanel.add(Box.createVerticalStrut(16));
+        }
 
         // 스크롤에 감싸기 + 항상 위에 붙게 래퍼 사용
         JPanel listWrapper = new JPanel(new BorderLayout());
@@ -146,11 +123,31 @@ public class HealthPanel extends JPanel {
 
         card.add(title, BorderLayout.NORTH);
 
-        // 예시 데이터 (날짜 순으로)
-        double[] weights = {6.0, 6.1, 6.05, 6.2, 6.15};
-        String[] labels = {"11-25", "11-26", "11-27", "11-28", "11-29"};
+        ArrayList<HealthRecord> recent5 = new ArrayList<>(
+        records.stream()
+                .sorted(Comparator.comparing(HealthRecord::getDate).reversed())
+                .limit(5)
+                .toList()
+        );
+        double[] weights = recent5.stream()
+                .mapToDouble(HealthRecord::getWeight)
+                .toArray();
+        for (int i = 0; i < weights.length / 2; i++) {
+            double tmp = weights[i];
+            weights[i] = weights[weights.length - 1 - i];
+            weights[weights.length - 1 - i] = tmp;
+        }
 
-        WeightChartPanel chart = new WeightChartPanel(weights, labels);
+        String[] dateLabels = recent5.stream()
+                .map(r -> r.getDate().toString().substring(5))
+                .toArray(String[]::new);
+        for (int i = 0; i < dateLabels.length / 2; i++) {
+            String tmp = dateLabels[i];
+            dateLabels[i] = dateLabels[dateLabels.length - 1 - i];
+            dateLabels[dateLabels.length - 1 - i] = tmp;
+        }
+
+        WeightChartPanel chart = new WeightChartPanel(weights, dateLabels);
         chart.setOpaque(false);
         card.add(chart, BorderLayout.CENTER);
 
@@ -190,7 +187,7 @@ public class HealthPanel extends JPanel {
             int y0 = top + chartH;
 
             // 배경
-            g2.setColor(new Color(245, 245, 245));
+            g2.setColor(new Color(248, 248, 248));
             g2.fillRoundRect(left, top, chartW, chartH, 12, 12);
 
             // 🔹 최소/최대 값 먼저 계산
@@ -228,7 +225,7 @@ public class HealthPanel extends JPanel {
                 g2.drawLine(left, y, left + chartW, y);
 
                 // 숫자 라벨
-                String text = String.format("%.1f", value);
+                String text = String.format("%.2f", value);
                 int strW = fm.stringWidth(text);
                 int textX = left - strW - 6;
                 int textY = y + fm.getAscent() / 2 - 2;
@@ -252,10 +249,10 @@ public class HealthPanel extends JPanel {
             }
 
             g2.setStroke(new BasicStroke(2f));
-            g2.setColor(new Color(90, 150, 255));
+            g2.setColor(UIConstants.PRIMARY);
             g2.draw(path);
 
-            g2.setColor(new Color(90, 150, 255));
+            g2.setColor(UIConstants.PRIMARY);
             for (int i = 0; i < n; i++) {
                 double t = (double) i / (n - 1);
                 int x = x0 + (int) (t * chartW);
@@ -276,17 +273,24 @@ public class HealthPanel extends JPanel {
 
             g2.dispose();
         }
-
     }
 
     /* ================== 건강 기록 카드 ================== */
-    private JPanel createHealthCard(String date, String summary, String memo) {
+    protected JPanel createHealthCard(HealthRecord r) {
+        LocalDate date = r.getDate();
+        int meal = r.getMeal();
+        int water = r.getWater();
+        double weight = r.getWeight();
+        boolean isBrushed = r.getIsBrushed();
+        String memo = r.getMemo();
+
         JPanel card = new JPanel(new BorderLayout());
+
         card.setOpaque(true);
         card.setBackground(Color.WHITE);
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        int cardHeight = 110;
+        int cardHeight = 125;
         card.setPreferredSize(new Dimension(310, cardHeight));
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, cardHeight));
         card.setMinimumSize(new Dimension(310, cardHeight));
@@ -300,19 +304,30 @@ public class HealthPanel extends JPanel {
         textPanel.setOpaque(false);
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
-        JLabel dateLabel = new JLabel(date);
+        JLabel dateLabel = new JLabel(date.toString());
         dateLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
         dateLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel summaryLabel = new JLabel(summary);
-        summaryLabel.setFont(UIConstants.FONT_REGULAR_14);
-        summaryLabel.setForeground(UIConstants.TEXT_SECONDARY);
-
         textPanel.add(dateLabel);
         textPanel.add(Box.createVerticalStrut(4));
-        textPanel.add(summaryLabel);
 
-        if (memo != null && !memo.isBlank()) {
+        String line1 = "식사 " + meal +"회  |  음수량 " + water + "ml";
+        JLabel label1 = new JLabel(line1);
+        label1.setFont(UIConstants.FONT_REGULAR_14);
+        label1.setForeground(UIConstants.TEXT_SECONDARY);
+
+        textPanel.add(label1);
+        textPanel.add(Box.createVerticalStrut(4));
+
+        String line2 = "체중 " + weight + "kg  |  빗질 " +
+                (isBrushed ? "O" : "X");
+        JLabel label2 = new JLabel(line2);
+        label2.setFont(UIConstants.FONT_REGULAR_14);
+        label2.setForeground(UIConstants.TEXT_SECONDARY);
+
+        textPanel.add(label2);
+
+        if (memo != null && !memo.isBlank() && !memo.equals("0")) {
             JLabel memoLabel = new JLabel(memo);
             memoLabel.setFont(UIConstants.FONT_REGULAR_14);
             memoLabel.setForeground(UIConstants.TEXT_SECONDARY);
@@ -320,80 +335,24 @@ public class HealthPanel extends JPanel {
             textPanel.add(memoLabel);
         }
 
+        // hover 효과
+        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        card.addMouseListener(new MouseAdapter() {
+            Color normalBg = Color.WHITE;
+            Color hoverBg = new Color(250, 250, 250);
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(hoverBg);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(normalBg);
+            }
+        });
+
         card.add(textPanel, BorderLayout.CENTER);
         return card;
     }
-
-    /* ================== 검색 버튼 ================== */
-    private JButton createSearchButton() {
-        JButton btn = new JButton();
-        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(32, 32));
-        btn.setMargin(new Insets(0, 0, 0, 0));
-
-        // 나중에 검색 기능 연결 가능
-        return btn;
-    }
-
-    /* ================== 하단 탭바 ================== */
-//    private JComponent createTabbedNav() {
-//        JTabbedPane tabs = new JTabbedPane(JTabbedPane.BOTTOM);
-//
-//        tabs.putClientProperty("JTabbedPane.tabWidthMode", "equal");
-//        tabs.putClientProperty("JTabbedPane.tabAreaAlignment", "fill");
-//        tabs.setPreferredSize(new Dimension(0, 60));
-//        tabs.putClientProperty("JTabbedPane.tabHeight", 59);
-//        tabs.putClientProperty("JTabbedPane.tabAreaInsets", "0,0,0,0");
-//        tabs.putClientProperty("JTabbedPane.contentAreaInsets", "0,0,0,0");
-//        tabs.setBorder(null);
-//
-//        tabs.addTab("홈", new JPanel());
-//        tabs.setTabComponentAt(0, createTab("홈", "calendar.png"));
-//
-//        tabs.addTab("캘린더", new JPanel());
-//        tabs.setTabComponentAt(1, createTab("캘린더", "calendar.png"));
-//
-//        tabs.addTab("기록", new JPanel());
-//        tabs.setTabComponentAt(2, createTab("기록추가", "calendar.png"));
-//
-//        tabs.addTab("매거진", new JPanel());
-//        tabs.setTabComponentAt(3, createTab("펫 간단팁", "calendar.png"));
-//
-//        tabs.addTab("설정", new JPanel());
-//        tabs.setTabComponentAt(4, createTab("설정", "calendar.png"));
-//
-//        return tabs;
-//    }
-//
-    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
-    }
-//
-//    private Component createTab(String title, String iconPath) {
-//        JPanel tab = new JPanel(new BorderLayout());
-//        tab.setOpaque(false);
-//
-//        ImageIcon original = new ImageIcon(iconPath);
-//        ImageIcon smallIcon = resizeIcon(original, 20, 20);
-//
-//        JLabel label = new JLabel(title, smallIcon, JLabel.CENTER);
-//        label.setFont(UIConstants.FONT_SEMIBOLD_12);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.BOTTOM);
-//        label.setIconTextGap(5);
-//        label.setForeground(Color.WHITE);
-//
-//        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 1, 0));
-//        tab.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-//
-//        tab.add(label, BorderLayout.CENTER);
-//        return tab;
-//    }
 }

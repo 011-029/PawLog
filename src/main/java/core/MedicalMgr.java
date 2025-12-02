@@ -20,6 +20,13 @@ public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
     public void addNewRecord(Pet pet, LocalDate date,
                              String hospital, String category, int cost,
                              String prescribedMedicine, Integer dosage, String routineTime, LocalDate startDate, LocalDate endDate) {
+        System.out.println("[DEBUG] addNewRecord() called with: ");
+        System.out.println("Pet=" + pet.getName() + ", Date=" + date + ", Hospital=" + hospital
+                + ", Category=" + category + ", Cost=" + cost +
+                ", Medicine=" + prescribedMedicine + ", Dosage=" + dosage +
+                ", RoutineTime=" + routineTime +
+                ", Start=" + startDate + ", End=" + endDate);
+
         MedicalRecord r = new MedicalRecord();
         r.apply(pet, date, hospital, category, cost, prescribedMedicine, dosage, routineTime, startDate, endDate);
         saveWithIndexId(r);
@@ -51,8 +58,18 @@ public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
         initNextIndexId();
     }
 
+    public void saveAll() {
+        saveToFile(FILE_PATH);
+    }
+
     @Override
     protected String getFilePath() {
         return FILE_PATH;
     }
+
+    public MedicalRecord getLastRecord() {
+        if (mList.isEmpty()) return null;
+        return mList.get(mList.size() - 1);
+    }
+
 }

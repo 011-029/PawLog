@@ -45,6 +45,8 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
 
         String e = scan.next();
         endDate = e.equals("0") ? null : LocalDate.parse(e);
+
+        checkTaken();
     }
 
     public void apply(Pet pet, String medicineName,
@@ -132,6 +134,12 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
         }
     }
 
+    public void checkTaken() {
+        MedicineRecordMgr mgr = MedicineRecordMgr.getInstance();
+        if (mgr.checkTaken(this))
+            this.isTaken = true;
+    }
+
     public MedicineRecord RoutineToRecord() {
         MedicineRecord r = new MedicineRecord();
         r.ownerId = this.ownerId;
@@ -164,6 +172,30 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
     @Override
     public int getIndexId() {
         return indexId;
+    }
+
+    public String getMedicineName() {
+        return medicineName;
+    }
+
+    public ArrayList<String> getTakenDOW() {
+        return takenDOW;
+    }
+
+    public String getTakenTime() {
+        return takenTime;
+    }
+
+    public int getDosage() {
+        return dosage;
+    }
+
+    public boolean getIsTaken() {
+        return isTaken;
+    }
+
+    public void setIsTaken(boolean isTaken) {
+        this.isTaken = isTaken;
     }
 
     @Override
