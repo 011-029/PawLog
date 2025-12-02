@@ -2,10 +2,9 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import core.MedicalRecord;
+import core.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
@@ -149,80 +148,73 @@ public class SearchPanel extends JPanel {
         MedicalRecordListPanel mp = new MedicalRecordListPanel(mainFrame);
         for (MedicalRecord r : mp.records) {
             if (r.matches(kwd)) {
-                MedicalRecordListPanel.MedicalCard card = new MedicalRecordListPanel.MedicalCard(r, mainFrame);
+                MedicalRecordListPanel.MedicalCard card
+                        = new MedicalRecordListPanel.MedicalCard(r, mainFrame);
                 card.setAlignmentX(Component.LEFT_ALIGNMENT);
                 searchResultContainer.add(card);
-                searchResultContainer.add(Box.createVerticalStrut(12));
-                System.out.println(r);
+                searchResultContainer.add(Box.createVerticalStrut(16));
             }
-            searchResultContainer.revalidate();
-            searchResultContainer.repaint();
         }
     }
 
+    private void searchVaccineRecord(String kwd) {
+        VaccineRecordListPanel vp = new VaccineRecordListPanel(mainFrame);
+        for (VaccineRecord r : vp.records) {
+            if (r.matches(kwd)) {
+                VaccineRecordListPanel.VaccineCard card
+                        = new VaccineRecordListPanel.VaccineCard(r, mainFrame);
+                card.setAlignmentX(Component.LEFT_ALIGNMENT);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(16));
+            }
+        }
+    }
 
-    /** 개별 복용 루틴 카드 */
-//    private JPanel createRoutineCard(String title, String desc, String timeText) {
-//        JPanel card = new JPanel(new BorderLayout());
-//        card.setOpaque(true);
-//        card.setBackground(Color.WHITE);
-//        card.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        card.setPreferredSize(new Dimension(310, 100));
-//        card.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16),
-//                UIConstants.GRAY_SOFT, 0.5f, 10));
-//
-//        // 텍스트 영역 (왼쪽)
-//        JPanel textPanel = new JPanel();
-//        textPanel.setOpaque(false);
-//        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-//
-//        JLabel titleLabel = new JLabel(title);
-//        titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
-//        titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JLabel descLabel = new JLabel(desc);
-//        descLabel.setFont(UIConstants.FONT_REGULAR_14);
-//        descLabel.setForeground(UIConstants.TEXT_SECONDARY);
-//
-//        textPanel.add(titleLabel);
-//        textPanel.add(Box.createVerticalStrut(4));
-//        textPanel.add(descLabel);
-//
-//        if (!timeText.isEmpty()) {
-//            JLabel timeLabel = new JLabel(timeText);
-//            timeLabel.setFont(UIConstants.FONT_REGULAR_14);
-//            timeLabel.setForeground(UIConstants.TEXT_SECONDARY);
-//            textPanel.add(Box.createVerticalStrut(4));
-//            textPanel.add(timeLabel);
-//        }
-//
-//        card.add(textPanel, BorderLayout.CENTER);
-//
-//        // 삭제( X ) 버튼 영역 (오른쪽)
-//        JButton checkBtn = new JButton("○");
-//        checkBtn.setFocusPainted(false);
-//        checkBtn.setBorder(null);
-//        checkBtn.setContentAreaFilled(false);
-//        checkBtn.setFont(UIConstants.FONT_REGULAR_20);
-//        checkBtn.setForeground(UIConstants.TEXT_LIGHT);
-//        checkBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//        checkBtn.setToolTipText("복용 완료 체크");
-//
-//        // 나중에 실제 삭제 로직 연결
-//        // checkBtn.addActionListener(e -> checkRoutine(...));
-//
-//        JPanel right = new JPanel();
-//        right.setOpaque(false);
-//        right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-//        right.add(Box.createVerticalGlue());
-//        right.add(checkBtn);
-//        right.add(Box.createVerticalGlue());
-//        right.setBorder(new EmptyBorder(0, 8, 0, 0)); // 카드 오른쪽 여백 조금만
-//
-//        card.add(right, BorderLayout.EAST);
-//
-//        return card;
-//    }
+    private void searchMedicineRecord(String kwd) {
+        MedicineRecordListPanel mp = new MedicineRecordListPanel(mainFrame);
+        for (MedicineRecord r : mp.records) {
+            if (r.matches(kwd)) {
+                MedicineRecordListPanel.MedicineCard card
+                        = new MedicineRecordListPanel.MedicineCard(r, mainFrame);
+                card.setAlignmentX(Component.LEFT_ALIGNMENT);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(16));
+            }
+        }
+    }
+
+    private void searchHealthRecord(String kwd) {
+        HealthPanel hp = new HealthPanel(mainFrame);
+        for (HealthRecord r : hp.records) {
+            if (r.matches(kwd)) {
+                JPanel card = hp.createHealthCard(r);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(16));
+            }
+        }
+    }
+
+    private void searchWalkRecord(String kwd) {
+        WalkPanel wp = new WalkPanel(mainFrame);
+        for (WalkRecord r : wp.records) {
+            if (r.matches(kwd)) {
+                JPanel card = wp.createWalkCard(r);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(16));
+            }
+        }
+    }
+
+    private void searchMedicineRoutine(String kwd) {
+        MedicineRoutinePanel wp = new MedicineRoutinePanel(mainFrame);
+        for (MedicineRoutine r : wp.records) {
+            if (r.matches(kwd)) {
+                JPanel card = wp.createRoutineCard(r);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(16));
+            }
+        }
+    }
 
     /** 검색 박스 (네모 + 오른쪽 검색 아이콘) */
     private JComponent createSearchBox() {
@@ -271,9 +263,36 @@ public class SearchPanel extends JPanel {
                 searchResultContainer.removeAll();
 
                 if (prevPanel instanceof MedicalRecordListPanel) {
-                    System.out.println("메디컬레코드 검색 실행");
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 메디컬레코드 검색 실행");
                     searchMedicalRecord(kwd);
                 }
+                if (prevPanel instanceof VaccineRecordListPanel) {
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 백신패널 검색 실행");
+                    searchVaccineRecord(kwd);
+                }
+                if (prevPanel instanceof HealthPanel) {
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 건강기록패널 검색 실행");
+                    searchHealthRecord(kwd);
+                }
+                if (prevPanel instanceof WalkPanel) {
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 산책패널 검색 실행");
+                    searchWalkRecord(kwd);
+                }
+                if (prevPanel instanceof MedicineRecordListPanel) {
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 복용기록패널 검색 실행");
+                    searchMedicineRecord(kwd);
+                }
+                if (prevPanel instanceof MedicineRoutinePanel) {
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 복용기록패널 검색 실행");
+                    searchMedicineRoutine(kwd);
+                }
+                // TODO: 놀이기록 검색 연결
             }
             searchResultContainer.revalidate();
             searchResultContainer.repaint();

@@ -19,7 +19,7 @@ public class HealthPanel extends Base {
     private final MainFrame mainFrame;
     private User user;
     private Pet pet;
-    private ArrayList<HealthRecord> records;
+    protected ArrayList<HealthRecord> records;
 
     public HealthPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -78,21 +78,8 @@ public class HealthPanel extends Base {
 
         // 데이터 불러와서 리스트 생성
         for (HealthRecord r : records) {
-            LocalDate date = r.getDate();
-            int meal = r.getMeal();
-            int water = r.getWater();
-            double weight = r.getWeight();
-            boolean isBrushed = r.getIsBrushed();
-            String memo = r.getMemo();
+            JPanel card = createHealthCard(r);
 
-            JPanel card = createHealthCard(
-                    date.toString(),
-                    "식사 " + meal +"회  |  음수량 "
-                    + water + "ml",
-                    "체중 " + weight + "kg  |  빗질 " +
-                            (isBrushed ? "O" : "X"),
-                    memo
-            );
             listPanel.add(card);
             listPanel.add(Box.createVerticalStrut(16));
         }
@@ -289,8 +276,16 @@ public class HealthPanel extends Base {
     }
 
     /* ================== 건강 기록 카드 ================== */
-    private JPanel createHealthCard(String date, String line1, String line2, String memo) {
+    protected JPanel createHealthCard(HealthRecord r) {
+        LocalDate date = r.getDate();
+        int meal = r.getMeal();
+        int water = r.getWater();
+        double weight = r.getWeight();
+        boolean isBrushed = r.getIsBrushed();
+        String memo = r.getMemo();
+
         JPanel card = new JPanel(new BorderLayout());
+
         card.setOpaque(true);
         card.setBackground(Color.WHITE);
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -309,13 +304,14 @@ public class HealthPanel extends Base {
         textPanel.setOpaque(false);
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
-        JLabel dateLabel = new JLabel(date);
+        JLabel dateLabel = new JLabel(date.toString());
         dateLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
         dateLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
         textPanel.add(dateLabel);
         textPanel.add(Box.createVerticalStrut(4));
 
+        String line1 = "식사 " + meal +"회  |  음수량 " + water + "ml";
         JLabel label1 = new JLabel(line1);
         label1.setFont(UIConstants.FONT_REGULAR_14);
         label1.setForeground(UIConstants.TEXT_SECONDARY);
@@ -323,13 +319,15 @@ public class HealthPanel extends Base {
         textPanel.add(label1);
         textPanel.add(Box.createVerticalStrut(4));
 
+        String line2 = "체중 " + weight + "kg  |  빗질 " +
+                (isBrushed ? "O" : "X");
         JLabel label2 = new JLabel(line2);
         label2.setFont(UIConstants.FONT_REGULAR_14);
         label2.setForeground(UIConstants.TEXT_SECONDARY);
 
         textPanel.add(label2);
 
-        if (memo != null && !memo.isBlank()) {
+        if (memo != null && !memo.isBlank() && !memo.equals("0")) {
             JLabel memoLabel = new JLabel(memo);
             memoLabel.setFont(UIConstants.FONT_REGULAR_14);
             memoLabel.setForeground(UIConstants.TEXT_SECONDARY);

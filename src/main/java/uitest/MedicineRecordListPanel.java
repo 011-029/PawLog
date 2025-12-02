@@ -10,7 +10,7 @@ import java.util.Comparator;
 
 public class MedicineRecordListPanel extends Base {
     private final MainFrame mainFrame;
-    private ArrayList<MedicineRecord> records;
+    protected ArrayList<MedicineRecord> records;
     private User user;
     private Pet pet;
 
@@ -76,7 +76,7 @@ public class MedicineRecordListPanel extends Base {
             card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             listPanel.add(card);
-            listPanel.add(Box.createVerticalStrut(12));
+            listPanel.add(Box.createVerticalStrut(16));
         }
 
         // 스크롤 래퍼
@@ -98,7 +98,7 @@ public class MedicineRecordListPanel extends Base {
         return scroll;
     }
 
-    private static class MedicineCard extends BaseCard {
+    protected static class MedicineCard extends BaseCard {
 
         public MedicineCard(MedicineRecord r, MainFrame mainFrame) {
 

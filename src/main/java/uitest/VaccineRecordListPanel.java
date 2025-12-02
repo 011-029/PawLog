@@ -10,7 +10,7 @@ import java.util.Comparator;
 
 public class VaccineRecordListPanel extends Base {
     private final MainFrame mainFrame;
-    private ArrayList<VaccineRecord> records;
+    protected ArrayList<VaccineRecord> records;
     private User user;
     private Pet pet;
 
@@ -76,7 +76,7 @@ public class VaccineRecordListPanel extends Base {
             card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             listPanel.add(card);
-            listPanel.add(Box.createVerticalStrut(12));
+            listPanel.add(Box.createVerticalStrut(16));
         }
 
         // 스크롤 래퍼
@@ -98,7 +98,7 @@ public class VaccineRecordListPanel extends Base {
         return scroll;
     }
 
-    private static class VaccineCard extends BaseCard {
+    protected static class VaccineCard extends BaseCard {
 
         public VaccineCard(VaccineRecord r, MainFrame mainFrame) {
             String title = r.getUITexts()[0];

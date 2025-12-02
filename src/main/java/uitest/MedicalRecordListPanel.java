@@ -94,13 +94,13 @@ public class MedicalRecordListPanel extends Base {
             upcomingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             listPanel.add(upcomingLabel);
-            listPanel.add(Box.createVerticalStrut(12));
+            listPanel.add(Box.createVerticalStrut(16));
 
             for (MedicalRecord r : future) {
                 MedicalCard card = new MedicalCard(r, mainFrame);
                 card.setAlignmentX(Component.LEFT_ALIGNMENT);
                 listPanel.add(card);
-                listPanel.add(Box.createVerticalStrut(12));
+                listPanel.add(Box.createVerticalStrut(16));
             }
 
             listPanel.add(Box.createVerticalStrut(24));

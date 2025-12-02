@@ -20,7 +20,7 @@ public class WalkPanel extends Base {
     private final MainFrame mainFrame;
     private User user;
     private Pet pet;
-    private ArrayList<WalkRecord> records;
+    protected ArrayList<WalkRecord> records;
 
     public WalkPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -30,11 +30,8 @@ public class WalkPanel extends Base {
         this.records = walkMgr.getAllByOwner(user);
 
         // TODO: 아래 테스트용 코드 추후 삭제 (2줄)
-        System.out.println("건강패널 ID: " + user.getId());
-        System.out.println("건강패널 펫: " + pet.getName());
-
-        for (WalkRecord r : records)
-            System.out.println(r);
+        System.out.println("산책패널 ID: " + user.getId());
+        System.out.println("산책패널 펫: " + pet.getName());
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -92,7 +89,7 @@ public class WalkPanel extends Base {
     }
 
     /** 개별 산책 기록 카드 (사진 선택적) */
-    private JPanel createWalkCard(WalkRecord r) {
+    protected JPanel createWalkCard(WalkRecord r) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
         card.setBackground(Color.WHITE);

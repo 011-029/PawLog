@@ -22,7 +22,7 @@ public class MedicineRoutinePanel extends Base {
     private final MainFrame mainFrame;
     private User user;
     private Pet pet;
-    private ArrayList<MedicineRoutine> records;
+    protected ArrayList<MedicineRoutine> records;
 
     public MedicineRoutinePanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -116,19 +116,6 @@ public class MedicineRoutinePanel extends Base {
 
         // 데이터 불러와서 카드 리스트 생성
         for (MedicineRoutine m : records) {
-            String medicineName = m.getMedicineName();
-            ArrayList<String> takenDOW = m.getTakenDOW();
-            String takenDOWString;
-            if (takenDOW.size() == 7) {
-                takenDOWString = "매일";
-            } else {
-                takenDOWString = takenDOW.stream()
-                        .map(d -> d + "요일")
-                        .collect(Collectors.joining(", "));
-            }
-            String dosage = String.format("%dmg", m.getDosage());
-            boolean isTaken = m.getIsTaken();
-
             JPanel card = createRoutineCard(m);
             listPanel.add(card);
             listPanel.add(Box.createVerticalStrut(16));
@@ -162,7 +149,7 @@ public class MedicineRoutinePanel extends Base {
     }
 
     /** 개별 복용 루틴 카드 */
-    private JPanel createRoutineCard(MedicineRoutine m) {
+    protected JPanel createRoutineCard(MedicineRoutine m) {
         String medicineName = m.getMedicineName();
         String takenTime = m.getTakenTime();
         ArrayList<String> takenDOW = m.getTakenDOW();
