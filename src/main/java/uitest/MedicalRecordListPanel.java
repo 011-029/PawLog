@@ -11,9 +11,9 @@ import java.util.List;
 public class MedicalRecordListPanel extends Base {
 
     private final MainFrame mainFrame;
-    private ArrayList<MedicalRecord> records;
     private User user;
     private Pet pet;
+    protected ArrayList<MedicalRecord> records;
 
     public MedicalRecordListPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -145,7 +145,7 @@ public class MedicalRecordListPanel extends Base {
     /* ============================
      *  카드 UI : MedicalCard
      * ============================ */
-    private static class MedicalCard extends BaseCard {
+    protected static class MedicalCard extends BaseCard {
 
         public MedicalCard(MedicalRecord r, MainFrame mainFrame) {
 

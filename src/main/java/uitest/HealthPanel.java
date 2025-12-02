@@ -136,7 +136,6 @@ public class HealthPanel extends Base {
 
         card.add(title, BorderLayout.NORTH);
 
-        // 예시 데이터 (날짜 순으로)
         ArrayList<HealthRecord> recent5 = new ArrayList<>(
         records.stream()
                 .sorted(Comparator.comparing(HealthRecord::getDate).reversed())
@@ -160,8 +159,6 @@ public class HealthPanel extends Base {
             dateLabels[i] = dateLabels[dateLabels.length - 1 - i];
             dateLabels[dateLabels.length - 1 - i] = tmp;
         }
-//        double[] weights = {6.0, 6.1, 6.05, 6.2, 6.15};
-//        String[] labels = {"11-25", "11-26", "11-27", "11-28", "11-29"};
 
         WeightChartPanel chart = new WeightChartPanel(weights, dateLabels);
         chart.setOpaque(false);
@@ -241,7 +238,7 @@ public class HealthPanel extends Base {
                 g2.drawLine(left, y, left + chartW, y);
 
                 // 숫자 라벨
-                String text = String.format("%.1f", value);
+                String text = String.format("%.2f", value);
                 int strW = fm.stringWidth(text);
                 int textX = left - strW - 6;
                 int textY = y + fm.getAscent() / 2 - 2;

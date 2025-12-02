@@ -33,11 +33,12 @@ public class WalkRecord implements Manageable, UIData, PetOwned, RecordSearchabl
     }
 
     public void apply(Pet pet, LocalDate date, int walkTime,
-                      String photoPath, String memo) {
+                      double distance, String photoPath, String memo) {
         this.ownerId = pet.getOwnerId();
         this.petName = pet.getName();
         this.date = date;
         this.walkTime = walkTime;
+        this.distance = distance;
         this.photoPath = photoPath;
         this.memo = memo;
     }
@@ -105,5 +106,25 @@ public class WalkRecord implements Manageable, UIData, PetOwned, RecordSearchabl
     @Override
     public String[] getUITexts() {
         return new String[0];
+    }
+
+    public int getWalkTime() {
+        return walkTime;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public String getPhotoPath() {
+        if (photoPath.equals("0"))
+            return null;
+        return photoPath;
+    }
+
+    public String getMemo() {
+        if (memo.equals("0"))
+            return null;
+        return memo;
     }
 }

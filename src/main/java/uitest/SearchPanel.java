@@ -2,8 +2,10 @@ package uitest;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import core.MedicalRecord;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
@@ -11,6 +13,7 @@ public class SearchPanel extends JPanel {
     private final MainFrame mainFrame;
 //    private PlaceholderTextField searchField;
     private final JPanel prevPanel; // 이전 화면 (접근경로)
+    private JTextField searchField;
     private JPanel searchResultContainer; // 검색 결과 컨테이너
 
     public SearchPanel(MainFrame mainFrame, JPanel prevPanel) {
@@ -74,11 +77,19 @@ public class SearchPanel extends JPanel {
 //        header.add(createSearchButton());
         header.add(createSearchBox());
 
-
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
 
-        searchResultContainer = new JPanel();
+        searchResultContainer = new JPanel(new BorderLayout());
+        searchResultContainer.setOpaque(false);
+        searchResultContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
+        searchResultContainer.setLayout(new BoxLayout(searchResultContainer, BoxLayout.Y_AXIS));
+
+        listPanel.add(searchResultContainer, BorderLayout.CENTER);
+        listPanel.add(searchResultContainer);
+
+
+
 //        searchResultContainer.add(MedicalRecordListPanel.create)
 
 
@@ -132,6 +143,21 @@ public class SearchPanel extends JPanel {
         scroll.getVerticalScrollBar().setUnitIncrement(30);
 
         return scroll;
+    }
+
+    private void searchMedicalRecord(String kwd) {
+        MedicalRecordListPanel mp = new MedicalRecordListPanel(mainFrame);
+        for (MedicalRecord r : mp.records) {
+            if (r.matches(kwd)) {
+                MedicalRecordListPanel.MedicalCard card = new MedicalRecordListPanel.MedicalCard(r, mainFrame);
+                card.setAlignmentX(Component.LEFT_ALIGNMENT);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(12));
+                System.out.println(r);
+            }
+            searchResultContainer.revalidate();
+            searchResultContainer.repaint();
+        }
     }
 
 
@@ -213,16 +239,16 @@ public class SearchPanel extends JPanel {
                 16   // ← 검색 네모 둥근 모서리
         ));
 
-        JTextField field = new JTextField();
-        field.setBorder(null);
-        field.setOpaque(false);
-        field.setFont(UIConstants.FONT_REGULAR_14);
-        field.setForeground(UIConstants.TEXT_PRIMARY);
-        field.setCaretColor(UIConstants.TEXT_PRIMARY);
-        field.setColumns(10);
-        field.putClientProperty("JTextField.placeholderText", "검색어를 입력하세요");
+        searchField = new JTextField();
+        searchField.setBorder(null);
+        searchField.setOpaque(false);
+        searchField.setFont(UIConstants.FONT_REGULAR_14);
+        searchField.setForeground(UIConstants.TEXT_PRIMARY);
+        searchField.setCaretColor(UIConstants.TEXT_PRIMARY);
+        searchField.setColumns(10);
+        searchField.putClientProperty("JTextField.placeholderText", "검색어를 입력하세요");
 
-        box.add(field, BorderLayout.CENTER);
+        box.add(searchField, BorderLayout.CENTER);
 
         JButton searchBtn = new JButton();
         searchBtn.setIcon(new FlatSVGIcon("icons/search.svg", 20, 20));
@@ -233,18 +259,24 @@ public class SearchPanel extends JPanel {
         searchBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         searchBtn.setPreferredSize(new Dimension(36, 36));
 
+        searchField.addActionListener(e -> searchBtn.doClick());
         searchBtn.addActionListener(e -> {
-            // 아무것도 입력 안하면 전 화면으로 돌아감
-            if (field.getText().isBlank()) {
+            String kwd = searchField.getText();
+
+            // 아무것도 입력 안하면 이전 화면으로 돌아감
+            if (kwd.isBlank()) {
                 mainFrame.switchPanel(prevPanel);
+
             } else {
+                searchResultContainer.removeAll();
 
+                if (prevPanel instanceof MedicalRecordListPanel) {
+                    System.out.println("메디컬레코드 검색 실행");
+                    searchMedicalRecord(kwd);
+                }
             }
-
-            // TODO: 검색 로직 구현
-//
-//            searchResultContainer.revalidate();
-//            searchResultContainer.repaint();
+            searchResultContainer.revalidate();
+            searchResultContainer.repaint();
         });
 
         box.add(searchBtn, BorderLayout.EAST);
