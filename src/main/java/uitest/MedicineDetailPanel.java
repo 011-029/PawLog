@@ -1,8 +1,6 @@
 package uitest;
 
-import core.MedicalMgr;
 import core.MedicineRecord;
-import core.MedicineRecordMgr;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

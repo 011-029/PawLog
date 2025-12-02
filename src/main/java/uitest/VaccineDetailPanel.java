@@ -23,7 +23,7 @@ public class VaccineDetailPanel extends JPanel {
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new VaccineRecordListPanel(mainFrame, VaccineMgr.getInstance().mList))), BorderLayout.NORTH);
+                mainFrame.switchPanel(new VaccineRecordListPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createContent(r), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);

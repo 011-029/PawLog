@@ -112,7 +112,7 @@ public class MedicalHomePanel extends JPanel {
 
         JPanel btn3 = createMenuButton("예방접종 기록", "icons/syringe.svg",
                 () -> mainFrame.switchPanel(
-                        new VaccineRecordListPanel(mainFrame, VaccineMgr.getInstance().mList)));
+                        new VaccineRecordListPanel(mainFrame)));
         btn3.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         listPanel.add(btn1);
