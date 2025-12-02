@@ -82,8 +82,8 @@ public class HomePanel extends Base {
         gbc.insets = cardInsets;
         content.add(createSmallCard("오늘 복용 루틴",
                         new String[]{
-                                "● 복용 루틴 1",
-                                "○ 복용 루틴 2"
+                                "오늘 먹어야 할",
+                                "약 체크하기"
                         },
                         () -> mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
                 ),
@@ -93,7 +93,11 @@ public class HomePanel extends Base {
         gbc.gridx = 1;
         gbc.insets = cardInsetsRight;
         content.add(createSmallCard("건강 기록",
-                new String[]{"임시 더미내용", "더미내용 더미내용"},
+                new String[]{
+                        "식사량, 음수량,",
+                        "체중, 이상 증상,",
+                        "메모 기록"
+                },
                 () -> mainFrame.switchPanel(new HealthPanel(mainFrame))
                 ),
         gbc
@@ -104,7 +108,11 @@ public class HomePanel extends Base {
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("의료 기록",
-                new String[]{"더미내용 더미내용", "임시 더미 D-10"},
+                new String[]{
+                        "복약 기록,",
+                        "예방접종, 진료 기록을",
+                        "한 곳에서 관리"
+                },
             () -> mainFrame.switchPanel(new MedicalHomePanel(mainFrame
             ))
             ),
@@ -112,8 +120,11 @@ public class HomePanel extends Base {
 
         gbc.gridx = 1;
         gbc.insets = cardInsetsRight;
-        content.add(createSmallCard("산책/놀이 기록",
-                new String[]{"더미내용 더미내용 더미내용"},
+        content.add(createSmallCard("산책 기록",
+                new String[]{
+                        "산책 거리, 산책 시간,",
+                        "사진 등록"
+                },
             () -> mainFrame.switchPanel(new WalkPanel(mainFrame))
             ),
         gbc);
