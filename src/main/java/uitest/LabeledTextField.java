@@ -47,8 +47,18 @@ public class LabeledTextField extends JPanel {
         textField.setText(txt);
     }
 
-    public PlaceholderTextField getField() {
-        return textField;
+    public int getIntOrDefault(int defaultValue) {
+        String txt = getText();
+        if (txt == null) return defaultValue;
+
+        txt = txt.trim();
+        if (txt.isEmpty()) return defaultValue;
+
+        try {
+            return Integer.parseInt(txt);
+        } catch (NumberFormatException ex) {
+            return defaultValue;
+        }
     }
 }
 

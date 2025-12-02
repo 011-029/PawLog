@@ -1,16 +1,39 @@
 package uitest;
 
+import core.MedicalRecord;
+import core.Pet;
+import core.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.LocalDate;
 
-public class MedicalFormPanel extends JPanel {
+public class MedicalFormPanel extends Base {
     private final MainFrame mainFrame;
-
     private JToggleButton[] timeButtons;
+    private DatePickerPanel consultationDate;
+    private LabeledTextField hospitalField;
+    private LabeledTextField sympField;
+    private LabeledTextField costField;
+
+    private JCheckBox hasMedicineCheck;
+    private JCheckBox addRoutineCheck;
+
+    private LabeledTextField medicineNameField;
+    private LabeledTextField doseField;
+
+    private DatePickerPanel startDatePicker;
+    private DatePickerPanel endDatePicker;
+
+    private User user;
+    private Pet pet;
 
     public MedicalFormPanel(MainFrame mainFrame){
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -49,19 +72,19 @@ public class MedicalFormPanel extends JPanel {
 
 
         //진료 날짜
-        DatePickerPanel consultationDate = new DatePickerPanel();
+        consultationDate = new DatePickerPanel();
         listPanel.add(consultationDate);
 
         //병원명
-        LabeledTextField hospitalField = new LabeledTextField("병원 이름", "예) 우끼우끼동물병원");
+        hospitalField = new LabeledTextField("병원 이름", "예) 우끼우끼동물병원");
         listPanel.add(hospitalField);
 
         //증상
-        LabeledTextField sympField = new LabeledTextField("증상", "예) 구토");
+        sympField = new LabeledTextField("증상", "예) 구토");
         listPanel.add(sympField);
 
         //가격
-        LabeledTextField costField = new LabeledTextField("진료비 (원)", "예) 50000");
+        costField = new LabeledTextField("진료비 (원)", "예) 50000");
         listPanel.add(costField);
 
         JLabel sectionTitle = new JLabel("처방약(선택)");
@@ -73,7 +96,7 @@ public class MedicalFormPanel extends JPanel {
         listPanel.add(sectionTitle);
         listPanel.add(Box.createVerticalStrut(12)); // 섹션 아래 여백
 
-        JCheckBox hasMedicineCheck = new JCheckBox("처방약 있음");
+        hasMedicineCheck = new JCheckBox("처방약 있음");
         hasMedicineCheck.setOpaque(false);
         hasMedicineCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
         listPanel.add(hasMedicineCheck);
@@ -84,18 +107,18 @@ public class MedicalFormPanel extends JPanel {
         prescribeMedicinePanel.setOpaque(false);
         prescribeMedicinePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JCheckBox addRoutineCheck = new JCheckBox("복용 루틴에 추가");
+        addRoutineCheck = new JCheckBox("복용 루틴에 추가");
         addRoutineCheck.setOpaque(false);
         addRoutineCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
         prescribeMedicinePanel.add(addRoutineCheck);
         prescribeMedicinePanel.add(Box.createVerticalStrut(12));
 
         //처방약 이름
-        LabeledTextField medicineNameField = new LabeledTextField("약 이름", "예) 구토방지제");
+        medicineNameField = new LabeledTextField("약 이름", "예) 구토방지제");
         prescribeMedicinePanel.add(medicineNameField);
 
         //복용량
-        LabeledTextField doseField = new LabeledTextField("복용량 (mg)", "예) 20");
+        doseField = new LabeledTextField("복용량 (mg)", "예) 20");
         prescribeMedicinePanel.add(doseField);
 
         //복용 시간대
@@ -142,10 +165,10 @@ public class MedicalFormPanel extends JPanel {
         prescribeMedicinePanel.add(Box.createVerticalStrut(20));
 
         //복용기간
-        DatePickerPanel startDate = new DatePickerPanel("복약 시작 날짜");
-        DatePickerPanel endDate = new DatePickerPanel("복약 종료 날짜");
-        prescribeMedicinePanel.add(startDate);
-        prescribeMedicinePanel.add(endDate);
+        startDatePicker = new DatePickerPanel("복약 시작 날짜");
+        endDatePicker = new DatePickerPanel("복약 종료 날짜");
+        prescribeMedicinePanel.add(startDatePicker);
+        prescribeMedicinePanel.add(endDatePicker);
 
         prescribeMedicinePanel.setEnabled(false);
         setAllEnabled(prescribeMedicinePanel, false);
@@ -203,8 +226,69 @@ public class MedicalFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // TODO: 실제 저장 로직 연결
-        // saveBtn.addActionListener(e -> { ... });
+        saveBtn.addActionListener(e -> {
+            try {
+                // 1️⃣ 로그인/펫 체크 (필드 기반)
+                if (user == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "로그인이 필요합니다.");
+                    return;
+                }
+
+                if (pet == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "등록된 펫이 없습니다.");
+                    return;
+                }
+
+                // 2️⃣ UI 값 읽기
+                LocalDate date = consultationDate.getDate();
+                String hospital = hospitalField.getText().trim();
+                String category = sympField.getText().trim();
+                int cost = costField.getIntOrDefault(-1);
+
+                String medName = null;
+                Integer dosage = null;
+                String routineTime = null;
+                LocalDate startDate = null;
+                LocalDate endDate = null;
+
+                if (hasMedicineCheck.isSelected()) {
+                    medName = medicineNameField.getText().trim();
+                    dosage = doseField.getIntOrDefault(-1);
+
+                    // 시간대 문자열 생성
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < timeButtons.length; i++) {
+                        if (timeButtons[i].isSelected()) {
+                            sb.append(timeButtons[i].getText());
+                        }
+                    }
+                    routineTime = sb.length() == 0 ? "0" : sb.toString();
+
+                    startDate = startDatePicker.getDate();
+                    endDate = endDatePicker.getDate();
+                }
+
+                // 3️⃣ 백엔드 저장
+                medicalMgr.addNewRecord(
+                        pet, date, hospital, category, cost,
+                        medName, dosage, routineTime, startDate, endDate
+                );
+
+                // 4️⃣ 루틴 생성 옵션
+                if (hasMedicineCheck.isSelected() && addRoutineCheck.isSelected()) {
+                    MedicalRecord lastRecord = medicalMgr.getLastRecord();
+                    System.out.println("[DEBUG] 루틴 생성 시도: lastRecord = " + lastRecord);
+                    medicineRoutineMgr.createRoutineFromMedicalRecord(lastRecord);
+                }
+
+                JOptionPane.showMessageDialog(mainFrame, "저장 완료!");
+                mainFrame.switchPanel(new MedicalHomePanel(mainFrame));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(mainFrame, "저장 중 오류 발생: " + ex.getMessage());
+            }
+        });
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
