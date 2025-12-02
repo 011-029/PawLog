@@ -39,7 +39,7 @@ public class DatePickerPanel extends JPanel {
         LocalDate today = LocalDate.now();
         int year = today.getYear();
 
-        Integer[] years = {year - 2, year - 1, year};
+        Integer[] years = {year - 2, year - 1, year, year + 1};
         Integer[] months = new Integer[12];
         for (int i = 0; i < 12; i++) months[i] = i + 1;
         Integer[] days = new Integer[31];

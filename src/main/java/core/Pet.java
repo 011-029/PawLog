@@ -38,9 +38,9 @@ public class Pet implements Manageable, UIData {
         birthDate = LocalDate.parse(tokens[4]);
         weight = Double.parseDouble(tokens[5]);
 
-        if (tokens.length >= 7)
-            imagePath = tokens[6];
-        else imagePath = "";
+        if (tokens[6].equals("0"))
+            imagePath = null;
+        else imagePath = tokens[6];
 
         personalityTags.clear();
         if (tokens.length >= 8) {               // 태그가 있을 때만
@@ -75,7 +75,7 @@ public class Pet implements Manageable, UIData {
                 gender,
                 String.valueOf(birthDate),
                 String.valueOf(weight),
-                imagePath == null ? "" : imagePath,
+                imagePath == null ? "0" : imagePath,
                 joinPersonalityTags()
         };
     }
@@ -115,6 +115,7 @@ public class Pet implements Manageable, UIData {
     public double getWeight() { return weight; }
     public String getImagePath() { return imagePath; }
     public ArrayList<MedicalRecord> getMedicalRecords(){ return medicalRecords; }
+
     public ArrayList<String> getPersonalityTags() {
         return personalityTags;
     }

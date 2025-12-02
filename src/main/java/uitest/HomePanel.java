@@ -1,5 +1,6 @@
 package uitest;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import core.*;
 
@@ -17,6 +18,8 @@ public class HomePanel extends JPanel {
 
     public HomePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
 
         // 로그인한 user, pet 받아오기 (없으면 null일 수 있음)
         this.user = mainFrame.getLoggedInUser();
@@ -29,8 +32,9 @@ public class HomePanel extends JPanel {
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
-        contentWrapper.add(UIComponents.createHeader(() ->
-                mainFrame.switchPanel(new LoginPanel(mainFrame))), BorderLayout.NORTH);
+        contentWrapper.add(
+                UIComponents.createHeader(this::doLogout),
+                        BorderLayout.NORTH);
         contentWrapper.add(createScrollableContent(), BorderLayout.CENTER);
 
         // 가운데는 패딩 있는 래퍼
@@ -156,26 +160,41 @@ public class HomePanel extends JPanel {
             }
         });
 
-        JLabel photo = new JLabel("사진", SwingConstants.CENTER);
+        // 펫 사진 영역
+        JLabel photo = new JLabel("", SwingConstants.CENTER);
         photo.setPreferredSize(new Dimension(96, 96));
-        photo.setOpaque(true);
-        photo.setBackground(new Color(240, 240, 240));
-        photo.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
+//        photo.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
+        if (pet.getImagePath() == null || pet == null) {
+            photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
+            photo.setOpaque(true);
+        } else {
+            Image petImage = loadPetImage(pet.getImagePath());
+            if (petImage == null) {
+                photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
+                photo.setOpaque(true);
+            } else {
+                Image scaledPetImage = petImage.getScaledInstance(96, 96, Image.SCALE_SMOOTH);
+                photo.setIcon(new ImageIcon(scaledPetImage));
+            }
+        }
+
         card.add(photo, BorderLayout.WEST);
+
 
         JPanel center = new JPanel();
         center.setOpaque(false);
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
 
-        // 나중에 user/pet 정보로 바꾸면 됨!
-        JLabel name = new JLabel("후추");
+        // 펫 정보 표시 영역
+        JLabel name = new JLabel(pet.getName());
         name.setFont(UIConstants.FONT_SEMIBOLD_18);
         name.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel breed = new JLabel("갈색 푸들");
+        JLabel breed = new JLabel(pet.getSpecies());
         breed.setFont(UIConstants.FONT_REGULAR_12);
         breed.setForeground(UIConstants.TEXT_LIGHT);
 
+        // TODO: 생일 디데이 연결
         JLabel dday = new JLabel("D-30");
         dday.setFont(UIConstants.FONT_REGULAR_14);
 
@@ -306,4 +325,31 @@ public class HomePanel extends JPanel {
 
         return box;
     }
+
+    private Image loadPetImage(String imagePath) {
+        try {
+            var url = HomePanel.class.getResource(imagePath);
+            if (url == null) {
+                System.out.println("펫 프로필 사진을 찾을 수 없음: " + imagePath);
+                return null;
+            }
+            ImageIcon icon = new ImageIcon(url);
+            return icon.getImage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void doLogout() {
+        int choice = JOptionPane.showConfirmDialog(this,
+                "로그아웃하시겠습니까?",
+                "로그아웃",
+                JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            mainFrame.switchPanel(new LoginPanel(mainFrame));
+        }
+    }
+
 }
