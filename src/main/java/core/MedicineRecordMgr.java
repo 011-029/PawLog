@@ -38,6 +38,33 @@ public class MedicineRecordMgr extends PetRecordMgr<MedicineRecord> {
         return record;
     }
 
+    public boolean checkTaken(MedicineRoutine routine) {
+        String id = routine.getOwnerId();
+        String medicine = routine.getMedicineName();
+        LocalDate today = LocalDate.now();
+
+        for (MedicineRecord m : mList) {
+            if (id.equals(m.getOwnerId())
+            && medicine.equals(m.getMedicineName())
+            && today.equals(m.getTakenDate()))
+                return true;
+        }
+        return false;
+    }
+
+    public void removeIfUnChecked(MedicineRoutine routine) {
+        String id = routine.getOwnerId();
+        String medicine = routine.getMedicineName();
+        LocalDate today = LocalDate.now();
+
+        mList.removeIf(m ->
+                id.equals(m.getOwnerId()) &&
+                        medicine.equals(m.getMedicineName()) &&
+                        today.equals(m.getTakenDate())
+        );
+        saveToFile(FILE_PATH);
+    }
+
     @Override
     public void addNewRow(String[] uiTexts) {
 

@@ -180,7 +180,6 @@ public class LoginPanel extends Base {
         } else {
             mainFrame.setLoggedInUser(user);
             mainFrame.switchPanel(new HomePanel(mainFrame));
-            DataLoader.loadAllData();
             // TODO: 아래 테스트용 코드 추후 삭제 (1줄)
             System.out.println("로그인 ID: " + user.getId());
         }
