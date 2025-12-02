@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class VaccineRecordListPanel extends Base {
     private final MainFrame mainFrame;
@@ -67,6 +68,8 @@ public class VaccineRecordListPanel extends Base {
         listPanel.add(Box.createVerticalStrut(20));
 
         /* === 카드 리스트 === */
+        records.sort(Comparator.comparing(VaccineRecord::getDate).reversed());
+
         for (VaccineRecord r : records) {
 
             VaccineCard card = new VaccineCard(r, mainFrame);
