@@ -16,7 +16,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     String petName;  // 어떤 펫의 기록인지
     LocalDate date;
     int meal;
-    int water;
+    int waterMl;
     double weight;
     String brushed;
     String memo;
@@ -30,7 +30,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
 
         date = ReadUtil.readDate(scan);
         meal = scan.nextInt();
-        water = scan.nextInt();
+        waterMl = scan.nextInt();
         weight = scan.nextDouble();
         brushed = scan.next();
         memo = "";
@@ -40,12 +40,12 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     }
 
     public void apply(Pet pet, LocalDate date, int meal,
-                    int water, double weight, String brushed, String memo) {
+                    int waterMl, double weight, String brushed, String memo) {
         this.ownerId = pet.getOwnerId();
         this.petName = pet.getName();
         this.date = date;
         this.meal = meal;
-        this.water = water;
+        this.waterMl = waterMl;
         this.weight = weight;
         this.brushed = brushed;
         this.memo = memo;
@@ -53,7 +53,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
 
     public void print() {
         System.out.printf("[%d] %s | 식사:%d 음수:%d 양치:%s | %s%n",
-                indexId, date, meal, water,
+                indexId, date, meal, waterMl,
                 brushed != null ? brushed : "",
                 memo != null ? memo : ""
         );
@@ -67,7 +67,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
                 petName,
                 String.valueOf(date),
                 String.valueOf(meal),
-                String.valueOf(water),
+                String.valueOf(waterMl),
                 String.valueOf(weight),
                 brushed,
                 memo
@@ -137,7 +137,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     public void set(String[] uiTexts) {
         //date = uiTexts[0];
         meal = Integer.parseInt(uiTexts[1]);
-        water = Integer.parseInt(uiTexts[2]);
+        waterMl = Integer.parseInt(uiTexts[2]);
         weight = Double.parseDouble(uiTexts[3]);
         brushed = uiTexts[4];
         memo = uiTexts[5];
@@ -149,7 +149,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     String.valueOf(indexId),
     date.toString(),
     String.valueOf(meal),
-    String.valueOf(water),
+    String.valueOf(waterMl),
             String.valueOf(weight),
     brushed,
     memo
