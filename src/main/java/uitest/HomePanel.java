@@ -103,6 +103,7 @@ public class HomePanel extends Base {
         gbc
     );
 
+
         // 3: 2x2 카드 (아래 줄)
         gbc.gridy++;
         gbc.gridx = 0;
@@ -204,12 +205,13 @@ public class HomePanel extends Base {
         name.setFont(UIConstants.FONT_SEMIBOLD_18);
         name.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel breed = new JLabel(pet.getSpecies());
+        String line = pet.getSpecies() + " · " + pet.getBirthDate();
+        JLabel breed = new JLabel(line);
         breed.setFont(UIConstants.FONT_REGULAR_12);
         breed.setForeground(UIConstants.TEXT_LIGHT);
 
         // TODO: 생일 디데이 연결
-        JLabel dday = new JLabel("D-30");
+        JLabel dday = new JLabel("생일 D-38");
         dday.setFont(UIConstants.FONT_REGULAR_14);
 
         center.add(name);
