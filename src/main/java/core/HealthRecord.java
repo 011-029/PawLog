@@ -108,7 +108,7 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     }
 
     public int getWater() {
-        return water;
+        return waterMl;
     }
 
     public double getWeight() {
