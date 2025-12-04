@@ -29,7 +29,7 @@ public class LoginPanel extends Base {
         centerWrapper.setBorder(new EmptyBorder(20, 50, 32, 50));
 
         // 위 여백 조금
-        centerWrapper.add(Box.createVerticalStrut(80));
+        centerWrapper.add(Box.createVerticalStrut(140));
 
         // 로고
         JComponent logo = createLogoArea();
@@ -52,13 +52,15 @@ public class LoginPanel extends Base {
 
     /* 발바닥 아이콘 영역 (가운데 정렬) */
     private JComponent createLogoArea() {
-        JLabel logo = new JLabel("Paw Log");
-        logo.setIcon(new FlatSVGIcon("icons/paw.svg", 80, 80));
-        logo.setHorizontalTextPosition(SwingConstants.CENTER); // 텍스트를 가운데
-        logo.setVerticalTextPosition(SwingConstants.BOTTOM);   // 텍스트를 아래로
-        logo.setIconTextGap(12);
-        logo.setFont(UIConstants.FONT_BOLD_32);
-        logo.setForeground(UIConstants.TEXT_PRIMARY);
+        FlatSVGIcon logoSVG = new FlatSVGIcon("icons/pawlog-logo.svg", 144, 50);
+        JLabel logo = new JLabel();
+        logo.setIcon(logoSVG);
+//        logo.setIcon(new FlatSVGIcon("icons/paw.svg", 80, 80));
+//        logo.setHorizontalTextPosition(SwingConstants.CENTER); // 텍스트를 가운데
+//        logo.setVerticalTextPosition(SwingConstants.BOTTOM);   // 텍스트를 아래로
+//        logo.setIconTextGap(12);
+//        logo.setFont(UIConstants.FONT_BOLD_32);
+//        logo.setForeground(UIConstants.TEXT_PRIMARY);
         return logo;
     }
 

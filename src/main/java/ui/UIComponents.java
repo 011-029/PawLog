@@ -3,6 +3,7 @@ package ui;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,9 +29,11 @@ public final class UIComponents {
             }
         });
 
-        JLabel logo = new JLabel("PawLog", SwingConstants.CENTER);
-        logo.setFont(UIConstants.FONT_BOLD_24);
-        logo.setForeground(UIConstants.TEXT_PRIMARY);
+        FlatSVGIcon logoSVG = new FlatSVGIcon("icons/pawlog-logo.svg", 66, 24);
+        JLabel logo = new JLabel(logoSVG, SwingConstants.CENTER);
+        logo.setBorder(new EmptyBorder(4, 0, 0, 0));
+//        logo.setFont(UIConstants.FONT_BOLD_24);
+//        logo.setForeground(UIConstants.TEXT_PRIMARY);
 
         JButton bellBtn = new JButton();
         bellBtn.setIcon(new FlatSVGIcon("icons/bell.svg", 20, 20));

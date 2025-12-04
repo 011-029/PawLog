@@ -74,7 +74,7 @@ public class SignUpPanel extends Base {
                 text.getPreferredSize().height - 50
         ));
         text.setFont(UIConstants.FONT_BOLD_32);
-        text.setForeground(UIConstants.TEXT_PRIMARY);
+        text.setForeground(UIConstants.PRIMARY);
         text.setOpaque(false);
         text.setEditable(false);
         text.setFocusable(false);
