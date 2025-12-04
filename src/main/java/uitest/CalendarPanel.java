@@ -3,6 +3,7 @@ package uitest;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.toedter.calendar.JCalendar;
+import core.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
-public class CalendarPanel extends JPanel {
+public class CalendarPanel extends Base {
 
     private final MainFrame mainFrame;
 
@@ -27,19 +28,22 @@ public class CalendarPanel extends JPanel {
     private final Map<LocalDate, List<RecordItem>> recordsByDate = new HashMap<>();
 
     // 펫 생일 (예시)
-    private static final LocalDate PET_BIRTHDAY = LocalDate.of(2023, 7, 9);
+    private static final LocalDate PET_BIRTHDAY = LocalDate.of(2020, 1, 10);
 
     private static final DateTimeFormatter HEADER_FORMAT =
             DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN);
 
 
     public CalendarPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        loadDummyRecords(); // 예시 기록 데이터
+//        loadDummyRecords(); // 예시 기록 데이터
+
+        collectRecordsByDate();
 
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
@@ -473,19 +477,48 @@ public class CalendarPanel extends JPanel {
         textPanel.setOpaque(false);
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel(item.title);
+        JLabel title = new JLabel(item.type + " · " + item.title);
         title.setFont(UIConstants.FONT_SEMIBOLD_14);
         title.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel subtitle = new JLabel(item.subtitle);
-        subtitle.setFont(UIConstants.FONT_REGULAR_14);
-        subtitle.setForeground(UIConstants.TEXT_SECONDARY);
+        JLabel detail = new JLabel(item.detail == null ? "" : item.detail);
+        detail.setFont(UIConstants.FONT_REGULAR_12);
+        detail.setForeground(UIConstants.TEXT_SECONDARY);
 
-        textPanel.add(title);
-        textPanel.add(Box.createVerticalStrut(4));
-        textPanel.add(subtitle);
+        JLabel date = new JLabel(item.date.toString());
+        date.setFont(UIConstants.FONT_REGULAR_12);
+        date.setForeground(Color.GRAY);
 
-        card.add(textPanel, BorderLayout.CENTER);
+        card.add(title, BorderLayout.NORTH);
+        card.add(detail, BorderLayout.CENTER);
+        card.add(date, BorderLayout.SOUTH);
+
+//        JLabel date = new JLabel(item.date.toString());
+//        date.setFont(UIConstants.FONT_SEMIBOLD_14);
+//        date.setForeground(UIConstants.TEXT_PRIMARY);
+//
+//        JLabel type = new JLabel(item.type);
+//        type.setFont(UIConstants.FONT_REGULAR_14);
+//        type.setForeground(UIConstants.TEXT_SECONDARY);
+//
+//        JLabel title = new JLabel(item.title);
+//        title.setFont(UIConstants.FONT_SEMIBOLD_14);
+//        title.setForeground(UIConstants.TEXT_PRIMARY);
+//
+//        JLabel detail = new JLabel(item.detail);
+//        detail.setFont(UIConstants.FONT_SEMIBOLD_14);
+//        detail.setForeground(UIConstants.TEXT_PRIMARY);
+//
+//        textPanel.add(date);
+//        textPanel.add(Box.createVerticalStrut(4));
+//        textPanel.add(type);
+//        textPanel.add(Box.createVerticalStrut(4));
+//        textPanel.add(title);
+//        textPanel.add(Box.createVerticalStrut(4));
+//        textPanel.add(detail);
+//        textPanel.add(Box.createVerticalStrut(4));
+
+//        card.add(textPanel, BorderLayout.CENTER);
         return card;
     }
 
@@ -496,30 +529,122 @@ public class CalendarPanel extends JPanel {
                 .toLocalDate();
     }
 
-    private void loadDummyRecords() {
-        LocalDate d1 = LocalDate.of(2025, 11, 29);
-        LocalDate d2 = LocalDate.of(2025, 11, 28);
+//    private void loadDummyRecords() {
+//        LocalDate d1 = LocalDate.of(2025, 11, 29);
+//        LocalDate d2 = LocalDate.of(2025, 11, 28);
+//
+//        recordsByDate.put(d1, Arrays.asList(
+//                new RecordItem("산책 기록", "30분 · 1.2km"),
+//                new RecordItem("건강 기록", "체중 6.2kg · 사료 잘 먹음")
+//        ));
+//
+//        recordsByDate.put(d2, Collections.singletonList(
+//                new RecordItem("약 복용", "심장사상충약 복용 완료")
+//        ));
+//
+//        // 원하는 만큼 계속 추가 가능 ♡
+//    }
 
-        recordsByDate.put(d1, Arrays.asList(
-                new RecordItem("산책 기록", "30분 · 1.2km"),
-                new RecordItem("건강 기록", "체중 6.2kg · 사료 잘 먹음")
-        ));
+    private void collectRecordsByDate() {
 
-        recordsByDate.put(d2, Collections.singletonList(
-                new RecordItem("약 복용", "심장사상충약 복용 완료")
-        ));
+        recordsByDate.clear();
 
-        // 원하는 만큼 계속 추가 가능 ♡
+        LocalDate today = LocalDate.now();
+        LocalDate minDate = today.minusDays(30);
+
+        /* ─────────── 진료 기록 ─────────── */
+        for (MedicalRecord r : medicalMgr.mList) {
+            LocalDate d = r.getDate();
+            if (d.isBefore(minDate)) continue;
+
+            RecordItem item = new RecordItem(
+                    d,
+                    "진료",
+                    r.getCategory(),
+                    r.getHospital()
+            );
+
+            recordsByDate.computeIfAbsent(d, key -> new ArrayList<>())
+                    .add(item);
+        }
+
+        /* ─────────── 복용 기록 ─────────── */
+        for (MedicineRecord r : medicineRecordMgr.mList) {
+            LocalDate d = r.getTakenDate();
+            if (d.isBefore(minDate)) continue;
+
+            RecordItem item = new RecordItem(
+                    d,
+                    "복용",
+                    r.getMedicineName(),
+                    r.getTakenTime() + " | " + r.getDosage() + "mg"
+            );
+
+            recordsByDate.computeIfAbsent(d, key -> new ArrayList<>())
+                    .add(item);
+        }
+
+        /* ─────────── 백신 기록 ─────────── */
+        for (VaccineRecord r : vaccineMgr.mList) {
+            LocalDate d = r.getDate();
+            if (d.isBefore(minDate)) continue;
+
+            RecordItem item = new RecordItem(
+                    d,
+                    "백신",
+                    r.getVaccine(),
+                    r.getHospital()
+            );
+
+            recordsByDate.computeIfAbsent(d, key -> new ArrayList<>())
+                    .add(item);
+        }
+
+        /* ─────────── 산책 기록 ─────────── */
+        for (WalkRecord r : walkMgr.mList) {
+            LocalDate d = r.getRecordDate();
+            if (d.isBefore(minDate)) continue;
+
+            RecordItem item = new RecordItem(
+                    d,
+                    "산책",
+                    r.getWalkTime() + "분 산책",
+                    r.getMemo() == null ? "" : r.getMemo()
+            );
+
+            recordsByDate.computeIfAbsent(d, key -> new ArrayList<>())
+                    .add(item);
+        }
+
+        /* ─────────── 건강 기록 ─────────── */
+        for (HealthRecord r : healthMgr.mList) {
+            LocalDate d = r.getRecordDate();
+            if (d.isBefore(minDate)) continue;
+
+            RecordItem item = new RecordItem(
+                    d,
+                    "건강",
+                    "몸무게: " + r.getWeight(),
+                    r.getMemo()
+            );
+
+            recordsByDate.computeIfAbsent(d, key -> new ArrayList<>())
+                    .add(item);
+        }
     }
 
-
+    /* ================== 타임라인 아이템 DTO ================== */
     private static class RecordItem {
-        final String title;
-        final String subtitle;
+        LocalDate date;
+        String type;
+        String title;
+        String detail;
 
-        RecordItem(String title, String subtitle) {
+        RecordItem(LocalDate date, String type, String title, String detail) {
+            this.date = date;
+            this.type = type;
             this.title = title;
-            this.subtitle = subtitle;
+            this.detail = detail;
         }
     }
 

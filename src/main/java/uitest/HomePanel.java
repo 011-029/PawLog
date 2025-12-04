@@ -176,24 +176,27 @@ public class HomePanel extends Base {
         });
 
         // 펫 사진 영역
-        JLabel photo = new JLabel("", SwingConstants.CENTER);
-        photo.setPreferredSize(new Dimension(96, 96));
-//        photo.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
-        if (pet.getImagePath() == null || pet == null) {
-            photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
-            photo.setOpaque(true);
-        } else {
-            Image petImage = loadPetImage(pet.getImagePath());
-            if (petImage == null) {
-                photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
-                photo.setOpaque(true);
-            } else {
-                Image scaledPetImage = petImage.getScaledInstance(96, 96, Image.SCALE_SMOOTH);
-                photo.setIcon(new ImageIcon(scaledPetImage));
-            }
-        }
+//        JLabel photo = new JLabel("", SwingConstants.CENTER);
+//        photo.setPreferredSize(new Dimension(96, 96));
+////        photo.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
+//        if (pet.getImagePath() == null || pet == null) {
+//            photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
+//            photo.setOpaque(true);
+//        } else {
+//            Image petImage = loadPetImage(pet.getImagePath());
+//            if (petImage == null) {
+//                photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
+//                photo.setOpaque(true);
+//            } else {
+//                Image scaledPetImage = petImage.getScaledInstance(96, 96, Image.SCALE_SMOOTH);
+//                photo.setIcon(new ImageIcon(scaledPetImage));
+//            }
+//        }
+        JComponent profileArea = createProfileArea(pet.getImagePath());
+        profileArea.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(profileArea, BorderLayout.WEST);
 
-        card.add(photo, BorderLayout.WEST);
+//        card.add(photo, BorderLayout.WEST);
 
 
         JPanel center = new JPanel();
@@ -202,7 +205,7 @@ public class HomePanel extends Base {
 
         // 펫 정보 표시 영역
         JLabel name = new JLabel(pet.getName());
-        name.setFont(UIConstants.FONT_SEMIBOLD_18);
+        name.setFont(UIConstants.FONT_BOLD_18);
         name.setForeground(UIConstants.TEXT_PRIMARY);
 
         String line = pet.getSpecies() + " · " + pet.getBirthDate();
@@ -212,7 +215,8 @@ public class HomePanel extends Base {
 
         // TODO: 생일 디데이 연결
         JLabel dday = new JLabel("생일 D-38");
-        dday.setFont(UIConstants.FONT_REGULAR_14);
+        dday.setFont(UIConstants.FONT_SEMIBOLD_14);
+        dday.setForeground(UIConstants.PRIMARY);
 
         center.add(name);
         center.add(Box.createVerticalStrut(4));
@@ -485,6 +489,59 @@ public class HomePanel extends Base {
         card.add(date, BorderLayout.SOUTH);
 
         return card;
+    }
+
+    private JComponent createProfileArea(String imagePath) {
+        Image tmpImg = null;
+        try {
+            java.net.URL url = getClass().getResource(imagePath);
+            if (url != null) {
+                tmpImg = new ImageIcon(url).getImage();
+            }
+        } catch (Exception ignored) {}
+
+        final Image img = tmpImg;
+
+        JPanel panel = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(96, 96);
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int size = Math.min(getWidth(), getHeight());
+                int x = (getWidth() - size) / 2;
+                int y = (getHeight() - size) / 2;
+
+                g2.setColor(new Color(0xF5F7FB));
+                g2.fillOval(x, y, size, size);
+
+                if (img != null) {
+                    Shape clip = new java.awt.geom.Ellipse2D.Double(x, y, size, size);
+                    g2.setClip(clip);
+                    g2.drawImage(img, x, y, size, size, this);
+                    g2.setClip(null);
+                }
+
+                g2.setColor(UIConstants.PRIMARY);
+                g2.dispose();
+            }
+        };
+        panel.setOpaque(false);
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return panel;
     }
 
 

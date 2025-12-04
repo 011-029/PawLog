@@ -173,8 +173,8 @@ public class PetInfoPanel extends JPanel {
                 }
 
                 g2.setColor(UIConstants.PRIMARY);
-                g2.setStroke(new BasicStroke(2f));
-                g2.drawOval(x, y, size, size);
+//                g2.setStroke(new BasicStroke(2f));
+//                g2.drawOval(x, y, size, size);
 
                 g2.dispose();
             }

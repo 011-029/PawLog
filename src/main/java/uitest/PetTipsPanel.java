@@ -3,6 +3,7 @@ package uitest;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import content.PetTip;
+import content.UnsafePetFood;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,6 +17,7 @@ public class PetTipsPanel extends Base {
     private final MainFrame mainFrame;
     private JPanel searchResultContainer;
     private ArrayList<PetTip> petTips = petTipMgr.getAll();
+    private ArrayList<UnsafePetFood> foods = unsafePetFoodMgr.getAll();
 
     public PetTipsPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -348,26 +350,45 @@ public class PetTipsPanel extends Base {
         searchBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         searchBtn.setPreferredSize(new Dimension(36, 36));
 
-        // 🔹 아직 로직은 없으니, 눌렀을 때 더미 카드 3개 생성
+        field.addActionListener(e -> searchBtn.doClick());
+
         searchBtn.addActionListener(e -> {
-            searchResultContainer.removeAll();
 
-            searchResultContainer.add(createFoodResultCard(
-                    "포도",
-                    new FlatSVGIcon("icons/dog.svg", 20, 20)
-            ));
+            String kwd = field.getText();
 
-            searchResultContainer.add(createFoodResultCard(
-                    "양파",
-                    new FlatSVGIcon("icons/cat.svg", 20, 20)
-            ));
-            // searchResultContainer.add(Box.createHorizontalStrut(12));
-
-            searchResultContainer.add(createFoodResultCard(
-                    "다크초콜릿",
-                    new FlatSVGIcon("icons/dog.svg", 20, 20)
-            ));
-
+            if (kwd.isBlank()) {
+                searchResultContainer.removeAll();
+                // 입력 안하고 그냥 검색 누르면 다 출력
+                for (UnsafePetFood f : foods) {
+                    JPanel card = createFoodResultCard(
+                            f.getFoodName(), f.getFoodImage());
+                    searchResultContainer.add(card);
+                }
+            } else {
+                searchResultContainer.removeAll();
+                for (UnsafePetFood f : foods) {
+                    if (f.matches(kwd)) {
+                        JPanel card = createFoodResultCard(
+                                f.getFoodName(), f.getFoodImage());
+                        searchResultContainer.add(card);
+                    }
+                }
+            }
+//            searchResultContainer.add(createFoodResultCard(
+//                    "포도",
+//                    new FlatSVGIcon("icons/dog.svg", 20, 20)
+//            ));
+//
+//            searchResultContainer.add(createFoodResultCard(
+//                    "양파",
+//                    new FlatSVGIcon("icons/cat.svg", 20, 20)
+//            ));
+//            // searchResultContainer.add(Box.createHorizontalStrut(12));
+//
+//            searchResultContainer.add(createFoodResultCard(
+//                    "다크초콜릿",
+//                    new FlatSVGIcon("icons/dog.svg", 20, 20)
+//            ));
             searchResultContainer.revalidate();
             searchResultContainer.repaint();
         });
@@ -378,7 +399,7 @@ public class PetTipsPanel extends Base {
     }
 
     /** 음식 검색 결과 카드 1개 */
-    private JPanel createFoodResultCard(String foodName, Icon petIcon) {
+    private JPanel createFoodResultCard(String foodName, String imagePath) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(false);
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -395,25 +416,48 @@ public class PetTipsPanel extends Base {
 
         /* ───────────── ① 음식 이미지 로드 ───────────── */
         // 파일명은 foodName + ".jpg" 라고 가정
-        String imgPath = "/images/foods/" + foodName + ".jpg";
         ImageIcon raw = null;
+        JLabel imgLabel;
 
-        var url = getClass().getResource(imgPath);
-        if (url != null) {
-            raw = new ImageIcon(url);
+// 🔥 1) imagePath null / 빈 문자열 방어
+        if (imagePath == null || imagePath.isBlank()) {
+            // 이미지 없는 경우용 플레이스홀더
+            imgLabel = new JLabel();
+            imgLabel.setOpaque(false);
+            imgLabel.setAlignmentX(0.5f);
+            imgLabel.setAlignmentY(0.5f);
+            imgLabel.setBackground(UIConstants.GRAY_LIGHT);
+            imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
+                    UIConstants.GRAY_LIGHT));
+        } else {
+            // 🔥 2) getResource 쓸 때 앞에 / 붙이기 (패키지 루트 기준)
+            String path = imagePath.startsWith("/") ? imagePath : "/" + imagePath;
+
+            var url = getClass().getResource(path);
+
+            if (url != null) {
+                raw = new ImageIcon(url);
+
+                Image scaled = raw.getImage()
+                        .getScaledInstance(140, 140, Image.SCALE_SMOOTH);
+
+                imgLabel = new JLabel(new ImageIcon(scaled));
+                imgLabel.setOpaque(false);
+                imgLabel.setAlignmentX(0.5f);
+                imgLabel.setAlignmentY(0.5f);
+                imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
+                        UIConstants.GRAY_LIGHT));
+            } else {
+                // 리소스 못 찾았을 때도 안전하게 처리
+                imgLabel = new JLabel();
+                imgLabel.setOpaque(true);
+                imgLabel.setAlignmentX(0.5f);
+                imgLabel.setAlignmentY(0.5f);
+                imgLabel.setBackground(Color.WHITE);
+                imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
+                        UIConstants.GRAY_LIGHT));
+            }
         }
-
-        // 정사각형으로 리사이징
-        Image scaled = (raw != null)
-                ? raw.getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH)
-                : new BufferedImage(140, 140, BufferedImage.TYPE_INT_RGB);
-
-        JLabel imgLabel = new JLabel(new ImageIcon(scaled));
-        imgLabel.setOpaque(false);
-        imgLabel.setAlignmentX(0.5f);
-        imgLabel.setAlignmentY(0.5f);
-        imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-                UIConstants.GRAY_LIGHT));
 
         JPanel overlay = new JPanel();
         overlay.setOpaque(false);
@@ -451,8 +495,8 @@ public class PetTipsPanel extends Base {
         bottom.add(nameLabel);
         bottom.add(Box.createHorizontalGlue());
         bottom.add(dangerTag);
-        bottom.add(Box.createHorizontalStrut(8));
-        bottom.add(xLabel);
+//        bottom.add(Box.createHorizontalStrut(8));
+//        bottom.add(xLabel);
 
         card.add(bottom, BorderLayout.SOUTH);
 
