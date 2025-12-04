@@ -102,4 +102,8 @@ public class UnsafePetFood implements Manageable, UIData {
     public String getDescription() {
         return description;
     }
+
+    public String getFoodImage() {
+        return foodImage;
+    }
 }
