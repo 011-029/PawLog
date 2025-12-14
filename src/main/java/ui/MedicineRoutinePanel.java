@@ -98,8 +98,8 @@ public class MedicineRoutinePanel extends Base {
         todayContent.setLayout(new BoxLayout(todayContent, BoxLayout.Y_AXIS));
         todayContent.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        listPanel.add(createCollapsibleHeader(todayLabel, todayContent));
-        listPanel.add(Box.createVerticalStrut(10));
+        listPanel.add(UIComponents.createCollapsibleHeader(todayLabel, todayContent));
+        listPanel.add(Box.createVerticalStrut(16));
 
         String todayDOW = LocalDate.now()
                 .getDayOfWeek()
@@ -127,8 +127,8 @@ public class MedicineRoutinePanel extends Base {
         allContent.setLayout(new BoxLayout(allContent, BoxLayout.Y_AXIS));
         allContent.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        listPanel.add(createCollapsibleHeader(allLabel, allContent));
-        listPanel.add(Box.createVerticalStrut(10));
+        listPanel.add(UIComponents.createCollapsibleHeader(allLabel, allContent));
+        listPanel.add(Box.createVerticalStrut(16));
 
         // 데이터 불러와서 카드 리스트 생성
         for (MedicineRoutine m : records) {
@@ -162,7 +162,7 @@ public class MedicineRoutinePanel extends Base {
         label.setFont(UIConstants.FONT_SEMIBOLD_18);
         label.setForeground(UIConstants.TEXT_PRIMARY);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setBorder(new EmptyBorder(0, 4, 4, 4));
+        label.setBorder(new EmptyBorder(0, 4, 0, 0));
         return label;
     }
 
@@ -266,40 +266,5 @@ public class MedicineRoutinePanel extends Base {
         });
 
         return card;
-    }
-
-    private JPanel createCollapsibleHeader(JLabel sectionLabel, JComponent contentPanel) {
-        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        header.setOpaque(false);
-        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
-        header.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        FlatSVGIcon iconExpanded = new FlatSVGIcon("icons/tap-collapse.svg", 12, 12);
-        FlatSVGIcon iconCollapsed = new FlatSVGIcon("icons/tap-expand.svg", 12, 12);
-
-        JButton toggleBtn = new JButton();
-        toggleBtn.setIcon(iconExpanded); // 기본: 펼친 상태
-        toggleBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        toggleBtn.setContentAreaFilled(false);
-        toggleBtn.setBorderPainted(false);
-        toggleBtn.setFocusPainted(false);
-        toggleBtn.setOpaque(false);
-        toggleBtn.setPreferredSize(new Dimension(22, 22)); // 클릭 영역
-
-
-        toggleBtn.addActionListener(e -> {
-            boolean nowVisible = !contentPanel.isVisible();
-            contentPanel.setVisible(nowVisible);
-
-            toggleBtn.setIcon(nowVisible ? iconExpanded : iconCollapsed);
-
-            contentPanel.revalidate();
-            contentPanel.repaint();
-        });
-
-        header.add(sectionLabel);
-        header.add(toggleBtn);
-
-        return header;
     }
 }

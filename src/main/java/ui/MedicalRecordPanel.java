@@ -55,7 +55,7 @@ public class MedicalRecordPanel extends Base {
         listPanel.setBorder(new EmptyBorder(24, 16, 16, 16));
 
         // 제목
-        JLabel title = new JLabel("진료 기록 목록");
+        JLabel title = new JLabel("진료 기록");
         title.setFont(UIConstants.FONT_EXTRABOLD_24);
         title.setForeground(UIConstants.TEXT_PRIMARY);
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -89,21 +89,27 @@ public class MedicalRecordPanel extends Base {
 
         // 미래 기록
         if (!future.isEmpty()) {
-            JLabel upcomingLabel = new JLabel("예정된 일정");
+            JLabel upcomingLabel = new JLabel("예정된 진료 일정");
             upcomingLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
             upcomingLabel.setForeground(UIConstants.TEXT_PRIMARY);
             upcomingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            listPanel.add(upcomingLabel);
-            listPanel.add(Box.createVerticalStrut(16));
+            JPanel upcomingContent = new JPanel();
+            upcomingContent.setOpaque(false);
+            upcomingContent.setLayout(new BoxLayout(upcomingContent, BoxLayout.Y_AXIS));
+            upcomingContent.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            listPanel.add(UIComponents.createCollapsibleHeader(upcomingLabel, upcomingContent));
+            listPanel.add(Box.createVerticalStrut(12));
 
             for (MedicalRecord r : future) {
                 MedicalCard card = new MedicalCard(r, mainFrame);
                 card.setAlignmentX(Component.LEFT_ALIGNMENT);
-                listPanel.add(card);
-                listPanel.add(Box.createVerticalStrut(16));
+                upcomingContent.add(card);
+                upcomingContent.add(Box.createVerticalStrut(12));
             }
 
+            listPanel.add(upcomingContent);
             listPanel.add(Box.createVerticalStrut(24));
         }
 
@@ -113,15 +119,22 @@ public class MedicalRecordPanel extends Base {
         pastLabel.setForeground(UIConstants.TEXT_PRIMARY);
         pastLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        listPanel.add(pastLabel);
+        JPanel pastContent = new JPanel();
+        pastContent.setOpaque(false);
+        pastContent.setLayout(new BoxLayout(pastContent, BoxLayout.Y_AXIS));
+        pastContent.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        listPanel.add(UIComponents.createCollapsibleHeader(pastLabel, pastContent));
         listPanel.add(Box.createVerticalStrut(12));
 
         for (MedicalRecord r : past) {
             MedicalCard card = new MedicalCard(r, mainFrame);
             card.setAlignmentX(Component.LEFT_ALIGNMENT);
-            listPanel.add(card);
-            listPanel.add(Box.createVerticalStrut(12));
+            pastContent.add(card);
+            pastContent.add(Box.createVerticalStrut(12));
         }
+
+        listPanel.add(pastContent);
 
         // 스크롤 래퍼
         JPanel wrapper = new JPanel(new BorderLayout());

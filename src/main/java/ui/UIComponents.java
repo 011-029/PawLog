@@ -132,4 +132,38 @@ public final class UIComponents {
 
         return btn;
     }
+
+    public static JPanel createCollapsibleHeader(JLabel sectionLabel, JComponent contentPanel) {
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        header.setOpaque(false);
+        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        FlatSVGIcon iconExpanded = new FlatSVGIcon("icons/tap-collapse.svg", 12, 12);
+        FlatSVGIcon iconCollapsed = new FlatSVGIcon("icons/tap-expand.svg", 12, 12);
+
+        JButton toggleBtn = new JButton();
+        toggleBtn.setIcon(iconExpanded); // 기본: 펼친 상태
+        toggleBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        toggleBtn.setContentAreaFilled(false);
+        toggleBtn.setBorderPainted(false);
+        toggleBtn.setFocusPainted(false);
+        toggleBtn.setOpaque(false);
+        toggleBtn.setPreferredSize(new Dimension(22, 22)); // 클릭 영역
+
+        toggleBtn.addActionListener(e -> {
+            boolean nowVisible = !contentPanel.isVisible();
+            contentPanel.setVisible(nowVisible);
+
+            toggleBtn.setIcon(nowVisible ? iconExpanded : iconCollapsed);
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        });
+
+        header.add(sectionLabel);
+        header.add(toggleBtn);
+
+        return header;
+    }
 }
