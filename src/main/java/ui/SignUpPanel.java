@@ -74,7 +74,7 @@ public class SignUpPanel extends Base {
                 text.getPreferredSize().height - 50
         ));
         text.setFont(UIConstants.FONT_BOLD_32);
-        text.setForeground(UIConstants.PRIMARY);
+        text.setForeground(UIConstants.TEXT_PRIMARY);
         text.setOpaque(false);
         text.setEditable(false);
         text.setFocusable(false);
@@ -233,6 +233,13 @@ public class SignUpPanel extends Base {
     private void doDuplicatedCheck() {
         String id = idField.getText().trim();
         boolean result = userMgr.isDuplicatedId(id);
+        if (id.isBlank()) {
+            JOptionPane.showConfirmDialog(this,
+                    "아이디를 입력해 주세요.",
+                    "중복 확인",
+                    JOptionPane.DEFAULT_OPTION);
+            return;
+        }
         if (!result) {
             JOptionPane.showMessageDialog(this,
                     "사용 가능한 아이디입니다.",

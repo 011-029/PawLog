@@ -91,7 +91,14 @@ public class MedicineRoutinePanel extends Base {
 
         // 오늘 복용 루틴 섹션 -----------------------
         JLabel todayLabel = createSectionLabel("오늘 복용 루틴");
-        listPanel.add(todayLabel);
+
+        // ✅ 오늘 섹션 "내용"만 담는 패널
+        JPanel todayContent = new JPanel();
+        todayContent.setOpaque(false);
+        todayContent.setLayout(new BoxLayout(todayContent, BoxLayout.Y_AXIS));
+        todayContent.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        listPanel.add(createCollapsibleHeader(todayLabel, todayContent));
         listPanel.add(Box.createVerticalStrut(10));
 
         String todayDOW = LocalDate.now()
@@ -103,23 +110,34 @@ public class MedicineRoutinePanel extends Base {
             ArrayList<String> takenDOW = m.getTakenDOW();
             if (takenDOW.contains(todayDOW)) {
                 JPanel card = createRoutineCard(m);
-                listPanel.add(card);
-                listPanel.add(Box.createVerticalStrut(16));
+                todayContent.add(card);
+                todayContent.add(Box.createVerticalStrut(16));
             }
         }
+
+        listPanel.add(todayContent);
 
         // 전체 루틴 섹션 -----------------------
         listPanel.add(Box.createVerticalStrut(8));
         JLabel allLabel = createSectionLabel("전체 루틴");
-        listPanel.add(allLabel);
+
+        // ✅ 전체 섹션 내용 패널
+        JPanel allContent = new JPanel();
+        allContent.setOpaque(false);
+        allContent.setLayout(new BoxLayout(allContent, BoxLayout.Y_AXIS));
+        allContent.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        listPanel.add(createCollapsibleHeader(allLabel, allContent));
         listPanel.add(Box.createVerticalStrut(10));
 
         // 데이터 불러와서 카드 리스트 생성
         for (MedicineRoutine m : records) {
             JPanel card = createRoutineCard(m);
-            listPanel.add(card);
-            listPanel.add(Box.createVerticalStrut(16));
+            allContent.add(card);
+            allContent.add(Box.createVerticalStrut(16));
         }
+
+        listPanel.add(allContent);
 
         // 리스트를 한 번 더 싸서 항상 위쪽에 붙도록
         JPanel listWrapper = new JPanel(new BorderLayout());
@@ -248,5 +266,40 @@ public class MedicineRoutinePanel extends Base {
         });
 
         return card;
+    }
+
+    private JPanel createCollapsibleHeader(JLabel sectionLabel, JComponent contentPanel) {
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        header.setOpaque(false);
+        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        FlatSVGIcon iconExpanded = new FlatSVGIcon("icons/tap-collapse.svg", 12, 12);
+        FlatSVGIcon iconCollapsed = new FlatSVGIcon("icons/tap-expand.svg", 12, 12);
+
+        JButton toggleBtn = new JButton();
+        toggleBtn.setIcon(iconExpanded); // 기본: 펼친 상태
+        toggleBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        toggleBtn.setContentAreaFilled(false);
+        toggleBtn.setBorderPainted(false);
+        toggleBtn.setFocusPainted(false);
+        toggleBtn.setOpaque(false);
+        toggleBtn.setPreferredSize(new Dimension(22, 22)); // 클릭 영역
+
+
+        toggleBtn.addActionListener(e -> {
+            boolean nowVisible = !contentPanel.isVisible();
+            contentPanel.setVisible(nowVisible);
+
+            toggleBtn.setIcon(nowVisible ? iconExpanded : iconCollapsed);
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        });
+
+        header.add(sectionLabel);
+        header.add(toggleBtn);
+
+        return header;
     }
 }
