@@ -2,7 +2,9 @@ package ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import content.AllowanceLevel;
 import content.PetTip;
+import content.RiskLevel;
 import content.UnsafePetFood;
 
 import javax.swing.*;
@@ -326,7 +328,7 @@ public class PetTipsPanel extends Base {
                 new Insets(8, 12, 8, 4),
                 borderColor,
                 1.0f,
-                16   // ← 검색 네모 둥근 모서리
+                16
         ));
 
         JTextField field = new JTextField();
@@ -359,35 +361,18 @@ public class PetTipsPanel extends Base {
                 searchResultContainer.removeAll();
                 // 입력 안하고 그냥 검색 누르면 다 출력
                 for (UnsafePetFood f : foods) {
-                    JPanel card = createFoodResultCard(
-                            f.getFoodName(), f.getFoodImage());
+                    JPanel card = createFoodResultCard(f);
                     searchResultContainer.add(card);
                 }
             } else {
                 searchResultContainer.removeAll();
                 for (UnsafePetFood f : foods) {
                     if (f.matches(kwd)) {
-                        JPanel card = createFoodResultCard(
-                                f.getFoodName(), f.getFoodImage());
+                        JPanel card = createFoodResultCard(f);
                         searchResultContainer.add(card);
                     }
                 }
             }
-//            searchResultContainer.add(createFoodResultCard(
-//                    "포도",
-//                    new FlatSVGIcon("icons/dog.svg", 20, 20)
-//            ));
-//
-//            searchResultContainer.add(createFoodResultCard(
-//                    "양파",
-//                    new FlatSVGIcon("icons/cat.svg", 20, 20)
-//            ));
-//            // searchResultContainer.add(Box.createHorizontalStrut(12));
-//
-//            searchResultContainer.add(createFoodResultCard(
-//                    "다크초콜릿",
-//                    new FlatSVGIcon("icons/dog.svg", 20, 20)
-//            ));
             searchResultContainer.revalidate();
             searchResultContainer.repaint();
         });
@@ -398,7 +383,7 @@ public class PetTipsPanel extends Base {
     }
 
     /** 음식 검색 결과 카드 1개 */
-    private JPanel createFoodResultCard(String foodName, String imagePath) {
+    private JPanel createFoodResultCard(UnsafePetFood f) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(false);
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -415,6 +400,7 @@ public class PetTipsPanel extends Base {
 
         /* ───────────── ① 음식 이미지 로드 ───────────── */
         // 파일명은 foodName + ".jpg" 라고 가정
+        String imagePath = f.getFoodImage();
         ImageIcon raw = null;
         JLabel imgLabel;
 
@@ -474,7 +460,7 @@ public class PetTipsPanel extends Base {
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
         bottom.setBorder(new EmptyBorder(10, 6, 6, 6));
 
-        JLabel nameLabel = new JLabel(foodName);
+        JLabel nameLabel = new JLabel(f.getFoodName());
         nameLabel.setFont(UIConstants.FONT_REGULAR_14);
         nameLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
@@ -499,7 +485,120 @@ public class PetTipsPanel extends Base {
 
         card.add(bottom, BorderLayout.SOUTH);
 
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                showFoodPopup(f); // ✅ 팝업 띄우기
+            }
+        });
+
         return card;
+    }
+
+    private void showFoodPopup(UnsafePetFood f) {
+        Window owner = SwingUtilities.getWindowAncestor(this);
+
+        JDialog dialog = new JDialog(owner);
+        dialog.setModal(true);
+        dialog.setUndecorated(true); // ✅ 메세지창 느낌 제거
+        dialog.setBackground(new Color(0, 0, 0, 0)); // ⭐ 창 자체 투명
+        ((JComponent) dialog.getContentPane()).setOpaque(false); // ⭐ 컨텐츠 배경도 투명
+        dialog.setLayout(new BorderLayout());
+
+
+        // 바깥 카드(둥근 테두리)
+        JPanel root = new JPanel(new BorderLayout());
+        root.setOpaque(true);
+        root.setBackground(Color.WHITE);
+        root.setBorder(new com.formdev.flatlaf.ui.FlatLineBorder(
+                new Insets(26, 26, 26, 26),
+                UIConstants.GRAY_SOFT, 1.0f, 20
+        ));
+
+        // 상단: 제목 + 닫기 버튼
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+
+        JLabel name = new JLabel(f.getFoodName());
+        name.setFont(UIConstants.FONT_EXTRABOLD_20);
+        name.setForeground(UIConstants.TEXT_PRIMARY);
+
+        JButton close = new JButton();
+        close.setIcon(new FlatSVGIcon("icons/close.svg", 14, 14)); // 없으면 X 텍스트로 대체 가능
+        close.setContentAreaFilled(false);
+        close.setBorderPainted(false);
+        close.setFocusPainted(false);
+        close.setOpaque(false);
+        close.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        close.addActionListener(e -> dialog.dispose());
+
+        top.add(name, BorderLayout.WEST);
+        top.add(close, BorderLayout.EAST);
+
+        // 가운데: 이미지 + 정보(위험단계/허용여부) + 설명
+        JPanel center = new JPanel();
+        center.setOpaque(false);
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.add(Box.createVerticalStrut(12));
+
+        // 위험단계 / 허용여부 (라벨 2개)
+        JLabel risk = new JLabel("위험단계: "
+                + f.getRiskLevel().getKoName());
+        if (f.getRiskLevel() == RiskLevel.HIGH) {
+            risk.setForeground(new Color(182, 31, 31));
+        } else if (f.getRiskLevel() == RiskLevel.MEDIUM) {
+            risk.setForeground(new Color(199, 127, 42));
+        } else {
+            risk.setForeground(new Color(94, 147, 80));
+        }
+        risk.setFont(UIConstants.FONT_SEMIBOLD_14);
+        risk.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel allowed = new JLabel("허용여부: "
+                + f.getAllowanceLevel().getKoName());
+        if (f.getAllowanceLevel() == AllowanceLevel.FORBIDDEN) {
+            allowed.setForeground(new Color(182, 31, 31));
+        } else if (f.getAllowanceLevel() == AllowanceLevel.CAUTION) {
+            allowed.setForeground(new Color(199, 127, 42));
+        } else {
+            allowed.setForeground(new Color(94, 147, 80));
+        }
+        allowed.setFont(UIConstants.FONT_SEMIBOLD_14);
+        allowed.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        center.add(risk);
+        center.add(Box.createVerticalStrut(8));
+        center.add(allowed);
+        center.add(Box.createVerticalStrut(12));
+
+        // 설명(긴 글)
+        JTextArea desc = new JTextArea(f.getDescription());
+        desc.setWrapStyleWord(true);
+        desc.setLineWrap(true);
+        desc.setEditable(false);
+        desc.setOpaque(false);
+        desc.setFont(UIConstants.FONT_REGULAR_14);
+        desc.setForeground(UIConstants.TEXT_SECONDARY);
+        desc.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JScrollPane descScroll = new JScrollPane(desc);
+        descScroll.setBorder(null);
+        descScroll.setOpaque(false);
+        descScroll.getViewport().setOpaque(false);
+        descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        descScroll.setPreferredSize(new Dimension(360, 120));
+        descScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        center.add(descScroll);
+
+        root.add(top, BorderLayout.NORTH);
+        root.add(center, BorderLayout.CENTER);
+
+        dialog.add(root, BorderLayout.CENTER);
+
+        dialog.setSize(300, 250);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
 

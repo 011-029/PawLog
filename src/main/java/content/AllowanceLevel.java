@@ -11,6 +11,10 @@ public enum AllowanceLevel {
         this.koName = koName;
     }
 
+    public String getKoName() {
+        return koName;
+    }
+
     static AllowanceLevel valueFromKo(String token) {
         if (token == null)
             return null;

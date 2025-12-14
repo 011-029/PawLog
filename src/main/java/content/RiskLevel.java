@@ -11,6 +11,10 @@ public enum RiskLevel {
         this.koName = koName;
     }
 
+    public String getKoName() {
+        return koName;
+    }
+
     static RiskLevel valueFromKo(String token) {
         if (token == null)
             return null;
