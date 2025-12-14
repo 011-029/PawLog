@@ -4,6 +4,7 @@ import facade.UIData;
 import mgr.Manageable;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -114,6 +115,20 @@ public class Pet implements Manageable, UIData {
     public LocalDate getBirthDate() { return birthDate; }
     public double getWeight() { return weight; }
     public String getImagePath() { return imagePath; }
+
+    public long getBirthDateDDay() {
+        // 생일 d-day 계산
+        LocalDate today = LocalDate.now();
+        LocalDate nextBirthday = birthDate.withYear(today.getYear());
+
+        if (nextBirthday.isBefore(today)) {
+            nextBirthday = nextBirthday.plusYears(1);
+        }
+        long days = ChronoUnit.DAYS.between(today, nextBirthday);
+
+        return days;
+    }
+
     public ArrayList<MedicalRecord> getMedicalRecords(){ return medicalRecords; }
 
     public ArrayList<String> getPersonalityTags() {

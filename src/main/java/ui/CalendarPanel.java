@@ -17,6 +17,8 @@ import java.util.List;
 public class CalendarPanel extends Base {
 
     private final MainFrame mainFrame;
+    private User user;  // 로그인한 유저
+    private Pet pet;    // 로그인한 유저의 펫
 
     // 캘린더/라벨/리스트
     private JCalendar calendar;
@@ -37,6 +39,8 @@ public class CalendarPanel extends Base {
     public CalendarPanel(MainFrame mainFrame) {
         super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
+        this.pet = mainFrame.getLoggedInUserPet();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -375,17 +379,12 @@ public class CalendarPanel extends Base {
         // 상단 날짜 텍스트
         dateLabel.setText(date.format(HEADER_FORMAT));
 
-        // 펫 생일 D-Day 계산
-        LocalDate today = LocalDate.now();
-        LocalDate nextBirthday = PET_BIRTHDAY.withYear(today.getYear());
-        if (nextBirthday.isBefore(today)) {
-            nextBirthday = nextBirthday.plusYears(1);
-        }
-        long diff = Duration.between(today.atStartOfDay(), nextBirthday.atStartOfDay()).toDays();
+        // 펫 생일 D-Day
+        long days = pet.getBirthDateDDay();
 
         String dText;
-        if (diff == 0) dText = "🎂 D-DAY";
-        else dText = "생일까지 D-" + diff;
+        if (days == 0) dText = "🎂 D-DAY";
+        else dText = "생일까지 D-" + days;
 
         ddayLabel.setText(dText);
 
@@ -553,7 +552,7 @@ public class CalendarPanel extends Base {
         LocalDate minDate = today.minusDays(30);
 
         /* ─────────── 진료 기록 ─────────── */
-        for (MedicalRecord r : medicalMgr.mList) {
+        for (MedicalRecord r : medicalMgr.getAllByOwner(user)) {
             LocalDate d = r.getDate();
             if (d.isBefore(minDate)) continue;
 
@@ -569,7 +568,7 @@ public class CalendarPanel extends Base {
         }
 
         /* ─────────── 복용 기록 ─────────── */
-        for (MedicineRecord r : medicineRecordMgr.mList) {
+        for (MedicineRecord r : medicineRecordMgr.getAllByOwner(user)) {
             LocalDate d = r.getTakenDate();
             if (d.isBefore(minDate)) continue;
 
@@ -585,7 +584,7 @@ public class CalendarPanel extends Base {
         }
 
         /* ─────────── 백신 기록 ─────────── */
-        for (VaccineRecord r : vaccineMgr.mList) {
+        for (VaccineRecord r : vaccineMgr.getAllByOwner(user)) {
             LocalDate d = r.getDate();
             if (d.isBefore(minDate)) continue;
 
@@ -601,7 +600,7 @@ public class CalendarPanel extends Base {
         }
 
         /* ─────────── 산책 기록 ─────────── */
-        for (WalkRecord r : walkMgr.mList) {
+        for (WalkRecord r : walkMgr.getAllByOwner(user)) {
             LocalDate d = r.getRecordDate();
             if (d.isBefore(minDate)) continue;
 
@@ -616,8 +615,24 @@ public class CalendarPanel extends Base {
                     .add(item);
         }
 
+        /* ─────────── 놀이 기록 ─────────── */
+        for (PlayRecord r : playMgr.getAllByOwner(user)) {
+            LocalDate d = r.getRecordDate();
+            if (d.isBefore(minDate)) continue;
+
+            RecordItem item = new RecordItem(
+                    d,
+                    "놀이",
+                    r.getPlayTime() + "분",
+                    r.getMemo() == null ? "" : r.getMemo()
+            );
+
+            recordsByDate.computeIfAbsent(d, key -> new ArrayList<>())
+                    .add(item);
+        }
+
         /* ─────────── 건강 기록 ─────────── */
-        for (HealthRecord r : healthMgr.mList) {
+        for (HealthRecord r : healthMgr.getAllByOwner(user)) {
             LocalDate d = r.getRecordDate();
             if (d.isBefore(minDate)) continue;
 

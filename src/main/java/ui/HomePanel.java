@@ -1,5 +1,6 @@
 package ui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import core.*;
 
@@ -8,7 +9,9 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class HomePanel extends Base {
 
@@ -118,16 +121,29 @@ public class HomePanel extends Base {
             ),
     gbc);
 
-        gbc.gridx = 1;
-        gbc.insets = cardInsetsRight;
-        content.add(createSmallCard("산책 기록",
-                new String[]{
-                        "산책 거리, 산책 시간,",
-                        "사진 등록"
-                },
-            () -> mainFrame.switchPanel(new WalkPanel(mainFrame))
-            ),
-        gbc);
+        if (pet.getSpecies().contains("고양이")) {
+            gbc.gridx = 1;
+            gbc.insets = cardInsetsRight;
+            content.add(createSmallCard("놀이 기록",
+                            new String[]{
+                                    "놀이 시간, 산책 방식,",
+                                    "메모 기록"
+                            },
+                            () -> mainFrame.switchPanel(new PlayPanel(mainFrame))
+                    ),
+                    gbc);
+        } else {
+            gbc.gridx = 1;
+            gbc.insets = cardInsetsRight;
+            content.add(createSmallCard("산책 기록",
+                            new String[]{
+                                    "산책 거리, 산책 시간,",
+                                    "사진 등록"
+                            },
+                            () -> mainFrame.switchPanel(new WalkPanel(mainFrame))
+                    ),
+                    gbc);
+        }
 
         // 4: 타임라인 (전체 폭)
         gbc.gridy++;
@@ -174,29 +190,9 @@ public class HomePanel extends Base {
             }
         });
 
-        // 펫 사진 영역
-//        JLabel photo = new JLabel("", SwingConstants.CENTER);
-//        photo.setPreferredSize(new Dimension(96, 96));
-////        photo.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
-//        if (pet.getImagePath() == null || pet == null) {
-//            photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
-//            photo.setOpaque(true);
-//        } else {
-//            Image petImage = loadPetImage(pet.getImagePath());
-//            if (petImage == null) {
-//                photo.setIcon(new FlatSVGIcon("icons/default-profile.svg", 96, 96));
-//                photo.setOpaque(true);
-//            } else {
-//                Image scaledPetImage = petImage.getScaledInstance(96, 96, Image.SCALE_SMOOTH);
-//                photo.setIcon(new ImageIcon(scaledPetImage));
-//            }
-//        }
         JComponent profileArea = createProfileArea(pet.getImagePath());
         profileArea.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(profileArea, BorderLayout.WEST);
-
-//        card.add(photo, BorderLayout.WEST);
-
 
         JPanel center = new JPanel();
         center.setOpaque(false);
@@ -207,17 +203,34 @@ public class HomePanel extends Base {
         name.setFont(UIConstants.FONT_BOLD_18);
         name.setForeground(UIConstants.TEXT_PRIMARY);
 
+        String genderIconPath = pet.getGender().contains("암컷")
+                ? "icons/female.svg" : "icons/male.svg";
+        JLabel genderIcon = new JLabel(new FlatSVGIcon(genderIconPath, 12, 12));
+        genderIcon.setBorder(new EmptyBorder(0, 5, 0, 0));
+
+        JPanel nameRow = new JPanel();
+        nameRow.setOpaque(false);
+        nameRow.setLayout(new BoxLayout(nameRow, BoxLayout.X_AXIS));
+        nameRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        nameRow.add(name);
+        nameRow.add(genderIcon);
+
         String line = pet.getSpecies() + " · " + pet.getBirthDate();
         JLabel breed = new JLabel(line);
         breed.setFont(UIConstants.FONT_REGULAR_12);
         breed.setForeground(UIConstants.TEXT_LIGHT);
 
-        // TODO: 생일 디데이 연결
-        JLabel dday = new JLabel("생일 D-38");
+        // 생일 d-day 계산
+        long days = pet.getBirthDateDDay();
+        String dDayText = (days == 0) ? "생일 축하합니다!" : "생일 D-" + days;
+
+        JLabel dday = new JLabel(dDayText);
         dday.setFont(UIConstants.FONT_SEMIBOLD_14);
         dday.setForeground(UIConstants.PRIMARY);
 
-        center.add(name);
+        center.add(Box.createVerticalStrut(4));
+        center.add(nameRow);
         center.add(Box.createVerticalStrut(4));
         center.add(breed);
         center.add(Box.createVerticalStrut(8));
@@ -324,6 +337,7 @@ public class HomePanel extends Base {
         JLabel title = new JLabel("최근 활동 타임라인");
         title.setFont(UIConstants.FONT_SEMIBOLD_16);
         title.setForeground(UIConstants.TEXT_PRIMARY);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         box.add(title);
         box.add(Box.createVerticalStrut(10));
@@ -491,15 +505,28 @@ public class HomePanel extends Base {
     }
 
     private JComponent createProfileArea(String imagePath) {
-        Image tmpImg = null;
+        final Image image;
+        final FlatSVGIcon svgIcon;
+
+        Image tmpImage = null;
+        FlatSVGIcon tmpSvg = null;
+
+        java.net.URL url = null;
         try {
-            java.net.URL url = getClass().getResource(imagePath);
+            if (imagePath != null && !imagePath.isBlank()) {
+                url = getClass().getResource(imagePath);
+            }
             if (url != null) {
-                tmpImg = new ImageIcon(url).getImage();
+                tmpImage = new ImageIcon(url).getImage();
             }
         } catch (Exception ignored) {}
 
-        final Image img = tmpImg;
+        if (tmpImage == null) {
+            tmpSvg = new FlatSVGIcon("icons/default-profile.svg", 78, 78);
+        }
+
+        image = tmpImage;
+        svgIcon = tmpSvg;
 
         JPanel panel = new JPanel() {
 
@@ -517,24 +544,26 @@ public class HomePanel extends Base {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 int size = Math.min(getWidth(), getHeight());
                 int x = (getWidth() - size) / 2;
                 int y = (getHeight() - size) / 2;
 
+                // 배경 원
                 g2.setColor(new Color(0xF5F7FB));
                 g2.fillOval(x, y, size, size);
 
-                if (img != null) {
-                    Shape clip = new java.awt.geom.Ellipse2D.Double(x, y, size, size);
-                    g2.setClip(clip);
-                    g2.drawImage(img, x, y, size, size, this);
-                    g2.setClip(null);
+                Shape clip = new java.awt.geom.Ellipse2D.Double(x, y, size, size);
+                g2.setClip(clip);
+
+                if (image != null) {
+                    g2.drawImage(image, x, y, size, size, this);
+                } else if (svgIcon != null) {
+                    svgIcon.paintIcon(this, g2, x, y);
                 }
 
-                g2.setColor(UIConstants.PRIMARY);
+                g2.setClip(null);
                 g2.dispose();
             }
         };

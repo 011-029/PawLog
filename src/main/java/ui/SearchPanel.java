@@ -205,6 +205,17 @@ public class SearchPanel extends JPanel {
         }
     }
 
+    private void searchPlayRecord(String kwd) {
+        PlayPanel pp = new PlayPanel(mainFrame);
+        for (PlayRecord r : pp.records) {
+            if (r.matches(kwd)) {
+                JPanel card = pp.createPlayCard(r);
+                searchResultContainer.add(card);
+                searchResultContainer.add(Box.createVerticalStrut(16));
+            }
+        }
+    }
+
     private void searchMedicineRoutine(String kwd) {
         MedicineRoutinePanel wp = new MedicineRoutinePanel(mainFrame);
         for (MedicineRoutine r : wp.records) {
@@ -262,7 +273,7 @@ public class SearchPanel extends JPanel {
             } else {
                 searchResultContainer.removeAll();
 
-                if(prevPanel instanceof MedicalHomePanel){
+                if (prevPanel instanceof MedicalHomePanel) {
                     searchMedicalRecord(kwd);
                     searchMedicineRecord(kwd);
                     searchVaccineRecord(kwd);
@@ -298,42 +309,20 @@ public class SearchPanel extends JPanel {
                     System.out.println("@ 복용기록패널 검색 실행");
                     searchMedicineRoutine(kwd);
                 }
-                // TODO: 놀이기록 검색 연결
+                if (prevPanel instanceof PlayPanel) {
+                    // TODO: 테스트용 코드 추후 삭제 (아래 1줄)
+                    System.out.println("@ 놀이기록패널 검색 실행");
+                    searchPlayRecord(kwd);
+                }
+                searchResultContainer.revalidate();
+                searchResultContainer.repaint();
             }
-            searchResultContainer.revalidate();
-            searchResultContainer.repaint();
         });
 
         box.add(searchBtn, BorderLayout.EAST);
 
         return box;
     }
-
-//    private JButton createSearchButton() {
-//        JButton btn = new JButton();
-//        btn.setIcon(new FlatSVGIcon("icons/search.svg", 22, 22));
-//        btn.setBorderPainted(false);
-//        btn.setContentAreaFilled(false);
-//        btn.setFocusPainted(false);
-//        btn.setOpaque(false);
-//        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//        btn.setPreferredSize(new Dimension(32, 32));
-//        btn.setMargin(new Insets(0, 0, 0, 0));
-//
-//        // 🔹 클릭 시 동작
-//        btn.addActionListener(e -> {
-//            String text = searchField.getText().trim();
-//            if (text.isEmpty()) {
-//                // TODO: 연결
-//                // 검색어가 없으면 이전 화면으로 돌아가기
-//                mainFrame.switchPanel(prevPanel);
-//            } else {
-//                // TODO: 검색어 있을 때의 검색 로직
-//            }
-//        });
-//
-//        return btn;
-//    }
 
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage();

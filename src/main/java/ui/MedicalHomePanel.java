@@ -169,7 +169,7 @@ public class MedicalHomePanel extends Base {
 
         card.setBorder(new FlatLineBorder(
                 new Insets(16, 16, 16, 16),
-                UIConstants.GRAY_SOFT, 0.5f, 10
+                UIConstants.GRAY_SOFT, 0.5f, 20
         ));
 
         for (int i = 0; i < list.size(); i++) {
@@ -225,14 +225,14 @@ public class MedicalHomePanel extends Base {
         tile.setLayout(new BoxLayout(tile, BoxLayout.Y_AXIS));
 
         int w = 98;
-        int h = 110;
+        int h = 114;
         tile.setPreferredSize(new Dimension(w, h));
         tile.setMinimumSize(new Dimension(w, h));
         tile.setMaximumSize(new Dimension(w, h));
 
         tile.setBorder(new FlatLineBorder(
                 new Insets(8, 8, 8, 8),
-                UIConstants.GRAY_SOFT, 0.5f, 10
+                UIConstants.GRAY_SOFT, 0.5f, 20
         ));
 
         JLabel icon = new JLabel(new FlatSVGIcon(iconPath, iconW, iconH));
@@ -243,7 +243,7 @@ public class MedicalHomePanel extends Base {
         label.setForeground(UIConstants.TEXT_PRIMARY);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        tile.add(Box.createVerticalStrut(8));
+        tile.add(Box.createVerticalStrut(12));
         tile.add(icon);
 
         tile.add(Box.createVerticalGlue());

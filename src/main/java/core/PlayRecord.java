@@ -108,4 +108,20 @@ public class PlayRecord implements Manageable, UIData, PetOwned, RecordSearchabl
     public String[] getUITexts() {
         return new String[0];
     }
+
+    public String getPlayType() {
+        if (playType.equals("0"))
+            return null;
+        return playType;
+    }
+
+    public int getPlayTime() {
+        return playTime;
+    }
+
+    public String getMemo() {
+        if (memo.equals("0"))
+            return null;
+        return memo;
+    }
 }
