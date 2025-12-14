@@ -89,6 +89,28 @@ public class MedicineRoutinePanel extends Base {
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
 
+        if (records == null || records.isEmpty()) {
+            JComponent empty = UIComponents.createEmptyMessagePanel("아직 기록이 없습니다.");
+            empty.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(Box.createVerticalStrut(250));
+            listPanel.add(empty);
+
+            JPanel listWrapper = new JPanel(new BorderLayout());
+            listWrapper.setOpaque(false);
+            listWrapper.add(listPanel, BorderLayout.NORTH);
+
+            JScrollPane scroll = new JScrollPane(listWrapper);
+            scroll.setBorder(null);
+            scroll.getViewport().setOpaque(false);
+            scroll.setOpaque(false);
+            scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            scroll.getVerticalScrollBar().setUnitIncrement(30);
+
+            return scroll;
+        }
+
+
         // 오늘 복용 루틴 섹션 -----------------------
         JLabel todayLabel = createSectionLabel("오늘 복용 루틴");
 

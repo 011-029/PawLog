@@ -70,10 +70,16 @@ public class WalkPanel extends Base {
         listPanel.add(Box.createVerticalStrut(24));
 
         // 카드 생성
-        for (WalkRecord r : records) {
-            JPanel card = createWalkCard(r);
-            listPanel.add(card);
-            listPanel.add(Box.createVerticalStrut(16));
+        if (records == null || records.isEmpty()) {
+            JComponent empty = UIComponents.createEmptyMessagePanel("아직 기록이 없습니다.");
+            empty.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(empty);
+        } else {
+            for (WalkRecord r : records) {
+                JPanel card = createWalkCard(r);
+                listPanel.add(card);
+                listPanel.add(Box.createVerticalStrut(16));
+            }
         }
 
         JScrollPane scroll = new JScrollPane(listPanel);

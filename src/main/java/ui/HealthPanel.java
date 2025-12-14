@@ -70,18 +70,37 @@ public class HealthPanel extends Base {
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
 
-        // 위쪽 체중 변화 그래프 카드
-        JPanel chartCard = createWeightChartCard();
-        listPanel.add(chartCard);
-        listPanel.add(Box.createVerticalStrut(24));
+        if (records == null || records.isEmpty()) {
+            JComponent empty = UIComponents.createEmptyMessagePanel("아직 기록이 없습니다.");
+            listPanel.add(Box.createVerticalStrut(250));
+            empty.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(empty);
+        } else {
+            // 위쪽 체중 변화 그래프 카드
+            JPanel chartCard = createWeightChartCard();
+            listPanel.add(chartCard);
+            listPanel.add(Box.createVerticalStrut(24));
 
-        // 데이터 불러와서 리스트 생성
-        for (HealthRecord r : records) {
-            JPanel card = createHealthCard(r);
-
-            listPanel.add(card);
-            listPanel.add(Box.createVerticalStrut(16));
+            // 데이터 불러와서 리스트 생성
+            for (HealthRecord r : records) {
+                JPanel card = createHealthCard(r);
+                listPanel.add(card);
+                listPanel.add(Box.createVerticalStrut(16));
+            }
         }
+//
+//        // 위쪽 체중 변화 그래프 카드
+//        JPanel chartCard = createWeightChartCard();
+//        listPanel.add(chartCard);
+//        listPanel.add(Box.createVerticalStrut(24));
+//
+//        // 데이터 불러와서 리스트 생성
+//        for (HealthRecord r : records) {
+//            JPanel card = createHealthCard(r);
+//
+//            listPanel.add(card);
+//            listPanel.add(Box.createVerticalStrut(16));
+//        }
 
         // 스크롤에 감싸기 + 항상 위에 붙게 래퍼 사용
         JPanel listWrapper = new JPanel(new BorderLayout());

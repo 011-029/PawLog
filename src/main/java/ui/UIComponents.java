@@ -166,4 +166,17 @@ public final class UIComponents {
 
         return header;
     }
+
+    public static JPanel createEmptyMessagePanel(String message) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+
+        JLabel label = new JLabel(message);
+        label.setFont(UIConstants.FONT_REGULAR_16);
+        label.setForeground(UIConstants.TEXT_LIGHT);
+
+        panel.add(label);
+        return panel;
+    }
+
 }

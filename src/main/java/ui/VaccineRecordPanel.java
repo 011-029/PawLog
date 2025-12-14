@@ -71,6 +71,27 @@ public class VaccineRecordPanel extends Base {
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(20));
 
+        if (records == null || records.isEmpty()) {
+            JComponent empty = UIComponents.createEmptyMessagePanel("아직 기록이 없습니다.");
+            empty.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(Box.createVerticalStrut(250));
+            listPanel.add(empty);
+
+            JPanel wrapper = new JPanel(new BorderLayout());
+            wrapper.setOpaque(false);
+            wrapper.add(listPanel, BorderLayout.NORTH); // 그대로 유지
+
+            JScrollPane scroll = new JScrollPane(wrapper);
+            scroll.setBorder(null);
+            scroll.getViewport().setOpaque(false);
+            scroll.setOpaque(false);
+            scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+            return scroll;
+        }
+
         /* === 미래/과거 분리 === */
         List<VaccineRecord> future = new java.util.ArrayList<>();
         List<VaccineRecord> past = new java.util.ArrayList<>();
