@@ -118,10 +118,9 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
         return hospital;
     }
 
-    //필요할 때 쓰기 (검색 등)
-    //public long getDDay() {
-    //    return DateUtil.getDDay(date);
-    //}
+    public long getDDay() {
+        return DateUtil.getDDay(date);
+    }
 
     public String getDDayText() {
         return DateUtil.getDDayText(date);

@@ -122,7 +122,7 @@ public abstract class BaseCard extends JPanel {
 
     protected void addDDayLabel(String dDay) {
         JLabel label = new JLabel(dDay);
-        label.setFont(UIConstants.FONT_SEMIBOLD_16);
+        label.setFont(UIConstants.FONT_SEMIBOLD_18);
         label.setForeground(UIConstants.PRIMARY);
 
         rightPanel.add(Box.createVerticalGlue());
