@@ -1,5 +1,6 @@
 package ui;
 
+import core.User;
 import uiutil.PlaceholderPasswordField;
 import uiutil.PlaceholderTextField;
 
@@ -7,26 +8,27 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class UserInfoFormPanel extends JPanel {
+public class UserInfoFormPanel extends Base {
 
     private final MainFrame mainFrame;
+    private User user;  // 로그인한 유저
 
     private JTextField nameField;
     private JPasswordField pwField;
     private JPasswordField pwConfirmField;
 
     public UserInfoFormPanel(MainFrame mainFrame) {
+        super(mainFrame);
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getLoggedInUser();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단바 + 내용 + 하단 저장버튼에만 패딩
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
 
-        // 상단 헤더 (뒤로가기 → 설정 화면으로)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
                         mainFrame.switchPanel(new SettingPanel(mainFrame))
@@ -154,7 +156,6 @@ public class UserInfoFormPanel extends JPanel {
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        // 🔹 액션 리스너 예시 (기본 검증 + TODO 주석)
         saveBtn.addActionListener(e -> {
             String name = nameField.getText().trim();
             String pw = new String(pwField.getPassword());
@@ -168,6 +169,8 @@ public class UserInfoFormPanel extends JPanel {
                         JOptionPane.WARNING_MESSAGE
                 );
                 return;
+            } else {
+                user.setName(name);
             }
 
             if (!pw.isEmpty() || !pw2.isEmpty()) {
@@ -179,15 +182,12 @@ public class UserInfoFormPanel extends JPanel {
                             JOptionPane.WARNING_MESSAGE
                     );
                     return;
+                } else {
+                    user.setPassword(pw);
                 }
             }
 
-            // TODO: 실제 UserMgr / 현재 로그인 유저에 반영하는 로직 넣기
-            // 예)
-            // User current = LoggedInUserHolder.get();
-            // current.setName(name);
-            // if (!pw.isEmpty()) current.setPassword(pw);
-            // UserMgr.getInstance().saveAll();
+            userMgr.saveToFile(userMgr.getFilePath());
 
             JOptionPane.showMessageDialog(
                     this,
@@ -196,24 +196,10 @@ public class UserInfoFormPanel extends JPanel {
                     JOptionPane.INFORMATION_MESSAGE
             );
 
-            // 저장 후 설정 화면으로 돌아가기 예시
             mainFrame.switchPanel(new SettingPanel(mainFrame));
         });
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
-    }
-
-    // 필요하면 값 꺼내 쓰는 getter들도 만들 수 있어요
-    public String getUserName() {
-        return nameField.getText().trim();
-    }
-
-    public String getPassword() {
-        return new String(pwField.getPassword());
-    }
-
-    public String getPasswordConfirm() {
-        return new String(pwConfirmField.getPassword());
     }
 }

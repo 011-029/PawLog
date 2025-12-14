@@ -56,14 +56,21 @@ public class HomePanel extends Base {
         content.setBorder(new EmptyBorder(24, 10, 24, 10));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 0, 8, 0);
+//        gbc.insets = new Insets(8, 0, 8, 0);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(8, 0, 8, 0);
         gbc.gridwidth = 2; // 전체 폭 사용
 
+        JLabel welcomeLabel = new JLabel(user.getName() + "님 안녕하세요!");
+        welcomeLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
+        welcomeLabel.setForeground(UIConstants.TEXT_PRIMARY);
+        content.add(welcomeLabel, gbc);
+
         // 0: 펫 카드
+        gbc.gridy++;
         content.add(createPetCard(), gbc);
 
         // 1: 알림 배너
@@ -186,7 +193,8 @@ public class HomePanel extends Base {
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                mainFrame.switchPanel(new PetInfoPanel(mainFrame));
+//                mainFrame.switchPanel(new PetInfoPanel(mainFrame));
+                System.out.println("구현중");
             }
         });
 

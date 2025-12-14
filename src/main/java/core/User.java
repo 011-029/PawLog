@@ -52,6 +52,7 @@ public class User implements Manageable, UIData {
         if (name.isBlank())
             return false;
         this.name = name;
+
         return true;
     }
 

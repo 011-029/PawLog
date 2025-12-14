@@ -73,7 +73,7 @@ public class UserMgr extends DataEngineImpl<User> {
         });
     }
 
-    protected String getFilePath() {
+    public String getFilePath() {
         return FILE_PATH;
     }
 }
