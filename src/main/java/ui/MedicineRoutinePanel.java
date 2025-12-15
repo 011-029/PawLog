@@ -50,7 +50,7 @@ public class MedicineRoutinePanel extends Base {
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    /** 가운데 전체 영역 */
+    /* 가운데 전체 영역 */
     private JComponent createContent() {
         // 스크롤 가능 리스트로 만들기
         JPanel listPanel = new JPanel();
@@ -110,11 +110,9 @@ public class MedicineRoutinePanel extends Base {
             return scroll;
         }
 
-
         // 오늘 복용 루틴 섹션 -----------------------
         JLabel todayLabel = createSectionLabel("오늘 복용 루틴");
 
-        // ✅ 오늘 섹션 "내용"만 담는 패널
         JPanel todayContent = new JPanel();
         todayContent.setOpaque(false);
         todayContent.setLayout(new BoxLayout(todayContent, BoxLayout.Y_AXIS));
@@ -143,7 +141,6 @@ public class MedicineRoutinePanel extends Base {
         listPanel.add(Box.createVerticalStrut(8));
         JLabel allLabel = createSectionLabel("전체 루틴");
 
-        // ✅ 전체 섹션 내용 패널
         JPanel allContent = new JPanel();
         allContent.setOpaque(false);
         allContent.setLayout(new BoxLayout(allContent, BoxLayout.Y_AXIS));
@@ -161,7 +158,7 @@ public class MedicineRoutinePanel extends Base {
 
         listPanel.add(allContent);
 
-        // 리스트를 한 번 더 싸서 항상 위쪽에 붙도록
+        // 항상 위쪽에 붙도록
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
         listWrapper.add(listPanel, BorderLayout.NORTH);
@@ -178,7 +175,7 @@ public class MedicineRoutinePanel extends Base {
         return scroll;
     }
 
-    /** 오늘 복용 루틴 / 전체 루틴 섹션 제목 라벨 */
+    /* 오늘 복용 루틴 / 전체 루틴 섹션 제목 라벨 */
     private JLabel createSectionLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(UIConstants.FONT_SEMIBOLD_18);
@@ -188,7 +185,7 @@ public class MedicineRoutinePanel extends Base {
         return label;
     }
 
-    /** 개별 복용 루틴 카드 */
+    /* 개별 복용 루틴 카드 */
     protected JPanel createRoutineCard(MedicineRoutine m) {
         String medicineName = m.getMedicineName();
         String takenTime = m.getTakenTime();
@@ -225,7 +222,6 @@ public class MedicineRoutinePanel extends Base {
         JLabel label1 = new JLabel(takenDOWString);
         label1.setFont(UIConstants.FONT_REGULAR_14);
         label1.setForeground(UIConstants.TEXT_SECONDARY);
-
 
         String line = dosage + "  |  " + takenTime;
         JLabel label2 = new JLabel(line);
@@ -266,7 +262,7 @@ public class MedicineRoutinePanel extends Base {
         right.add(Box.createVerticalGlue());
         right.add(checkBox);
         right.add(Box.createVerticalGlue());
-        right.setBorder(new EmptyBorder(0, 8, 0, 0)); // 카드 오른쪽 여백 조금만
+        right.setBorder(new EmptyBorder(0, 8, 0, 0));
 
         card.add(right, BorderLayout.EAST);
 

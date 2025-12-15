@@ -39,7 +39,7 @@ public class HealthFormPanel extends Base {
         contentWrapper.add(UIComponents.createHeader(() ->
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createFormContent(), BorderLayout.CENTER);
-        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);   // ⬅⬅ 추가!
+        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);
 
         add(contentWrapper, BorderLayout.CENTER);
     }
@@ -140,9 +140,6 @@ public class HealthFormPanel extends Base {
         memoArea.setLineWrap(true);
         memoArea.setWrapStyleWord(true);
         memoArea.setFont(UIConstants.FONT_REGULAR_14);
-//        memoArea.putClientProperty("FlatLaf.style", "arc:10");
-//        memoArea.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-//                UIConstants.GRAY_LIGHT, 1f, 10));
 
         JScrollPane memoScroll = new JScrollPane(memoArea);
         memoScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -194,20 +191,20 @@ public class HealthFormPanel extends Base {
 
         saveBtn.addActionListener(e -> {
             try {
-                // 1️⃣ 유저/펫 기본 전제 체크 (항상 있음)
+                // 1. 유저/펫 기본 전제 체크 (항상 있음)
                 if (user == null || pet == null) {
                     JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
                     return;
                 }
 
-                // 2️⃣ 날짜 읽기
+                // 2. 날짜 읽기
                 LocalDate date = dateField.getDate();
                 if (date == null) {
                     JOptionPane.showMessageDialog(mainFrame, "날짜를 선택해주세요.");
                     return;
                 }
 
-                // 3️⃣ 숫자값 파싱
+                // 3. 숫자값 파싱
                 int meal = mealField.getIntOrDefault(-1);
                 int water = waterField.getIntOrDefault(-1);
 
@@ -219,7 +216,7 @@ public class HealthFormPanel extends Base {
                     return;
                 }
 
-                // 4️⃣ 필수 입력 유효성 검사
+                // 4. 필수 입력 유효성 검사
                 if (meal < 0) {
                     JOptionPane.showMessageDialog(mainFrame, "식사 횟수를 입력해주세요.");
                     return;
@@ -233,7 +230,7 @@ public class HealthFormPanel extends Base {
                     return;
                 }
 
-                // 5️⃣ 빗질 여부 처리 (YES/NO 두 개 중 하나만 선택)
+                // 5. 빗질 여부 처리 (YES/NO 두 개 중 하나만 선택)
                 String brushed = null;
                 if (brushButtons[0].isSelected()) brushed = "yes";
                 if (brushButtons[1].isSelected()) brushed = "no";
@@ -243,11 +240,11 @@ public class HealthFormPanel extends Base {
                     return;
                 }
 
-                // 6️⃣ 메모 (없으면 "0")
+                // 6. 메모 (없으면 "0")
                 String memo = memoArea.getText().trim();
                 if (memo.isEmpty()) memo = "0";
 
-                // 7️⃣ 디버그 출력
+                // 7. 디버그 출력
                 System.out.println("===== [HealthForm] 입력 디버그 =====");
                 System.out.println("date = " + date);
                 System.out.println("meal = " + meal);
@@ -257,7 +254,7 @@ public class HealthFormPanel extends Base {
                 System.out.println("memo = " + memo);
                 System.out.println("=================================");
 
-                // 8️⃣ 실제 저장
+                // 8. 실제 저장
                 healthMgr.addNewRecord(
                         pet,
                         date,

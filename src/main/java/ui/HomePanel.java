@@ -9,9 +9,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public class HomePanel extends Base {
 
@@ -32,7 +30,6 @@ public class HomePanel extends Base {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // ⬇ 헤더 + 스크롤 콘텐츠만 패딩을 주는 래퍼
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
@@ -40,11 +37,7 @@ public class HomePanel extends Base {
                 UIComponents.createHeader(this::doLogout),
                         BorderLayout.NORTH);
         contentWrapper.add(createScrollableContent(), BorderLayout.CENTER);
-
-        // 가운데는 패딩 있는 래퍼
         add(contentWrapper, BorderLayout.CENTER);
-
-        // ⬇ 하단 탭바는 패딩 없는 SOUTH에 바로!
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
@@ -56,12 +49,11 @@ public class HomePanel extends Base {
         content.setBorder(new EmptyBorder(24, 10, 24, 10));
 
         GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.insets = new Insets(8, 0, 8, 0);
+        gbc.insets = new Insets(8, 0, 8, 0);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(8, 0, 8, 0);
         gbc.gridwidth = 2; // 전체 폭 사용
 
         JLabel welcomeLabel = new JLabel(user.getName() + "님 안녕하세요!");
@@ -102,15 +94,15 @@ public class HomePanel extends Base {
         gbc.gridx = 1;
         gbc.insets = cardInsetsRight;
         content.add(createSmallCard("건강 기록",
-                new String[]{
-                        "식사량, 음수량,",
-                        "체중, 이상 증상,",
-                        "메모 기록"
-                },
-                () -> mainFrame.switchPanel(new HealthPanel(mainFrame))
+                        new String[]{
+                                "식사량, 음수량,",
+                                "체중, 이상 증상,",
+                                "메모 기록"
+                        },
+                        () -> mainFrame.switchPanel(new HealthPanel(mainFrame))
                 ),
-        gbc
-    );
+                gbc
+        );
 
 
         // 3: 2x2 카드 (아래 줄)
@@ -118,15 +110,15 @@ public class HomePanel extends Base {
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("의료 기록",
-                new String[]{
-                        "복약 기록,",
-                        "예방접종, 진료 기록을",
-                        "한 곳에서 관리"
-                },
-            () -> mainFrame.switchPanel(new MedicalHomePanel(mainFrame
-            ))
-            ),
-    gbc);
+                        new String[]{
+                                "복약 기록,",
+                                "예방접종, 진료 기록을",
+                                "한 곳에서 관리"
+                        },
+                        () -> mainFrame.switchPanel(new MedicalHomePanel(mainFrame
+                        ))
+                ),
+                gbc);
 
         if (pet.getSpecies().contains("고양이")) {
             gbc.gridx = 1;
@@ -211,11 +203,13 @@ public class HomePanel extends Base {
         name.setFont(UIConstants.FONT_BOLD_18);
         name.setForeground(UIConstants.TEXT_PRIMARY);
 
+        // 성별 아이콘
         String genderIconPath = pet.getGender().contains("암컷")
                 ? "icons/female.svg" : "icons/male.svg";
         JLabel genderIcon = new JLabel(new FlatSVGIcon(genderIconPath, 12, 12));
         genderIcon.setBorder(new EmptyBorder(0, 5, 0, 0));
 
+        // 펫 이름 + 성별
         JPanel nameRow = new JPanel();
         nameRow.setOpaque(false);
         nameRow.setLayout(new BoxLayout(nameRow, BoxLayout.X_AXIS));
@@ -224,12 +218,13 @@ public class HomePanel extends Base {
         nameRow.add(name);
         nameRow.add(genderIcon);
 
+        // 종 + 생일
         String line = pet.getSpecies() + " · " + pet.getBirthDate();
         JLabel breed = new JLabel(line);
         breed.setFont(UIConstants.FONT_REGULAR_12);
         breed.setForeground(UIConstants.TEXT_LIGHT);
 
-        // 생일 d-day 계산
+        // 생일 d-day
         long days = pet.getBirthDateDDay();
         String dDayText = (days == 0) ? "생일 축하합니다!" : "생일 D-" + days;
 
@@ -249,8 +244,6 @@ public class HomePanel extends Base {
         JPanel east = new JPanel();
         east.setOpaque(false);
         east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
-//        east.add(Box.createVerticalStrut(4));              // 위에 살짝 여백
-        // 🔥 폭 줄이기 → 아이콘 버튼 폭 + 약간의 여백
         east.setMaximumSize(new Dimension(40, Integer.MAX_VALUE));
 
         // 위·아래 중앙 정렬 유지
@@ -275,7 +268,6 @@ public class HomePanel extends Base {
         btn.setOpaque(false);
         btn.setFocusPainted(false);
         btn.setBackground(Color.WHITE);
-//        btn.setBorder(new LineBorder(new Color(255, 192, 203), 1, true));
         btn.putClientProperty("FlatLaf.style", "arc:10");
         btn.setBorder(new FlatLineBorder(new Insets(5, 5, 5, 5),
                 UIConstants.GRAY_SOFT, 0.5f, 10));
@@ -350,7 +342,7 @@ public class HomePanel extends Base {
         box.add(title);
         box.add(Box.createVerticalStrut(10));
 
-        // 🔥 실제 데이터 가져오기
+        // 데이터 가져오기
         java.util.List<TimelineItem> timeline = collectTimelineData();
 
         if (timeline.isEmpty()) {
@@ -361,28 +353,13 @@ public class HomePanel extends Base {
             return box;
         }
 
-        // 🔥 타임라인 추가
+        // 타임라인 추가
         for (TimelineItem item : timeline) {
             box.add(createTimelineCard(item));
             box.add(Box.createVerticalStrut(10));
         }
 
         return box;
-    }
-
-    private Image loadPetImage(String imagePath) {
-        try {
-            var url = HomePanel.class.getResource(imagePath);
-            if (url == null) {
-                System.out.println("펫 프로필 사진을 찾을 수 없음: " + imagePath);
-                return null;
-            }
-            ImageIcon icon = new ImageIcon(url);
-            return icon.getImage();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void doLogout() {
@@ -474,7 +451,7 @@ public class HomePanel extends Base {
             ));
         }
 
-        // 🔥 날짜 내림차순 정렬 (최신이 위로)
+        // 날짜 최신순 정렬
         list.sort((a, b) -> b.date.compareTo(a.date));
 
         return list;
@@ -579,6 +556,4 @@ public class HomePanel extends Base {
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         return panel;
     }
-
-
 }

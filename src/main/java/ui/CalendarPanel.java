@@ -25,16 +25,9 @@ public class CalendarPanel extends Base {
     private JLabel dateLabel;
     private JLabel ddayLabel;
     private JPanel recordListPanel;
-
-    // 날짜별 더미 기록 데이터
     private final Map<LocalDate, List<RecordItem>> recordsByDate = new HashMap<>();
-
-    // 펫 생일 (예시)
-    private static final LocalDate PET_BIRTHDAY = LocalDate.of(2020, 1, 10);
-
     private static final DateTimeFormatter HEADER_FORMAT =
             DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN);
-
 
     public CalendarPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -44,9 +37,6 @@ public class CalendarPanel extends Base {
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
-
-//        loadDummyRecords(); // 예시 기록 데이터
-
         collectRecordsByDate();
 
         JPanel contentWrapper = new JPanel(new BorderLayout());
@@ -150,8 +140,8 @@ public class CalendarPanel extends Base {
         calendar.setOpaque(true);
         calendar.setWeekOfYearVisible(false);
         calendar.setDecorationBackgroundVisible(false);
-        calendar.setDecorationBordersVisible(false);          // ← 추가!
-        calendar.getDayChooser().setDayBordersVisible(false); // ← 이것도 있으면 좋아요
+        calendar.setDecorationBordersVisible(false);
+        calendar.getDayChooser().setDayBordersVisible(false);
 
         // 요일/날짜 영역 여백 + 배경
         calendar.getDayChooser().setBorder(new EmptyBorder(20, 0, 0, 0));
@@ -159,7 +149,7 @@ public class CalendarPanel extends Base {
         calendar.getDayChooser().getDayPanel().setBackground(Color.WHITE);
         calendar.getDayChooser().getDayPanel().setOpaque(true);
 
-        // 날짜 버튼 스타일 + 패널 크기(정사각형 느낌)
+        // 날짜 버튼 스타일 + 패널 크기
         styleDayButtons();
         updateCalendarDots();
         updateSelectedDayHighlight();
@@ -182,13 +172,13 @@ public class CalendarPanel extends Base {
         center.setBorder(new EmptyBorder(8, 0, 0, 0));
         card.add(center, BorderLayout.CENTER);
 
-        // 날짜 선택 변경 리스너  🔧 수정 버전
+        // 날짜 선택 변경 리스너
         calendar.getDayChooser().addPropertyChangeListener("day", evt -> {
             SwingUtilities.invokeLater(() -> {
                 LocalDate selected = toLocalDate(calendar.getDate());
-                updateHeaderAndList(selected);   // 아래 카드/헤더 갱신
-                updateCalendarDots();            // 점 다시 그림
-                updateSelectedDayHighlight();    // 🔥 마지막에 우리 색 입히기
+                updateHeaderAndList(selected);
+                updateCalendarDots();
+                updateSelectedDayHighlight();
             });
         });
 
@@ -214,14 +204,13 @@ public class CalendarPanel extends Base {
             updateSelectedDayHighlight();
         });
 
-
         // 초기 선택일 하이라이트
         updateSelectedDayHighlight();
 
         return card;
     }
 
-    // 선택된 날짜 하이라이트 (DotIcon이랑 충돌 안 함)
+    // 선택된 날짜 하이라이트
     private void updateSelectedDayHighlight() {
         JPanel dayPanel = calendar.getDayChooser().getDayPanel();
         int selectedDay = calendar.getDayChooser().getDay(); // 현재 선택된 날짜 숫자
@@ -239,13 +228,13 @@ public class CalendarPanel extends Base {
             }
 
             if (day == selectedDay) {
-                // ✅ 선택된 날짜
+                // 선택된 날짜
                 btn.setOpaque(true);
                 btn.setContentAreaFilled(true);
                 btn.setBackground(UIConstants.PRIMARY_LIGHT);
                 btn.setForeground(Color.WHITE);
             } else {
-                // 🔹 나머지 날짜
+                // 나머지 날짜
                 btn.setOpaque(false);
                 btn.setContentAreaFilled(false);
                 btn.setBackground(Color.WHITE);
@@ -253,8 +242,6 @@ public class CalendarPanel extends Base {
             }
         }
     }
-
-
 
     // 날짜 버튼 기본 스타일
     private void styleDayButtons() {
@@ -277,13 +264,12 @@ public class CalendarPanel extends Base {
         }
     }
 
-    // CalendarPanel 안에 추가
     private JComponent createCalendarHeader() {
         JPanel header = new JPanel();
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
 
-        // ◀ 이전 달 버튼
+        // 이전 달 버튼
         JButton prevBtn = new JButton();
         prevBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 12, 12));
         prevBtn.setFocusPainted(false);
@@ -293,7 +279,7 @@ public class CalendarPanel extends Base {
         prevBtn.setForeground(UIConstants.TEXT_SECONDARY);
         prevBtn.setFont(UIConstants.FONT_SEMIBOLD_14);
 
-        // ▶ 다음 달 버튼
+        // 다음 달 버튼
         JButton nextBtn = new JButton();
         nextBtn.setIcon(new FlatSVGIcon("icons/arrow-next.svg", 12, 12));
         nextBtn.setFocusPainted(false);
@@ -303,20 +289,20 @@ public class CalendarPanel extends Base {
         nextBtn.setForeground(UIConstants.TEXT_SECONDARY);
         nextBtn.setFont(UIConstants.FONT_SEMIBOLD_14);
 
-        // 월 콤보박스 (영문 1~12월)
+        // 월 콤보박스
         String[] months = new DateFormatSymbols(Locale.ENGLISH).getMonths();
         String[] monthNames = Arrays.copyOf(months, 12); // 0~11만 사용
         JComboBox<String> monthCombo = new JComboBox<>(monthNames);
         monthCombo.setFont(UIConstants.FONT_REGULAR_14);
 
-        // 년도 콤보박스 (예: 2020~2030)
+        // 년도 콤보박스
         JComboBox<Integer> yearCombo = new JComboBox<>();
         for (int y = 2020; y <= 2030; y++) {
             yearCombo.addItem(y);
         }
         yearCombo.setFont(UIConstants.FONT_REGULAR_14);
 
-        // 🔹 현재 JCalendar 상태와 동기화
+        // 현재 JCalendar 상태와 동기화
         Calendar cal = calendar.getCalendar();
         monthCombo.setSelectedIndex(cal.get(Calendar.MONTH));
         yearCombo.setSelectedItem(cal.get(Calendar.YEAR));
@@ -330,7 +316,7 @@ public class CalendarPanel extends Base {
         header.add(Box.createHorizontalStrut(8));
         header.add(nextBtn);
 
-        // 🔹 버튼/콤보박스 클릭 시 JCalendar 갱신
+        // 버튼/콤보박스 클릭 시 JCalendar 갱신
         prevBtn.addActionListener(e -> {
             Calendar c = calendar.getCalendar();
             c.add(Calendar.MONTH, -1);
@@ -383,14 +369,13 @@ public class CalendarPanel extends Base {
         long days = pet.getBirthDateDDay();
 
         String dText;
-        if (days == 0) dText = "🎂 D-DAY";
+        if (days == 0) dText = "오늘 생일!";
         else dText = "생일까지 D-" + days;
 
         ddayLabel.setText(dText);
 
         // 기록 카드 갱신
         recordListPanel.removeAll();
-
         List<RecordItem> list = recordsByDate.getOrDefault(date, Collections.emptyList());
         if (list.isEmpty()) {
             JLabel empty = new JLabel("이 날짜에는 기록이 없어요");
@@ -450,7 +435,7 @@ public class CalendarPanel extends Base {
                 // ● 아이콘 추가
                 b.setIcon(new DotIcon(5, UIConstants.TEXT_PRIMARY));
                 b.setHorizontalTextPosition(SwingConstants.CENTER);
-                b.setVerticalTextPosition(SwingConstants.TOP);   // 숫자는 위, 점은 아래
+                b.setVerticalTextPosition(SwingConstants.TOP);
             }
         }
     }
@@ -492,58 +477,16 @@ public class CalendarPanel extends Base {
         card.add(detail, BorderLayout.CENTER);
         card.add(date, BorderLayout.SOUTH);
 
-//        JLabel date = new JLabel(item.date.toString());
-//        date.setFont(UIConstants.FONT_SEMIBOLD_14);
-//        date.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JLabel type = new JLabel(item.type);
-//        type.setFont(UIConstants.FONT_REGULAR_14);
-//        type.setForeground(UIConstants.TEXT_SECONDARY);
-//
-//        JLabel title = new JLabel(item.title);
-//        title.setFont(UIConstants.FONT_SEMIBOLD_14);
-//        title.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        JLabel detail = new JLabel(item.detail);
-//        detail.setFont(UIConstants.FONT_SEMIBOLD_14);
-//        detail.setForeground(UIConstants.TEXT_PRIMARY);
-//
-//        textPanel.add(date);
-//        textPanel.add(Box.createVerticalStrut(4));
-//        textPanel.add(type);
-//        textPanel.add(Box.createVerticalStrut(4));
-//        textPanel.add(title);
-//        textPanel.add(Box.createVerticalStrut(4));
-//        textPanel.add(detail);
-//        textPanel.add(Box.createVerticalStrut(4));
-
-//        card.add(textPanel, BorderLayout.CENTER);
         return card;
     }
 
-    /* ================== 유틸/더미 데이터 ================== */
     private LocalDate toLocalDate(Date date) {
         return Instant.ofEpochMilli(date.getTime())
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
     }
 
-//    private void loadDummyRecords() {
-//        LocalDate d1 = LocalDate.of(2025, 11, 29);
-//        LocalDate d2 = LocalDate.of(2025, 11, 28);
-//
-//        recordsByDate.put(d1, Arrays.asList(
-//                new RecordItem("산책 기록", "30분 · 1.2km"),
-//                new RecordItem("건강 기록", "체중 6.2kg · 사료 잘 먹음")
-//        ));
-//
-//        recordsByDate.put(d2, Collections.singletonList(
-//                new RecordItem("약 복용", "심장사상충약 복용 완료")
-//        ));
-//
-//        // 원하는 만큼 계속 추가 가능 ♡
-//    }
-
+    /* ================== 기록 수집 ================== */
     private void collectRecordsByDate() {
 
         recordsByDate.clear();
@@ -676,9 +619,9 @@ public class CalendarPanel extends Base {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int d = 12;                  // 점 지름 (필요하면 10~12까지 키워도 됨!)
+            int d = 12;
             int cx = x + width / 2;
-            int cy = y + height - 6;    // 아래쪽에 배치
+            int cy = y + height - 6;
 
             g2.setColor(color);
             g2.fillOval(cx - d / 2, cy - d / 2, d, d);
@@ -687,7 +630,6 @@ public class CalendarPanel extends Base {
 
         @Override
         public Insets getBorderInsets(Component c) {
-            // 숫자 밑에 점이 들어갈 공간 확보
             return new Insets(0, 0, 12, 0);
         }
 
@@ -697,7 +639,6 @@ public class CalendarPanel extends Base {
         }
     }
 
-    // 클래스 맨 아래쪽, RecordItem 아래 정도에 추가
     private static class DotIcon implements Icon {
         private final int size;
         private final Color color;

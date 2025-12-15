@@ -35,7 +35,7 @@ public class MedicineFormPanel extends Base {
         contentWrapper.add(UIComponents.createHeader(() ->
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createFormContent(), BorderLayout.CENTER);
-        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);   // ⬅⬅ 추가!
+        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);
 
         add(contentWrapper, BorderLayout.CENTER);
     }
@@ -129,7 +129,7 @@ public class MedicineFormPanel extends Base {
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         //스크롤 속도 개선용
-        scroll.getVerticalScrollBar().setUnitIncrement(20); // 숫자 커질수록 빠름
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         listPanel.setDoubleBuffered(true);
         listWrapper.setDoubleBuffered(true);
 
@@ -172,7 +172,7 @@ public class MedicineFormPanel extends Base {
                     return;
                 }
 
-                //  복용량
+                // 복용량
                 int dosage = doseField.getIntOrDefault(-1);
                 if (dosage <= 0) {
                     JOptionPane.showMessageDialog(mainFrame, "복용량을 입력해주세요.");
@@ -224,7 +224,6 @@ public class MedicineFormPanel extends Base {
                 );
             }
         });
-
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;

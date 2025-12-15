@@ -61,4 +61,3 @@ public class LabeledTextField extends JPanel {
         }
     }
 }
-

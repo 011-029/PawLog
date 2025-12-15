@@ -21,7 +21,7 @@ public class UIConstants {
     public static final Color TEXT_LIGHT = new Color(180, 180, 180);
     public static final Color TEXT_WHITE = new Color(255, 255, 255);
 
-    // Fonts
+    // 폰트
     public static final Font FONT_REGULAR_12 = FontLoader.regular(12f);
     public static final Font FONT_REGULAR_14 = FontLoader.regular(14f);
     public static final Font FONT_REGULAR_16 = FontLoader.regular(16f);
@@ -49,5 +49,4 @@ public class UIConstants {
     public static final Font FONT_THIN_12 = FontLoader.thin(12f);
     public static final Font FONT_THIN_14 = FontLoader.thin(14f);
     public static final Font FONT_BOLD_20 = FontLoader.thin(20f);
-
 }

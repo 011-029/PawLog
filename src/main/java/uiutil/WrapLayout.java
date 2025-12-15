@@ -22,7 +22,6 @@ public class WrapLayout extends FlowLayout {
     private Dimension layoutSize(Container target, boolean preferred) {
         Container container = target;
 
-        // 🔹 실제 레이아웃에 쓰이는 가로폭 계산
         int maxWidth;
 
         // 스크롤 안에 들어가 있으면, 뷰포트 너비 기준
@@ -72,6 +71,4 @@ public class WrapLayout extends FlowLayout {
 
         return dim;
     }
-
-
 }

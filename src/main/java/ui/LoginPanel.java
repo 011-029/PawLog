@@ -50,38 +50,29 @@ public class LoginPanel extends Base {
         add(centerWrapper, BorderLayout.CENTER);
     }
 
-    /* 발바닥 아이콘 영역 (가운데 정렬) */
+    /* 로고 영역 */
     private JComponent createLogoArea() {
         FlatSVGIcon logoSVG = new FlatSVGIcon("icons/pawlog-logo.svg", 144, 50);
         JLabel logo = new JLabel();
         logo.setIcon(logoSVG);
-//        logo.setIcon(new FlatSVGIcon("icons/paw.svg", 80, 80));
-//        logo.setHorizontalTextPosition(SwingConstants.CENTER); // 텍스트를 가운데
-//        logo.setVerticalTextPosition(SwingConstants.BOTTOM);   // 텍스트를 아래로
-//        logo.setIconTextGap(12);
-//        logo.setFont(UIConstants.FONT_BOLD_32);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
         return logo;
     }
 
     private JComponent createFormArea() {
 
-        // ⭐ form을 감싸는 wrapper — 중앙정렬 유지
         JPanel wrapper = new JPanel();
         wrapper.setOpaque(false);
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
 
-        // ⭐ 왼쪽·오른쪽 여백 확보
         wrapper.add(Box.createHorizontalGlue());
 
-        // ⭐ 진짜 폼이 들어갈 formPanel (왼쪽 정렬 유지 가능)
         JPanel form = new JPanel();
         form.setOpaque(false);
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setMaximumSize(new Dimension(360, Integer.MAX_VALUE));
         form.setAlignmentX(Component.LEFT_ALIGNMENT);  // 이게 핵심!
 
-        /* --- ID 입력창 (가운데 정렬) --- */
+        /* --- ID 입력창 --- */
         idField = new PlaceholderTextField("아이디 입력");
         idField.setPreferredSize(new Dimension(360, 45));
         idField.setMaximumSize(new Dimension(360, 45));
@@ -114,7 +105,7 @@ public class LoginPanel extends Base {
 
         form.add(Box.createVerticalStrut(30));
 
-        /* --- 로그인 버튼 (둥근 버튼) --- */
+        /* --- 로그인 버튼 --- */
         JButton loginBtn = new JButton("로그인");
         loginBtn.setFocusPainted(false);
         loginBtn.setPreferredSize(new Dimension(360, 48));
@@ -144,7 +135,6 @@ public class LoginPanel extends Base {
         signUpBtn.addActionListener(e -> mainFrame.switchPanel(new SignUpPanel(mainFrame)));
         form.add(signUpBtn);
 
-        // ⭐ formPanel을 wrapper 중앙에 배치
         wrapper.add(form);
         wrapper.add(Box.createHorizontalGlue());
 
@@ -154,7 +144,7 @@ public class LoginPanel extends Base {
     @Override
     public void addNotify() {
         super.addNotify();
-        requestFocusInWindow(); // 패널 자체에 포커스 요청 (패널은 포커스 불가 → 아무 곳에도 안 감)
+        requestFocusInWindow(); // 패널 자체에 포커스 요청
     }
 
     /* 로그인 로직 */

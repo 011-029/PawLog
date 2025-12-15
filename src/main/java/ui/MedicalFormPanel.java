@@ -72,7 +72,6 @@ public class MedicalFormPanel extends Base {
         listPanel.add(header);
         listPanel.add(Box.createVerticalStrut(24));
 
-
         //진료 날짜
         consultationDate = new DatePickerPanel();
         listPanel.add(consultationDate);
@@ -183,7 +182,6 @@ public class MedicalFormPanel extends Base {
             setAllEnabled(prescribeMedicinePanel, enabled);
         });
 
-
         //래퍼 + 스크롤
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
@@ -230,7 +228,7 @@ public class MedicalFormPanel extends Base {
 
         saveBtn.addActionListener(e -> {
             try {
-                // 1️⃣ 로그인/펫 체크 (필드 기반)
+                // 1. 로그인/펫 체크 (필드 기반)
                 if (user == null) {
                     JOptionPane.showMessageDialog(mainFrame, "로그인이 필요합니다.");
                     return;
@@ -241,7 +239,7 @@ public class MedicalFormPanel extends Base {
                     return;
                 }
 
-                // 2️⃣ UI 값 읽기
+                // 2. UI 값 읽기
                 LocalDate date = consultationDate.getDate();
                 String hospital = hospitalField.getText().trim();
                 String category = sympField.getText().trim();
@@ -270,13 +268,13 @@ public class MedicalFormPanel extends Base {
                     endDate = endDatePicker.getDate();
                 }
 
-                // 3️⃣ 백엔드 저장
+                // 3. 백엔드 저장
                 medicalMgr.addNewRecord(
                         pet, date, hospital, category, cost,
                         medName, dosage, routineTime, startDate, endDate
                 );
 
-                // 4️⃣ 루틴 생성 옵션
+                // 4. 루틴 생성 옵션
                 if (hasMedicineCheck.isSelected() && addRoutineCheck.isSelected()) {
                     MedicalRecord lastRecord = medicalMgr.getLastRecord();
                     System.out.println("[DEBUG] 루틴 생성 시도: lastRecord = " + lastRecord);

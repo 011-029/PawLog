@@ -9,14 +9,13 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 
 public class VaccineRecordPanel extends Base {
     private final MainFrame mainFrame;
-    protected ArrayList<VaccineRecord> records;
     private User user;
     private Pet pet;
+    protected ArrayList<VaccineRecord> records;
 
     public VaccineRecordPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -79,7 +78,7 @@ public class VaccineRecordPanel extends Base {
 
             JPanel wrapper = new JPanel(new BorderLayout());
             wrapper.setOpaque(false);
-            wrapper.add(listPanel, BorderLayout.NORTH); // 그대로 유지
+            wrapper.add(listPanel, BorderLayout.NORTH);
 
             JScrollPane scroll = new JScrollPane(wrapper);
             scroll.setBorder(null);
@@ -167,8 +166,6 @@ public class VaccineRecordPanel extends Base {
 
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        // 스크롤 속도 빠르게
         scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         return scroll;
@@ -179,10 +176,6 @@ public class VaccineRecordPanel extends Base {
         public VaccineCard(VaccineRecord r, MainFrame mainFrame) {
             String title = r.getUITexts()[0];
             String dday = r.getDDayText();
-
-//            if (dday != null && !dday.isBlank()) {
-//                title += "  (" + dday + ")";    // 예: "심장사상충백신 (D-3)"
-//            }
 
             addTitle(title);
 

@@ -160,7 +160,7 @@ public class MedicalRecordPanel extends Base {
         // 스크롤 래퍼
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setOpaque(false);
-        wrapper.add(listPanel, BorderLayout.NORTH); // 이건 이대로 둬도 됨(여긴 잘 보였으니까)
+        wrapper.add(listPanel, BorderLayout.NORTH);
 
         JScrollPane scroll = new JScrollPane(wrapper);
         scroll.setBorder(null);
@@ -174,9 +174,7 @@ public class MedicalRecordPanel extends Base {
         return scroll;
     }
 
-    /* ============================
-     *  카드 UI : MedicalCard
-     * ============================ */
+    /*=========== 진료기록 카드 UI ===========*/
     protected static class MedicalCard extends BaseCard {
 
         public MedicalCard(MedicalRecord r, MainFrame mainFrame) {
@@ -184,10 +182,6 @@ public class MedicalRecordPanel extends Base {
             // 타이틀 = 증상 + D-day
             String title = r.getCategory();
             String dday = r.getDDayText();
-
-//            if (dday != null && !dday.isBlank()) {
-//                title += "  (" + dday + ")";
-//            }
 
             addTitle(title);
             addLine("날짜: " + r.getDate());

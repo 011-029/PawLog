@@ -16,7 +16,6 @@ public class MedicineDetailPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단 헤더 + 내용
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));

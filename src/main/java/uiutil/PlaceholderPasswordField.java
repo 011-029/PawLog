@@ -33,5 +33,4 @@ public class PlaceholderPasswordField extends JPasswordField {
             g2.dispose();
         }
     }
-
 }

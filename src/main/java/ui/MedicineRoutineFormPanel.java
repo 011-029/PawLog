@@ -29,14 +29,13 @@ public class MedicineRoutineFormPanel extends Base {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단바 + 내용에만 패딩
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createFormContent(), BorderLayout.CENTER);
-        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);   // ⬅⬅ 추가!
+        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);
 
         add(contentWrapper, BorderLayout.CENTER);
     }
@@ -109,17 +108,12 @@ public class MedicineRoutineFormPanel extends Base {
             btn.setFocusPainted(false);
             btn.setOpaque(true);
             btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-            // 🔥 내부 패딩 완전히 제거!
             btn.setMargin(new Insets(0, 0, 0, 0));
 
-            // 🔵 원형 버튼 크기 고정! (정사각형 = 원)
             int size = 43;   // 버튼 전체 크기
             btn.setPreferredSize(new Dimension(size, size));
             btn.setMinimumSize(new Dimension(size, size));
             btn.setMaximumSize(new Dimension(size, size));
-
-            // FlatLaf 스타일을 원형에 맞게 설정
             btn.putClientProperty(
                     "FlatLaf.style",
                     "arc:999;" +                     // 완전 동그란 모양
@@ -130,8 +124,6 @@ public class MedicineRoutineFormPanel extends Base {
                             "foreground:#555555;" +
                             "selectedForeground:#FFFFFF;"
             );
-
-            // 글씨 가운데 정렬
             btn.setHorizontalAlignment(SwingConstants.CENTER);
 
             // 버튼 추가
@@ -235,27 +227,25 @@ public class MedicineRoutineFormPanel extends Base {
         saveBtn.setBackground(UIConstants.PRIMARY);
         saveBtn.setForeground(Color.WHITE);
         saveBtn.putClientProperty("FlatLaf.style", "arc:10");
-
-        // 폭은 가로 전체를 차지하게 (반응형)
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
         saveBtn.addActionListener(e -> {
             try {
-                // 1️⃣ 유저/펫 체크 (전제: 무조건 존재)
+                // 1. 유저/펫 체크
                 if (user == null || pet == null) {
                     JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
                     return;
                 }
 
-                // 2️⃣ 약 이름
+                // 2. 약 이름
                 String medicineName = nameField.getText().trim();
                 if (medicineName.isEmpty()) {
                     JOptionPane.showMessageDialog(mainFrame, "약 이름을 입력해주세요.");
                     return;
                 }
 
-                // 3️⃣ 요일 (최소 1개)
+                // 3. 요일 (최소 1개)
                 StringBuilder sbDOW = new StringBuilder();
                 for (JToggleButton btn : dayButtons) {
                     if (btn.isSelected()) {
@@ -268,7 +258,7 @@ public class MedicineRoutineFormPanel extends Base {
                 }
                 String takenDOW = sbDOW.toString();
 
-                // 4️⃣ 복용 시간대 (필수, 1개)
+                // 4. 복용 시간대 (필수, 1개)
                 String takenTime = "";
                 for (JToggleButton btn : timeButtons) {
                     if (btn.isSelected()) {
@@ -280,7 +270,7 @@ public class MedicineRoutineFormPanel extends Base {
                     return;
                 }
 
-                // 5️⃣ 복용량 (필수, 숫자)
+                // 5. 복용량 (필수, 숫자)
                 int dosage;
                 try {
                     dosage = Integer.parseInt(doseField.getText().trim());
@@ -294,7 +284,7 @@ public class MedicineRoutineFormPanel extends Base {
                     return;
                 }
 
-                // 6️⃣ 디버그 출력
+                // 6. 디버그 출력
                 System.out.println("===== [RoutineForm] 입력 디버그 =====");
                 System.out.println("medicineName = " + medicineName);
                 System.out.println("takenDOW = " + takenDOW);
@@ -302,7 +292,7 @@ public class MedicineRoutineFormPanel extends Base {
                 System.out.println("dosage = " + dosage);
                 System.out.println("====================================");
 
-                // 7️⃣ 실제 저장
+                // 7. 실제 저장
                 medicineRoutineMgr.addNewRoutine(
                         pet,
                         medicineName,
@@ -311,7 +301,7 @@ public class MedicineRoutineFormPanel extends Base {
                         dosage
                 );
 
-                // 8️⃣ 성공 메시지 + 기록 추가 메뉴로 이동
+                // 8. 성공 메시지 + 기록 추가 메뉴로 이동
                 JOptionPane.showMessageDialog(mainFrame, "복용 루틴이 저장되었습니다!");
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
 
@@ -325,8 +315,6 @@ public class MedicineRoutineFormPanel extends Base {
                 );
             }
         });
-
-
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;

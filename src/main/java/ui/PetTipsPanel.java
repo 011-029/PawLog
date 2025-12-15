@@ -27,12 +27,10 @@ public class PetTipsPanel extends Base {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // ⬇ 헤더 + 콘텐츠 패딩 래퍼 (SettingPanel과 동일)
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
 
-        // 상단 공용 헤더 (뒤로가기 → PetHomePanel 예시)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
                         mainFrame.switchPanel(new HomePanel(mainFrame))
@@ -40,16 +38,12 @@ public class PetTipsPanel extends Base {
                 BorderLayout.NORTH
         );
 
-        // 가운데 내용
         contentWrapper.add(createContent(), BorderLayout.CENTER);
-
         add(contentWrapper, BorderLayout.CENTER);
-
-        // 하단 탭바
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    /** 가운데 전체 영역 */
+    /* 가운데 전체 영역 */
     private JComponent createContent() {
         JPanel listPanel = new JPanel();
         listPanel.setOpaque(false);
@@ -115,7 +109,6 @@ public class PetTipsPanel extends Base {
                 title2
         );
 
-
         cardRow.add(card1);
         cardRow.add(Box.createHorizontalStrut(16));
         cardRow.add(card2);
@@ -154,7 +147,7 @@ public class PetTipsPanel extends Base {
         infoHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         infoHeader.add(leftText);
-        infoHeader.add(Box.createHorizontalGlue());   // 오른쪽 끝으로 밀어주기
+        infoHeader.add(Box.createHorizontalGlue());
         infoHeader.add(viewAllFood);
 
         listPanel.add(infoHeader);
@@ -164,7 +157,7 @@ public class PetTipsPanel extends Base {
         listPanel.add(createSearchBox());
         listPanel.add(Box.createVerticalStrut(16));
 
-        // 🔹 검색 결과 카드들이 들어갈 영역 (처음엔 비어 있음)
+        // 검색 결과 카드들이 들어갈 영역 (처음엔 비어 있음)
         searchResultContainer = new JPanel();
         searchResultContainer.setOpaque(false);
         // 행 개수는 자동(0), 한 행 최대 2개, 가로 16, 세로 16 간격
@@ -190,27 +183,26 @@ public class PetTipsPanel extends Base {
         return scroll;
     }
 
-    /** 기사 카드 1개 (큰 네모 + 아래 원형 아이콘) */
+    /* 짤막 상식 카드 UI */
     private JPanel createArticleCard(String text, Icon icon, String title) {
         Color borderColor = UIConstants.GRAY_LIGHT;
 
         Color[] g = pickRandomGradient();
 
         JPanel card = new DiagonalGradientPanel(
-                g[0],   // 시작 색
-                g[1]    // 끝 색
+                g[0],
+                g[1]
         );
 
         card.setLayout(new BorderLayout());
         card.setOpaque(true);
-//        card.setBackground(UIConstants.PRIMARY);
         card.setPreferredSize(new Dimension(100, 200));
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
         card.setBorder(new FlatLineBorder(
                 new Insets(16, 16, 16, 16),
                 borderColor,
                 1.0f,
-                20   // ← 카드 네모 둥근 모서리
+                20
         ));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         card.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -233,7 +225,6 @@ public class PetTipsPanel extends Base {
 
         // 아래쪽 원형 아이콘
         JPanel circle = new JPanel(new BorderLayout());
-//        circle.setOpaque(true);
         circle.setBackground(Color.WHITE);
         circle.setOpaque(false);
         circle.setPreferredSize(new Dimension(58, 58));
@@ -242,7 +233,7 @@ public class PetTipsPanel extends Base {
                 new Insets(2, 2, 2, 2),
                 borderColor,
                 1f,
-                100  // ← 거의 원처럼 보이게
+                100
         ));
 
         JLabel iconLabel = new JLabel(icon);
@@ -271,12 +262,12 @@ public class PetTipsPanel extends Base {
         public DiagonalGradientPanel(Color start, Color end) {
             this.start = start;
             this.end = end;
-            setOpaque(false);   // 우리가 직접 배경 칠할 거라 false
+            setOpaque(false);
         }
 
         @Override
         protected void paintComponent(Graphics g) {
-            super.paintComponent(g);   // ← 먼저 기본 처리
+            super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g.create();
 
@@ -285,11 +276,11 @@ public class PetTipsPanel extends Base {
 
             GradientPaint gp = new GradientPaint(
                     0, 0, start,
-                    w, h, end      // 대각선 그라데이션
+                    w, h, end
             );
 
             g2.setPaint(gp);
-            g2.fillRoundRect(0, 0, w, h, 20, 20);  // arc 20 유지
+            g2.fillRoundRect(0, 0, w, h, 20, 20);
             g2.dispose();
         }
     }
@@ -314,7 +305,7 @@ public class PetTipsPanel extends Base {
         return GRADIENT_SETS[RND.nextInt(GRADIENT_SETS.length)];
     }
 
-    /** 검색 박스 (네모 + 오른쪽 검색 아이콘) */
+    /* 검색 박스 (네모 + 오른쪽 검색 아이콘) */
     private JComponent createSearchBox() {
         Color borderColor = UIConstants.GRAY_LIGHT;
 
@@ -382,7 +373,7 @@ public class PetTipsPanel extends Base {
         return box;
     }
 
-    /** 음식 검색 결과 카드 1개 */
+    /* 음식 검색 결과 카드 UI */
     private JPanel createFoodResultCard(UnsafePetFood f) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(false);
@@ -399,12 +390,11 @@ public class PetTipsPanel extends Base {
         ));
 
         /* ───────────── ① 음식 이미지 로드 ───────────── */
-        // 파일명은 foodName + ".jpg" 라고 가정
         String imagePath = f.getFoodImage();
         ImageIcon raw = null;
         JLabel imgLabel;
 
-// 🔥 1) imagePath null / 빈 문자열 방어
+        // 1) imagePath null / 빈 문자열 방어
         if (imagePath == null || imagePath.isBlank()) {
             // 이미지 없는 경우용 플레이스홀더
             imgLabel = new JLabel();
@@ -415,7 +405,6 @@ public class PetTipsPanel extends Base {
             imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
                     UIConstants.GRAY_LIGHT));
         } else {
-            // 🔥 2) getResource 쓸 때 앞에 / 붙이기 (패키지 루트 기준)
             String path = imagePath.startsWith("/") ? imagePath : "/" + imagePath;
 
             var url = getClass().getResource(path);
@@ -464,7 +453,7 @@ public class PetTipsPanel extends Base {
         nameLabel.setFont(UIConstants.FONT_REGULAR_14);
         nameLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
-        /* ★ 위험 태그: 둥근 사각형 + 테두리 + TEXT_PRIMARY */
+        /* 위험 태그 */
         JLabel dangerTag = new JLabel("위험");
         dangerTag.setFont(UIConstants.FONT_SEMIBOLD_12);
         dangerTag.setForeground(UIConstants.TEXT_PRIMARY);
@@ -488,7 +477,7 @@ public class PetTipsPanel extends Base {
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                showFoodPopup(f); // ✅ 팝업 띄우기
+                showFoodPopup(f);
             }
         });
 
@@ -500,13 +489,12 @@ public class PetTipsPanel extends Base {
 
         JDialog dialog = new JDialog(owner);
         dialog.setModal(true);
-        dialog.setUndecorated(true); // ✅ 메세지창 느낌 제거
-        dialog.setBackground(new Color(0, 0, 0, 0)); // ⭐ 창 자체 투명
-        ((JComponent) dialog.getContentPane()).setOpaque(false); // ⭐ 컨텐츠 배경도 투명
+        dialog.setUndecorated(true);
+        dialog.setBackground(new Color(0, 0, 0, 0));
+        ((JComponent) dialog.getContentPane()).setOpaque(false);
         dialog.setLayout(new BorderLayout());
 
-
-        // 바깥 카드(둥근 테두리)
+        // 팝업 카드
         JPanel root = new JPanel(new BorderLayout());
         root.setOpaque(true);
         root.setBackground(Color.WHITE);
@@ -524,7 +512,7 @@ public class PetTipsPanel extends Base {
         name.setForeground(UIConstants.TEXT_PRIMARY);
 
         JButton close = new JButton();
-        close.setIcon(new FlatSVGIcon("icons/close.svg", 14, 14)); // 없으면 X 텍스트로 대체 가능
+        close.setIcon(new FlatSVGIcon("icons/close.svg", 14, 14));
         close.setContentAreaFilled(false);
         close.setBorderPainted(false);
         close.setFocusPainted(false);
@@ -571,7 +559,7 @@ public class PetTipsPanel extends Base {
         center.add(allowed);
         center.add(Box.createVerticalStrut(12));
 
-        // 설명(긴 글)
+        // 설명
         JTextArea desc = new JTextArea(f.getDescription());
         desc.setWrapStyleWord(true);
         desc.setLineWrap(true);
@@ -600,6 +588,4 @@ public class PetTipsPanel extends Base {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
-
-
 }

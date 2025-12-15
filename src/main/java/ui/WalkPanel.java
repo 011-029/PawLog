@@ -93,7 +93,7 @@ public class WalkPanel extends Base {
         return scroll;
     }
 
-    /** 개별 산책 기록 카드 (사진 선택적) */
+    /* 개별 산책 기록 카드 */
     protected JPanel createWalkCard(WalkRecord r) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);

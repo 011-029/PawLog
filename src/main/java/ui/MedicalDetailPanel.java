@@ -104,7 +104,6 @@ public class MedicalDetailPanel extends Base {
         listPanel.add(Box.createVerticalStrut(24));
 
         /* ========= 버튼들 ========= */
-
         JButton registerBtn = new JButton("처방약 루틴으로 등록하기");
         registerBtn.setFont(UIConstants.FONT_SEMIBOLD_16);
         registerBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -174,7 +173,6 @@ public class MedicalDetailPanel extends Base {
 
 
         /* ========= 스크롤 ========= */
-
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setOpaque(false);
         wrapper.add(listPanel, BorderLayout.NORTH);
@@ -213,4 +211,3 @@ public class MedicalDetailPanel extends Base {
         return row;
     }
 }
-

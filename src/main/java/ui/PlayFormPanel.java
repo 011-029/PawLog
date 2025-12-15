@@ -36,7 +36,7 @@ public class PlayFormPanel extends Base {
         contentWrapper.add(UIComponents.createHeader(() ->
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createFormContent(), BorderLayout.CENTER);
-        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);   // ⬅⬅ 추가!
+        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);
 
         add(contentWrapper, BorderLayout.CENTER);
     }
@@ -86,9 +86,6 @@ public class PlayFormPanel extends Base {
         memoArea.setLineWrap(true);
         memoArea.setWrapStyleWord(true);
         memoArea.setFont(UIConstants.FONT_REGULAR_14);
-//        memoArea.putClientProperty("FlatLaf.style", "arc:10");
-//        memoArea.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-//                UIConstants.GRAY_LIGHT, 1f, 10));
 
         JScrollPane memoScroll = new JScrollPane(memoArea);
         memoScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -117,7 +114,7 @@ public class PlayFormPanel extends Base {
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         //스크롤 속도 개선용
-        scroll.getVerticalScrollBar().setUnitIncrement(20); // 숫자 커질수록 빠름
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         listPanel.setDoubleBuffered(true);
         listWrapper.setDoubleBuffered(true);
 
@@ -140,7 +137,6 @@ public class PlayFormPanel extends Base {
 
         saveBtn.addActionListener(e -> {
             try {
-                // 유저·펫 체크는 동일
                 if (user == null || pet == null) {
                     JOptionPane.showMessageDialog(mainFrame, "유저 또는 펫 정보를 확인할 수 없습니다.");
                     return;
@@ -156,7 +152,7 @@ public class PlayFormPanel extends Base {
                     return;
                 }
 
-                // ⭐ 놀이 종류 (입력 없으면 0)
+                // 놀이 종류 (입력 없으면 0)
                 String playType = typeField.getText().trim();
                 if (playType.isEmpty()) playType = "0";
 
@@ -183,7 +179,6 @@ public class PlayFormPanel extends Base {
                 JOptionPane.showMessageDialog(mainFrame, "저장 중 오류 발생: " + ex.getMessage());
             }
         });
-
 
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;

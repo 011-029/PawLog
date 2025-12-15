@@ -60,7 +60,7 @@ public abstract class BaseCard extends JPanel {
         });
     }
 
-    /** ⭐ 카드 '떠오르는 효과' 구현 */
+    /* 카드 '떠오르는 효과' 구현 */
     private void applyHoverStyle(boolean on) {
         if (on) {
             // 위쪽 padding 줄이고 아래 padding 늘림 → 실제로 카드가 떠보임
@@ -88,7 +88,6 @@ public abstract class BaseCard extends JPanel {
         repaint();
     }
 
-    /* ========= 기존 BaseCard 기능 유지 ========= */
     protected void addTitle(String text) {
         JLabel titleLabel = new JLabel(text);
         titleLabel.setFont(UIConstants.FONT_SEMIBOLD_14);
@@ -130,4 +129,3 @@ public abstract class BaseCard extends JPanel {
         rightPanel.add(Box.createVerticalGlue());
     }
 }
-

@@ -88,19 +88,6 @@ public class HealthPanel extends Base {
                 listPanel.add(Box.createVerticalStrut(16));
             }
         }
-//
-//        // 위쪽 체중 변화 그래프 카드
-//        JPanel chartCard = createWeightChartCard();
-//        listPanel.add(chartCard);
-//        listPanel.add(Box.createVerticalStrut(24));
-//
-//        // 데이터 불러와서 리스트 생성
-//        for (HealthRecord r : records) {
-//            JPanel card = createHealthCard(r);
-//
-//            listPanel.add(card);
-//            listPanel.add(Box.createVerticalStrut(16));
-//        }
 
         // 스크롤에 감싸기 + 항상 위에 붙게 래퍼 사용
         JPanel listWrapper = new JPanel(new BorderLayout());
@@ -208,7 +195,7 @@ public class HealthPanel extends Base {
             g2.setColor(new Color(248, 248, 248));
             g2.fillRoundRect(left, top, chartW, chartH, 12, 12);
 
-            // 🔹 최소/최대 값 먼저 계산
+            // 최소/최대 값 먼저 계산
             double min = weights[0], max = weights[0];
             for (double v : weights) {
                 min = Math.min(min, v);
@@ -253,7 +240,6 @@ public class HealthPanel extends Base {
                 g2.drawString(text, textX, textY);
             }
 
-            // 🔹 여기부터는 기존 라인/점/라벨 그리는 코드 그대로 사용!
             Path2D path = new Path2D.Double();
             int n = weights.length;
             for (int i = 0; i < n; i++) {

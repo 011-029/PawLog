@@ -19,13 +19,10 @@ public class PlaceholderTextField extends JTextField {
         if (getText().isEmpty() && !isFocusOwner()) {
             Graphics2D g2 = (Graphics2D) g.create();
 
-            // ✧ 안티앨리어싱 켜기
+            // 안티앨리어싱 켜기
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-            // ✧ 실제 사용하는 폰트랑 맞춰주기 (예시)
             g2.setFont(UIConstants.FONT_REGULAR_14);
-
             g2.setColor(UIConstants.TEXT_LIGHT);
 
             FontMetrics fm = g2.getFontMetrics();

@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+// TODO: 구현중
 public class PetInfoPanel extends JPanel {
 
     private final MainFrame mainFrame;
@@ -16,12 +17,10 @@ public class PetInfoPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단바 + 내용 + 하단 "정보 수정" 버튼에만 패딩
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
 
-        // 상단 헤더 (뒤로가기 → 펫 홈으로 가정)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
                         mainFrame.switchPanel(new HomePanel(mainFrame))
@@ -34,13 +33,12 @@ public class PetInfoPanel extends JPanel {
 
         add(contentWrapper, BorderLayout.CENTER);
 
-        // 하단 탭바
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
     // ================== 중앙 콘텐츠 ==================
     private JComponent createContent() {
-        // 🔹 전체 영역을 GridBagLayout으로 → 항상 가로/세로 중앙 정렬
+        // 전체 영역을 GridBagLayout으로 항상 가로/세로 중앙 정렬
         JPanel centerWrapper = new JPanel(new GridBagLayout());
         centerWrapper.setOpaque(false);
         centerWrapper.setBorder(new EmptyBorder(24, 16, 24, 16));
@@ -52,9 +50,6 @@ public class PetInfoPanel extends JPanel {
         contentColumn.setMaximumSize(new Dimension(480, Integer.MAX_VALUE));
         contentColumn.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         contentColumn.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        // 위 여백 조금
-//        contentColumn.add(Box.createVerticalStrut(40));
 
         /* ==== 프로필 사진 + 텍스트 (세로, 중앙) ==== */
         JPanel top = new JPanel();
@@ -71,12 +66,10 @@ public class PetInfoPanel extends JPanel {
         helloLabel.setForeground(UIConstants.TEXT_PRIMARY);
         helloLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
         JLabel typeLabel = new JLabel("강아지 (푸들)");
         typeLabel.setFont(UIConstants.FONT_REGULAR_14);
         typeLabel.setForeground(UIConstants.TEXT_SECONDARY);
         typeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
         JLabel birthLabel = new JLabel("2020-10-20");
         birthLabel.setFont(UIConstants.FONT_REGULAR_14);
@@ -107,24 +100,19 @@ public class PetInfoPanel extends JPanel {
 
         contentColumn.add(Box.createVerticalStrut(16));
 
-        // ⛔ 여기서는 더 이상 Box.createVerticalGlue() 넣지 말기!
-
-        // 🔹 GridBagLayout으로 중앙 배치
+        // GridBagLayout으로 중앙 배치
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;   // 가로/세로 중앙
-        // 🔽🔽 세로는 그대로, 가로는 꽉 채우도록
         gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.fill = GridBagConstraints.NONE;       // 필요하면 HORIZONTAL 로 변경
 
         centerWrapper.add(contentColumn, gbc);
 
         return centerWrapper;
     }
-
 
     private JComponent createProfileArea() {
 
@@ -140,7 +128,6 @@ public class PetInfoPanel extends JPanel {
 
         JPanel panel = new JPanel() {
 
-            // 👇 최소/선호 크기를 확실히 160x160으로 고정
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(180, 180);
@@ -185,8 +172,6 @@ public class PetInfoPanel extends JPanel {
         return panel;
     }
 
-
-
     private JComponent createTagArea() {
         String[] tags = {
                 "장난스러운", "사람을 좋아하는", "소심한",
@@ -230,7 +215,7 @@ public class PetInfoPanel extends JPanel {
             tagPanel.add(btn);
         }
 
-        // 🔹 태그 영역을 스크롤 가능하게 감싸기
+        // 태그 영역 스크롤 가능
         JScrollPane scroll = new JScrollPane(tagPanel,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -244,7 +229,6 @@ public class PetInfoPanel extends JPanel {
 
         return scroll;
     }
-
 
     /* ================== 정보 수정 버튼 바 ================== */
     private JComponent createEditButtonBar() {
@@ -269,5 +253,4 @@ public class PetInfoPanel extends JPanel {
         bar.add(editBtn, BorderLayout.CENTER);
         return bar;
     }
-
 }

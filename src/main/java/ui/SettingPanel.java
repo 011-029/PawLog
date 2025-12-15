@@ -19,29 +19,24 @@ public class SettingPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // ⬇ 헤더 + 콘텐츠 패딩 래퍼
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
 
-        // 상단 바 (뒤로가기 → 이전 화면으로)
         contentWrapper.add(
                 UIComponents.createHeader(() ->
                         mainFrame.switchPanel(new HomePanel(mainFrame))
                 ),
                 BorderLayout.NORTH
         );
-
-        // 가운데 내용
         contentWrapper.add(createContent(), BorderLayout.CENTER);
 
         add(contentWrapper, BorderLayout.CENTER);
 
-        // 하단 탭바
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    /** 가운데 전체 영역 */
+    /* 가운데 전체 영역 */
     private JComponent createContent() {
         JPanel listPanel = new JPanel();
         listPanel.setOpaque(false);
@@ -69,7 +64,7 @@ public class SettingPanel extends JPanel {
         listPanel.add(accountLabel);
         listPanel.add(Box.createVerticalStrut(10));
 
-        // 🔹 유저 정보 수정
+        // 유저 정보 수정
         listPanel.add(createSettingItem(
                 "유저 정보 수정",
                 "아이디 / 이름 / 비밀번호 등을 수정해요",
@@ -80,7 +75,7 @@ public class SettingPanel extends JPanel {
         ));
         listPanel.add(Box.createVerticalStrut(12));
 
-        // 🔹 펫 정보 수정
+        // 펫 정보 수정
         listPanel.add(createSettingItem(
                 "펫 정보 수정",
                 "등록된 반려동물 정보를 관리해요",
@@ -102,7 +97,7 @@ public class SettingPanel extends JPanel {
         listPanel.add(etcLabel);
         listPanel.add(Box.createVerticalStrut(10));
 
-        // 🔹 회원탈퇴
+        // 회원탈퇴
         listPanel.add(createSettingItem(
                 "회원탈퇴",
                 "계정과 모든 데이터를 삭제해요",
@@ -131,7 +126,7 @@ public class SettingPanel extends JPanel {
         ));
         listPanel.add(Box.createVerticalStrut(12));
 
-        // 🔹 로그아웃
+        // 로그아웃
         listPanel.add(createSettingItem(
                 "로그아웃",
                 "현재 계정에서 로그아웃해요",
@@ -139,27 +134,24 @@ public class SettingPanel extends JPanel {
                 () -> {
                     int result = JOptionPane.showConfirmDialog(
                             this,
-                            "로그아웃 하시겠어요?",
+                            "로그아웃할까요?",
                             "로그아웃",
                             JOptionPane.YES_NO_OPTION
                     );
                     if (result == JOptionPane.YES_OPTION) {
-                        // TODO: 실제 로그아웃 처리 + 로그인 화면으로 전환
-                        // 예시)
-                        // mainFrame.logout();
-                        // mainFrame.switchPanel(new LoginPanel(mainFrame));
+                        mainFrame.logout();
                         JOptionPane.showMessageDialog(
                                 this,
-                                "로그아웃 로직을 구현해 주세요.",
+                                "로그인 화면으로 돌아갑니다.",
                                 "로그아웃",
                                 JOptionPane.INFORMATION_MESSAGE
                         );
+                        mainFrame.switchPanel(new LoginPanel(mainFrame));
                     }
                 }
         ));
         listPanel.add(Box.createVerticalStrut(16));
 
-        // 리스트를 NORTH에 붙여서 위로 정렬
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
         listWrapper.add(listPanel, BorderLayout.NORTH);
@@ -175,7 +167,7 @@ public class SettingPanel extends JPanel {
         return scroll;
     }
 
-    /** 섹션 라벨 (계정 설정 / 기타 등) */
+    /* 섹션 라벨 */
     private JLabel createSectionLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(UIConstants.FONT_SEMIBOLD_18);
@@ -185,7 +177,7 @@ public class SettingPanel extends JPanel {
         return label;
     }
 
-    /** 한 줄짜리 설정 항목 카드 */
+    /* 설정 항목 카드 */
     private JPanel createSettingItem(String title,
                                      String desc,
                                      Icon leadingIcon,

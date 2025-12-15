@@ -4,7 +4,6 @@ import core.User;
 import facade.DataEngineImpl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class PetRecordMgr<T extends PetOwned & Manageable>
         extends DataEngineImpl<T> {

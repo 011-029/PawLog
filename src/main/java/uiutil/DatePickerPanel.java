@@ -85,6 +85,4 @@ public class DatePickerPanel extends JPanel {
         monthBox.setSelectedItem(date.getMonthValue());
         dayBox.setSelectedItem(date.getDayOfMonth());
     }
-
 }
-

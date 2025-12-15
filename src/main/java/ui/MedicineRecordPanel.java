@@ -91,7 +91,6 @@ public class MedicineRecordPanel extends Base {
 
         /* === 카드 리스트 === */
         records.sort(Comparator.comparing(MedicineRecord::getRecordDate).reversed());
-
         for (MedicineRecord r : records) {
 
             MedicineCard card = new MedicineCard(r, mainFrame);
@@ -113,8 +112,6 @@ public class MedicineRecordPanel extends Base {
 
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        // 스크롤 속도 빠르게
         scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         return scroll;
@@ -142,5 +139,4 @@ public class MedicineRecordPanel extends Base {
             });
         }
     }
-
 }

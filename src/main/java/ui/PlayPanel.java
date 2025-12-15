@@ -92,7 +92,7 @@ public class PlayPanel extends Base {
         return scroll;
     }
 
-    /** 개별 산책 기록 카드 (사진 선택적) */
+    /* 개별 산책 기록 카드 */
     protected JPanel createPlayCard(PlayRecord r) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
@@ -119,7 +119,7 @@ public class PlayPanel extends Base {
         titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
         String line =
-                ("놀이시간 " + r.getPlayTime() + "분")
+                ("놀이시간 " + playTime + "분")
                     + (playType == null ? "" : "  |  " + playType);
 
         JLabel playLabel = new JLabel(line);
@@ -138,31 +138,6 @@ public class PlayPanel extends Base {
 
         card.add(textPanel, BorderLayout.CENTER);
 
-        // 오른쪽 사진 영역 (있을 수도 없을 수도)
-//        if (imagePath != null && !imagePath.isBlank()) {
-//            ImageIcon thumb;
-//
-//            URL imgUrl = getClass().getResource(imagePath);
-//            ImageIcon raw = (imgUrl != null) ? new ImageIcon(imgUrl) : null;
-//            if (raw != null) {
-//                thumb = resizeIcon(raw, 95, 95);
-//                card.setPreferredSize(new Dimension(310, 130));
-//                card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
-//                card.setMinimumSize(new Dimension(310, 130));
-//
-//                JLabel photoLabel = new JLabel(thumb);
-//                photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//                photoLabel.setVerticalAlignment(SwingConstants.CENTER);
-//
-//                JPanel photoPanel = new JPanel(new BorderLayout());
-//                photoPanel.setOpaque(false);
-//                photoPanel.setPreferredSize(new Dimension(95, 95)); // 카드 오른쪽 영역 고정 폭
-//                photoPanel.add(photoLabel, BorderLayout.CENTER);
-//
-//                card.add(photoPanel, BorderLayout.EAST);
-//            }
-//        }
-
         // hover 효과
         card.setCursor(new Cursor(Cursor.HAND_CURSOR));
         card.addMouseListener(new MouseAdapter() {
@@ -179,12 +154,7 @@ public class PlayPanel extends Base {
                 card.setBackground(normalBg);
             }
         });
-        return card;
-    }
 
-    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
+        return card;
     }
 }

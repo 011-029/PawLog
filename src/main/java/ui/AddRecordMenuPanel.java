@@ -19,7 +19,6 @@ public class AddRecordMenuPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // ⬇ 헤더 + 내용 패딩 래퍼
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
@@ -153,8 +152,6 @@ public class AddRecordMenuPanel extends JPanel {
         card.setBorder(new FlatLineBorder(new Insets(20, 10, 20, 10),
                 UIConstants.GRAY_SOFT, 0.5f, 20));
         card.setPreferredSize(new Dimension(170, 150));
-//        card.setMaximumSize(new Dimension(160, 140));
-//        card.setMinimumSize(new Dimension(100, 140));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // 호버 효과
@@ -183,11 +180,6 @@ public class AddRecordMenuPanel extends JPanel {
 
         if (iconPath != null) {
             iconLabel.setIcon(new FlatSVGIcon(iconPath, 40, 40));
-
-        } else {
-            // 아이콘 없으면 X 박스 표시
-//            iconLabel = new XIconBox();
-            iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         }
 
         JLabel label = new JLabel(labelText);
@@ -206,7 +198,6 @@ public class AddRecordMenuPanel extends JPanel {
         card.add(label);
         card.add(Box.createVerticalStrut(3));
         card.add(descLabel);
-//        card.add(Box.createVerticalStrut(2));
 
         return card;
     }

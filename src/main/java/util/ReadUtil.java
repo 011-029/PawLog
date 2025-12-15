@@ -8,7 +8,7 @@ public class ReadUtil {
     public  static LocalDate readDate(Scanner scan) {
         while (true){
             String input = scan.next();
-            if (input.equals("0")) return null; //주의점 다른 date 입력에서도 0하면 null 됨
+            if (input.equals("0")) return null; // 주의점: 다른 date 입력에서도 0하면 null 됨
             try {
                 return LocalDate.parse(input);
             } catch (DateTimeException e) {

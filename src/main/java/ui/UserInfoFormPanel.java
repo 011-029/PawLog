@@ -28,14 +28,12 @@ public class UserInfoFormPanel extends Base {
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
-
         contentWrapper.add(
                 UIComponents.createHeader(() ->
                         mainFrame.switchPanel(new SettingPanel(mainFrame))
                 ),
                 BorderLayout.NORTH
         );
-
         contentWrapper.add(createFormContent(), BorderLayout.CENTER);
         contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);
 
@@ -52,7 +50,7 @@ public class UserInfoFormPanel extends Base {
         /* ==== 제목 ==== */
         JLabel title = new JLabel("유저 정보 수정");
         title.setFont(UIConstants.FONT_EXTRABOLD_24);
-        title.setForeground(UIConstants.TEXT_PRIMARY);   // 요청대로 TEXT_PRIMARY
+        title.setForeground(UIConstants.TEXT_PRIMARY);
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         listPanel.add(title);
@@ -123,10 +121,8 @@ public class UserInfoFormPanel extends Base {
         );
         listPanel.add(pwConfirmField);
 
-        // 아래 공간 확보 (저장 버튼과 겹치지 않게)
         listPanel.add(Box.createVerticalStrut(180));
 
-        // 항상 위쪽에 붙도록 래핑 + 스크롤
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
         listWrapper.add(listPanel, BorderLayout.NORTH);

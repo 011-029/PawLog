@@ -100,7 +100,6 @@ public class WalkRecord implements Manageable, UIData, PetOwned, RecordSearchabl
 
     @Override
     public void set(String[] uitexts) {
-
     }
 
     @Override

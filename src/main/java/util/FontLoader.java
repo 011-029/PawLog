@@ -22,6 +22,7 @@ public class FontLoader {
             pretendardRegular = Font.createFont(Font.TRUETYPE_FONT, reg);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pretendardRegular);
 
+            // SemiBold
             InputStream semiBold = FontLoader.class.getResourceAsStream("/fonts/Pretendard-SemiBold.otf");
             pretendardSemiBold = Font.createFont(Font.TRUETYPE_FONT, semiBold);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pretendardSemiBold);
@@ -42,7 +43,7 @@ public class FontLoader {
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pretendardThin);
 
         } catch (Exception e) {
-            System.out.println("⚠ Pretendard 로딩 실패 → 기본 폰트로 대체합니다");
+            System.out.println("폰트 로딩 실패 → 기본 폰트로 대체합니다");
             pretendardSemiBold = new Font("굴림", Font.BOLD, 14);
             pretendardRegular = new Font("굴림", Font.PLAIN, 14);
             pretendardBold = new Font("굴림", Font.BOLD, 14);

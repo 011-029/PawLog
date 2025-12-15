@@ -10,7 +10,6 @@ import java.awt.*;
 
 public class SearchPanel extends JPanel {
     private final MainFrame mainFrame;
-//    private PlaceholderTextField searchField;
     private final JPanel prevPanel; // 이전 화면 (접근경로)
     private JTextField searchField;
     private JPanel searchResultContainer; // 검색 결과 컨테이너
@@ -20,9 +19,8 @@ public class SearchPanel extends JPanel {
         this.prevPanel = prevPanel;
 
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);   // 없으면 Color.WHITE 써도 됨
+        setBackground(Color.WHITE);
 
-        // ⬇ 헤더 + 스크롤 콘텐츠만 패딩을 주는 래퍼
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
@@ -30,50 +28,24 @@ public class SearchPanel extends JPanel {
                 mainFrame.switchPanel(prevPanel)), BorderLayout.NORTH);
         contentWrapper.add(createContent(), BorderLayout.CENTER);
 
-        // 가운데는 패딩 있는 래퍼
         add(contentWrapper, BorderLayout.CENTER);
 
-        // ⬇ 하단 탭바는 패딩 없는 SOUTH에 바로!
         add(UIComponents.createTabbedNav(mainFrame), BorderLayout.SOUTH);
     }
 
-    /** 가운데 전체 영역 */
+    /* 가운데 전체 영역 */
     private JComponent createContent() {
-        // 스크롤 가능 리스트로 만들기
         JPanel listPanel = new JPanel();
         listPanel.setOpaque(false);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(24, 10, 24, 10));
 
-        // 🔹 제목 + 검색 아이콘 한 줄
         JPanel header = new JPanel();
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-//        searchField = new PlaceholderTextField("검색어를 입력하세요");
-//        searchField.setPreferredSize(new Dimension(320, 45));
-//        searchField.setMaximumSize(new Dimension(320, 45));
-//        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        searchField.putClientProperty("FlatLaf.style", "arc:10");
-//        header.add(searchField);
-
-//        ImageIcon rawFilter = new ImageIcon("filter.png");
-//        ImageIcon filterIcon = resizeIcon(rawFilter, 24, 24);
-
-//        JButton filterBtn = new JButton(filterIcon);
-//        filterBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//        filterBtn.setContentAreaFilled(false);
-//        filterBtn.setBorderPainted(false);
-//        filterBtn.setFocusPainted(false);
-//        filterBtn.setOpaque(false);
-//        filterBtn.setPreferredSize(new Dimension(32, 32));
-
-        // 오른쪽 정렬 후 버튼 추가
         header.add(Box.createHorizontalGlue());
-//        header.add(filterBtn);   // ⬅ 이거!
-//        header.add(Box.createHorizontalStrut(4));   // ← 여기에 8px 여백 추가!
-//        header.add(createSearchButton());
         header.add(createSearchBox());
 
         listPanel.add(header);
@@ -86,52 +58,6 @@ public class SearchPanel extends JPanel {
 
         listPanel.add(searchResultContainer, BorderLayout.CENTER);
         listPanel.add(searchResultContainer);
-
-
-
-//        searchResultContainer.add(MedicalRecordListPanel.create)
-
-
-//        // --- 아래는 그대로 카드들 추가 ---
-//        JPanel card1 = createRoutineCard(
-//                "복용루틴 1",
-//                "심장사상충약 / 하루 2알",
-//                "10:00AM , 2:00PM"
-//        );
-//        listPanel.add(card1);
-//        listPanel.add(Box.createVerticalStrut(16));
-//
-//        JPanel card2 = createRoutineCard(
-//                "복용루틴 2",
-//                "약 정보를 입력해주세요",
-//                ""
-//        );
-//        listPanel.add(card2);
-//        listPanel.add(Box.createVerticalStrut(16));
-//
-//        JPanel card3 = createRoutineCard(
-//                "복용루틴 2",
-//                "약 정보를 입력해주세요",
-//                ""
-//        );
-//        listPanel.add(card3);
-//        listPanel.add(Box.createVerticalStrut(16));
-//
-//        JPanel card4 = createRoutineCard(
-//                "복용루틴 2",
-//                "약 정보를 입력해주세요",
-//                ""
-//        );
-//        listPanel.add(card4);
-//        listPanel.add(Box.createVerticalStrut(16));
-//
-//        JPanel card5 = createRoutineCard(
-//                "복용루틴 2",
-//                "약 정보를 입력해주세요",
-//                ""
-//        );
-//        listPanel.add(card5);
-//        listPanel.add(Box.createVerticalStrut(16));
 
         JScrollPane scroll = new JScrollPane(listPanel);
         scroll.setBorder(null);
@@ -227,7 +153,7 @@ public class SearchPanel extends JPanel {
         }
     }
 
-    /** 검색 박스 (네모 + 오른쪽 검색 아이콘) */
+    /* 검색 박스 */
     private JComponent createSearchBox() {
         JPanel box = new JPanel(new BorderLayout());
         box.setOpaque(true);
@@ -239,7 +165,7 @@ public class SearchPanel extends JPanel {
                 new Insets(8, 12, 8, 4),
                 UIConstants.GRAY_LIGHT,
                 1.0f,
-                16   // ← 검색 네모 둥근 모서리
+                16
         ));
 
         searchField = new JTextField();
@@ -323,11 +249,4 @@ public class SearchPanel extends JPanel {
 
         return box;
     }
-
-    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
-    }
-
 }

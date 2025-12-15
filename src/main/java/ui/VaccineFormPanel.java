@@ -13,14 +13,13 @@ import java.time.LocalDate;
 
 public class VaccineFormPanel extends Base {
     private final MainFrame mainFrame;
+    private User user;
+    private Pet pet;
+
     private JTextArea memoArea;
     private DatePickerPanel dateField;
     private LabeledTextField vaccineField;
     private LabeledTextField hospitalField;
-
-
-    private User user;
-    private Pet pet;
 
     public VaccineFormPanel(MainFrame mainFrame){
         super(mainFrame);
@@ -31,14 +30,13 @@ public class VaccineFormPanel extends Base {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단바 + 내용에만 패딩
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
         contentWrapper.add(UIComponents.createHeader(() ->
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame))), BorderLayout.NORTH);
         contentWrapper.add(createFormContent(), BorderLayout.CENTER);
-        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);   // ⬅⬅ 추가!
+        contentWrapper.add(createSaveButtonBar(), BorderLayout.SOUTH);
 
         add(contentWrapper, BorderLayout.CENTER);
     }
@@ -88,9 +86,6 @@ public class VaccineFormPanel extends Base {
         memoArea.setLineWrap(true);
         memoArea.setWrapStyleWord(true);
         memoArea.setFont(UIConstants.FONT_REGULAR_14);
-//        memoArea.putClientProperty("FlatLaf.style", "arc:10");
-//        memoArea.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-//                UIConstants.GRAY_LIGHT, 1f, 10));
 
         JScrollPane memoScroll = new JScrollPane(memoArea);
         memoScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -118,7 +113,7 @@ public class VaccineFormPanel extends Base {
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         //스크롤 속도 개선용
-        scroll.getVerticalScrollBar().setUnitIncrement(20); // 숫자 커질수록 빠름
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         listPanel.setDoubleBuffered(true);
         listWrapper.setDoubleBuffered(true);
 
@@ -135,14 +130,12 @@ public class VaccineFormPanel extends Base {
         saveBtn.setBackground(UIConstants.PRIMARY);
         saveBtn.setForeground(Color.WHITE);
         saveBtn.putClientProperty("FlatLaf.style", "arc:10");
-
-        // 폭은 가로 전체를 차지하게 (반응형)
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
         saveBtn.addActionListener(e -> {
             try {
-                // 1️⃣ 로그인 유저·펫 확인
+                // 1. 로그인 유저·펫 확인
                 User user = mainFrame.getLoggedInUser();
                 Pet pet = mainFrame.getLoggedInUserPet();
 
@@ -151,32 +144,32 @@ public class VaccineFormPanel extends Base {
                     return;
                 }
 
-                // 2️⃣ 날짜 (필수)
+                // 2. 날짜 (필수)
                 LocalDate date = dateField.getDate();
                 if (date == null) {
                     JOptionPane.showMessageDialog(mainFrame, "날짜를 선택해주세요.");
                     return;
                 }
 
-                // 3️⃣ 백신명 (필수)
+                // 3. 백신명 (필수)
                 String vaccine = vaccineField.getText().trim();
                 if (vaccine.isEmpty()) {
                     JOptionPane.showMessageDialog(mainFrame, "백신명을 입력해주세요.");
                     return;
                 }
 
-                // 4️⃣ 병원명 (필수)
+                // 4. 병원명 (필수)
                 String hospital = hospitalField.getText().trim();
                 if (hospital.isEmpty()) {
                     JOptionPane.showMessageDialog(mainFrame, "병원명을 입력해주세요.");
                     return;
                 }
 
-                // 5️⃣ 메모 (선택 → 없으면 0)
+                // 5. 메모 (선택 → 없으면 0)
                 String memo = memoArea.getText().trim();
                 if (memo.isEmpty()) memo = "0";
 
-                // 6️⃣ 디버그 출력
+                // 6. 디버그 출력
                 System.out.println("===== [VaccineForm DEBUG] =====");
                 System.out.println("date = " + date);
                 System.out.println("vaccine = " + vaccine);
@@ -184,7 +177,7 @@ public class VaccineFormPanel extends Base {
                 System.out.println("memo = " + memo);
                 System.out.println("================================");
 
-                // 7️⃣ 저장
+                // 7. 저장
                 vaccineMgr.addNewRecord(
                         pet,
                         date,
@@ -193,7 +186,7 @@ public class VaccineFormPanel extends Base {
                         memo
                 );
 
-                // 8️⃣ 완료 메시지 + 메뉴로 이동
+                // 8. 완료 메시지 + 메뉴로 이동
                 JOptionPane.showMessageDialog(mainFrame, "백신 기록이 저장되었습니다!");
                 mainFrame.switchPanel(new AddRecordMenuPanel(mainFrame));
 
@@ -208,15 +201,8 @@ public class VaccineFormPanel extends Base {
             }
         });
 
-
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
-    }
-
-    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
     }
 
     public MainFrame getMainFrame() {

@@ -18,6 +18,8 @@ import java.time.LocalDate;
 public class WalkFormPanel extends Base {
 
     private final MainFrame mainFrame;
+    private User user;
+    private Pet pet;
 
     // 입력 필드들 (날짜 필드는 클래스 만들음 (여러번 쓰여서))
     private DatePickerPanel dateField;
@@ -25,9 +27,6 @@ public class WalkFormPanel extends Base {
     private JTextField distanceField;    // 산책 거리(km 등)
     private JTextArea memoArea;          // 메모
     private JTextField photoField;       // 사진 경로
-
-    private User user;
-    private Pet pet;
 
     public WalkFormPanel(MainFrame mainFrame) {
         super(mainFrame);
@@ -74,18 +73,6 @@ public class WalkFormPanel extends Base {
         /* ==== 날짜 ==== */
         DatePickerPanel date = new DatePickerPanel();
         listPanel.add(date);
-
-        /*날짜 가져오고 싶을때는
-         * LocalDate selected = datePicker.getDate();
-         *쓰세요
-         */
-
-
-        /*
-         * 👉 나중에 JCalendar/JDateChooser 쓰고 싶으면
-         * 위 날짜 콤보박스 부분을 통째로 지우고
-         * dateRow에 JCalendar 컴포넌트만 add 해주면 돼요!
-         */
 
         /* ==== 산책 시간(분) ==== */
         JLabel timeLabel = new JLabel("산책 시간 (분)");
@@ -142,9 +129,6 @@ public class WalkFormPanel extends Base {
         memoArea.setLineWrap(true);
         memoArea.setWrapStyleWord(true);
         memoArea.setFont(UIConstants.FONT_REGULAR_14);
-//        memoArea.putClientProperty("FlatLaf.style", "arc:10");
-//        memoArea.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-//                UIConstants.GRAY_LIGHT, 1f, 10));
 
         JScrollPane memoScroll = new JScrollPane(memoArea);
         memoScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -188,7 +172,7 @@ public class WalkFormPanel extends Base {
         browseBtn.putClientProperty("FlatLaf.style", "arc:10");
         browseBtn.setForeground(Color.WHITE);
         browseBtn.setBackground(UIConstants.PRIMARY_LIGHT);
-        browseBtn.setMargin(new Insets(0, 0, 0, 0));  // 내부 여백 딱 맞추기
+        browseBtn.setMargin(new Insets(0, 0, 0, 0));
         browseBtn.addActionListener(e -> openFileChooser());
 
         photoRow.add(photoField);
@@ -198,7 +182,6 @@ public class WalkFormPanel extends Base {
         listPanel.add(photoRow);
         listPanel.add(Box.createVerticalStrut(120));
 
-        // 위쪽에 붙도록 래퍼 + 스크롤
         JPanel listWrapper = new JPanel(new BorderLayout());
         listWrapper.setOpaque(false);
         listWrapper.add(listPanel, BorderLayout.NORTH);
@@ -224,7 +207,6 @@ public class WalkFormPanel extends Base {
         saveBtn.setBackground(UIConstants.PRIMARY);
         saveBtn.setForeground(Color.WHITE);
         saveBtn.putClientProperty("FlatLaf.style", "arc:10");
-
         saveBtn.setPreferredSize(new Dimension(0, 48));
         saveBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
@@ -273,7 +255,6 @@ public class WalkFormPanel extends Base {
             }
         });
 
-
         bar.add(saveBtn, BorderLayout.CENTER);
         return bar;
     }
@@ -306,18 +287,11 @@ public class WalkFormPanel extends Base {
             // 파일 복사
             Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-            return dest.getPath();   // 실제 저장된 경로 문자열 반환
+            return dest.getPath();
 
         } catch (Exception ex) {
             ex.printStackTrace();
             return "0";
         }
-    }
-
-
-    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
     }
 }

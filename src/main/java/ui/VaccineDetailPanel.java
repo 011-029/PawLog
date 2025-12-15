@@ -16,7 +16,6 @@ public class VaccineDetailPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 상단 헤더 + 내용
         JPanel contentWrapper = new JPanel(new BorderLayout());
         contentWrapper.setOpaque(false);
         contentWrapper.setBorder(new EmptyBorder(16, 16, 0, 16));
@@ -116,7 +115,6 @@ public class VaccineDetailPanel extends JPanel {
         scroll.getVerticalScrollBar().setUnitIncrement(30);
 
         return scroll;
-
     }
 
     private JPanel makeInfoRow(String title, String value) {

@@ -22,37 +22,29 @@ public class SignUpPanel extends Base {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // 전체 중앙 영역 (양 옆 여백 + 가운데 정렬)
         JPanel centerWrapper = new JPanel();
         centerWrapper.setOpaque(false);
         centerWrapper.setLayout(new BoxLayout(centerWrapper, BoxLayout.X_AXIS));
         centerWrapper.setBorder(new EmptyBorder(20, 50, 32, 50));
 
-        // ⭐ 안쪽에 실제 콘텐츠를 담을 세로 컬럼
         JPanel contentColumn = new JPanel();
         contentColumn.setOpaque(false);
         contentColumn.setLayout(new BoxLayout(contentColumn, BoxLayout.Y_AXIS));
         contentColumn.setMaximumSize(new Dimension(480, Integer.MAX_VALUE)); // 전체 폭 제한
         contentColumn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // 위 여백
         contentColumn.add(Box.createVerticalStrut(110));
 
         // 환영 문구
         contentColumn.add(createWelcomeText());
-
-        // 환영 문구와 폼 사이 간격
-//        contentColumn.add(Box.createVerticalStrut(20));
 
         // ID/PW/버튼 폼
         JComponent form = createFormArea();
         form.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentColumn.add(form);
 
-        // 아래 남는 공간은 전부 아래로
         contentColumn.add(Box.createVerticalGlue());
 
-        // ⭐ 컬럼을 가운데에 두기 위해 좌우 glue
         centerWrapper.add(Box.createHorizontalGlue());
         centerWrapper.add(contentColumn);
         centerWrapper.add(Box.createHorizontalGlue());
@@ -61,7 +53,6 @@ public class SignUpPanel extends Base {
     }
 
     private JComponent createWelcomeText() {
-        // 전체 폭을 쓰되, 글씨는 왼쪽에 붙게 할 래퍼 패널
         JPanel wrapper = new JPanel();
         wrapper.setOpaque(false);
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
@@ -81,17 +72,14 @@ public class SignUpPanel extends Base {
         text.setHighlighter(null);
         text.setBorder(null);
 
-        // 왼쪽에는 글씨, 오른쪽에는 여유 공간
         wrapper.add(text);
         wrapper.add(Box.createHorizontalGlue());
 
         return wrapper;
     }
 
-
     private JComponent createFormArea() {
 
-        // ⭐ 진짜 폼이 들어갈 formPanel
         JPanel form = new JPanel();
         form.setOpaque(false);
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
@@ -120,15 +108,13 @@ public class SignUpPanel extends Base {
         idRow.add(idField);
         idRow.add(Box.createHorizontalStrut(5));
 
-
         // 중복확인 버튼
         JButton checkBtn = new JButton("중복확인");
         checkBtn.putClientProperty("FlatLaf.style", "arc:10");
         checkBtn.setBackground(UIConstants.PRIMARY_LIGHT);
         checkBtn.setForeground(UIConstants.TEXT_PRIMARY);
         checkBtn.setOpaque(true);
-        // 안쪽 여백(패딩 느낌) 줄이기
-        checkBtn.setMargin(new Insets(0, 0, 0, 0));  // top, left, bottom, right
+        checkBtn.setMargin(new Insets(0, 0, 0, 0));
         checkBtn.setFocusPainted(false);
         checkBtn.setPreferredSize(new Dimension(80, 45));
         checkBtn.setMaximumSize(new Dimension(80, 45));
@@ -138,7 +124,6 @@ public class SignUpPanel extends Base {
 
         idRow.add(checkBtn);
 
-        // formPanel에 추가
         form.add(idRow);
         form.add(Box.createVerticalStrut(5));
 
@@ -180,8 +165,8 @@ public class SignUpPanel extends Base {
         signUpBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         signUpBtn.setBackground(UIConstants.PRIMARY);
         signUpBtn.putClientProperty("FlatLaf.style", "arc:10");
-
         signUpBtn.addActionListener(e -> doSignUp());
+
         form.add(signUpBtn);
         form.add(Box.createVerticalStrut(10));
 
@@ -227,7 +212,6 @@ public class SignUpPanel extends Base {
                     "회원가입 실패",
                     JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     private void doDuplicatedCheck() {
@@ -257,7 +241,6 @@ public class SignUpPanel extends Base {
     @Override
     public void addNotify() {
         super.addNotify();
-        requestFocusInWindow(); // 패널 자체에 포커스 요청 (패널은 포커스 불가 → 아무 곳에도 안 감)
+        requestFocusInWindow();
     }
-
 }

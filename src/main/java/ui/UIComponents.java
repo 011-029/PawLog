@@ -32,8 +32,6 @@ public final class UIComponents {
         FlatSVGIcon logoSVG = new FlatSVGIcon("icons/pawlog-logo.svg", 66, 24);
         JLabel logo = new JLabel(logoSVG, SwingConstants.CENTER);
         logo.setBorder(new EmptyBorder(4, 0, 0, 0));
-//        logo.setFont(UIConstants.FONT_BOLD_24);
-//        logo.setForeground(UIConstants.TEXT_PRIMARY);
 
         JButton bellBtn = new JButton();
         bellBtn.setIcon(new FlatSVGIcon("icons/bell.svg", 20, 20));
@@ -124,10 +122,8 @@ public final class UIComponents {
         btn.setFocusPainted(false);
         btn.setOpaque(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
         btn.setPreferredSize(new Dimension(32, 32));
         btn.setMargin(new Insets(0, 0, 0, 0));
-
         btn.addActionListener(e -> mainFrame.switchPanel(new SearchPanel(mainFrame, thisPanel)));
 
         return btn;
@@ -178,5 +174,4 @@ public final class UIComponents {
         panel.add(label);
         return panel;
     }
-
 }

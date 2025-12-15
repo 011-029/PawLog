@@ -42,9 +42,7 @@ public class MedicalHomePanel extends Base {
     }
 
 
-    /* ================================
-     *  가운데 전체 콘텐츠
-     * ================================ */
+    /*============ 가운데 영역 ===========*/
     private JComponent createContent() {
 
         JPanel listPanel = new JPanel();
@@ -52,7 +50,7 @@ public class MedicalHomePanel extends Base {
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(24, 10, 24, 10));
         listPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        listPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));  // ★ 수정
+        listPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         /* 제목 */
         JLabel title = new JLabel("의료 기록");
@@ -78,8 +76,6 @@ public class MedicalHomePanel extends Base {
         /* 메뉴 섹션 */
         JLabel menu = createSectionLabel("의료 기록 목록");
         menu.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        listPanel.add(menu);
-//        listPanel.add(Box.createVerticalStrut(12));
 
         JPanel btn1 = createMenuButton(
                 "진료 기록",
@@ -114,7 +110,7 @@ public class MedicalHomePanel extends Base {
         listPanel.add(menuGrid);
         listPanel.add(Box.createVerticalStrut(36));
 
-        /* 🔔 임박한 일정 */
+        /* 임박한 일정 */
         List<UpcomingCardData> upcoming = collectUpcoming();
 
         if (!upcoming.isEmpty()) {
@@ -129,7 +125,6 @@ public class MedicalHomePanel extends Base {
 
             listPanel.add(Box.createVerticalStrut(28));
         }
-
 
         /* 래퍼: BoxLayout 폭 제한 해결 */
         JPanel listWrapper = new JPanel(new BorderLayout());
@@ -157,7 +152,7 @@ public class MedicalHomePanel extends Base {
     }
 
 
-    /* 🔔 임박한 일정 카드 */
+    /* 임박한 일정 카드 */
     private JPanel createUpcomingCard(List<UpcomingCardData> list) {
         JPanel card = new JPanel();
         card.setOpaque(true);
@@ -262,7 +257,7 @@ public class MedicalHomePanel extends Base {
     }
 
 
-    /* 🔔 임박 일정 수집기 */
+    /* 임박 일정 수집기 */
     private List<UpcomingCardData> collectUpcoming() {
 
         list = new ArrayList<>();
@@ -302,4 +297,3 @@ public class MedicalHomePanel extends Base {
     private record UpcomingCardData(String title, long dDay, String ddayText,
                                     String hospital) { }
 }
-

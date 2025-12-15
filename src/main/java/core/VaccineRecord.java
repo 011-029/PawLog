@@ -9,7 +9,6 @@ import mgr.RecordSearchable;
 import util.DateUtil;
 import util.ReadUtil;
 
-// 예방접종 기록 클래스
 public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
@@ -22,7 +21,6 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
 
     public VaccineRecord() { }
 
-    // 3. 생성자 - 화면용 (VaccinePanel에서 임시 데이터 만들 때 사용)
     public VaccineRecord(String vaccineName, String date, String hospital) {
         this.vaccine = vaccineName;
         this.date = LocalDate.parse(date);
@@ -86,7 +84,6 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
         return DateUtil.matchesInPeriod(date, start, end);
     }
 
-    // --- [UIData 인터페이스 구현] ---
     @Override
     public void set(String[] uiTexts) {
         if (uiTexts == null) return;
@@ -102,12 +99,6 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
     public String[] getUITexts() {
         // 변수 내용을 UI(테이블 등)에 보여주기 위해 배열로 반환
         return new String[] { vaccine, String.valueOf(date), hospital };
-    }
-
-    // --- [Getter 메서드] (VaccinePanel에서 사용) ---
-    // 아까 빨간 줄 뜨던 부분을 해결해주는 핵심 함수들입니다.
-    public String getvaccine() {
-        return vaccine;
     }
 
     public LocalDate getDate() {

@@ -15,16 +15,16 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
 
-    LocalDate date; // 진료 날짜 (필수)
-    String hospital; // 병원명 (필수)
-    String category; //증상 (필수, 공백 불허용)
-    int cost; //가격 (입력 안하면 -1로 저장)
+    LocalDate date;     // 진료 날짜 (필수)
+    String hospital;    // 병원명 (필수)
+    String category;    // 증상 (필수, 공백 불허용)
+    int cost;           // 가격 (입력 안하면 -1로 저장)
 
-    String prescribedMedicine;//처방약 (입력 안하면 0으로 저장)
-    Integer dosage; //복용량 (입력 안하면 -1으로 저장)
-    String routineTime; //먹는 시간(입력 안하면 0으로 저장)
-    LocalDate startDate; //복용 시작일 (입력 안하면 0으로 저장)
-    LocalDate endDate; //복용 종료일 (입력 안하면 0으로 저장)
+    String prescribedMedicine;  // 처방약 (입력 안하면 0으로 저장)
+    Integer dosage;             // 복용량 (입력 안하면 -1으로 저장)
+    String routineTime;         // 먹는 시간(입력 안하면 0으로 저장)
+    LocalDate startDate;        // 복용 시작일 (입력 안하면 0으로 저장)
+    LocalDate endDate;          // 복용 종료일 (입력 안하면 0으로 저장)
 
     public void read(Scanner scan) {
         indexId = scan.nextInt();
