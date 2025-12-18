@@ -14,7 +14,6 @@ import java.util.List;
 public class PetTipsPanel extends Base {
     private final MainFrame mainFrame;
     private JPanel searchResultContainer;
-    private ArrayList<PetTip> petTips = petTipMgr.getAll();
     private ArrayList<UnsafePetFood> foods = unsafePetFoodMgr.getAll();
 
     public PetTipsPanel(MainFrame mainFrame) {
@@ -204,7 +203,7 @@ public class PetTipsPanel extends Base {
         scroll.getViewport().setOpaque(false);
         scroll.setOpaque(false);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(30);
 
         return scroll;
@@ -410,7 +409,7 @@ public class PetTipsPanel extends Base {
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         card.setPreferredSize(new Dimension(150, 190));
         card.setMaximumSize(new Dimension(200, 190));
-        card.setBackground(UIConstants.GRAY_ULTRA_LIGHT);
+        card.setBackground(new Color(250, 250, 250));
 
         card.setBorder(new FlatLineBorder(
                 new Insets(8, 8, 2, 8),
@@ -419,7 +418,7 @@ public class PetTipsPanel extends Base {
                 16
         ));
 
-        /* ───────────── ① 음식 이미지 로드 ───────────── */
+        /* ───────────── 음식 이미지 로드 ───────────── */
         String imagePath = f.getFoodImage();
         ImageIcon raw = null;
         JLabel imgLabel;
@@ -427,13 +426,15 @@ public class PetTipsPanel extends Base {
         // 1) imagePath null / 빈 문자열 방어
         if (imagePath == null || imagePath.isBlank()) {
             // 이미지 없는 경우용 플레이스홀더
-            imgLabel = new JLabel();
-            imgLabel.setOpaque(false);
+            imgLabel = new JLabel(new FlatSVGIcon("icons/default-image.svg",
+                    100, 100));
+            imgLabel.setOpaque(true);
             imgLabel.setAlignmentX(0.5f);
             imgLabel.setAlignmentY(0.5f);
-            imgLabel.setBackground(UIConstants.GRAY_LIGHT);
-            imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-                    UIConstants.GRAY_LIGHT));
+            imgLabel.setBackground(new Color(240, 240, 240));
+            imgLabel.setPreferredSize(new Dimension(140, 140));
+            imgLabel.setMinimumSize(new Dimension(140, 140));
+            imgLabel.setMaximumSize(new Dimension(140, 140));
         } else {
             String path = imagePath.startsWith("/") ? imagePath : "/" + imagePath;
 
@@ -449,8 +450,8 @@ public class PetTipsPanel extends Base {
                 imgLabel.setOpaque(false);
                 imgLabel.setAlignmentX(0.5f);
                 imgLabel.setAlignmentY(0.5f);
-                imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
-                        UIConstants.GRAY_LIGHT));
+//                imgLabel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0),
+//                        UIConstants.GRAY_LIGHT));
             } else {
                 // 리소스 못 찾았을 때도 안전하게 처리
                 imgLabel = new JLabel();
@@ -466,14 +467,14 @@ public class PetTipsPanel extends Base {
         JPanel overlay = new JPanel();
         overlay.setOpaque(false);
         overlay.setLayout(new OverlayLayout(overlay));
-        overlay.setPreferredSize(new Dimension(120, 120));
+        overlay.setPreferredSize(new Dimension(140, 140));
         overlay.setBorder(new EmptyBorder(4, 2, 0, 2));
 
         overlay.add(imgLabel);
 
         card.add(overlay, BorderLayout.CENTER);
 
-        /* ───────────── ③ 아래쪽 정보(이름 + 위험태그 + X아이콘) ───────────── */
+        /* ───────────── 이름 + 위험태그 ───────────── */
         JPanel bottom = new JPanel();
         bottom.setOpaque(false);
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
@@ -484,12 +485,25 @@ public class PetTipsPanel extends Base {
         nameLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
         /* 위험 태그 */
-        JLabel dangerTag = new JLabel("위험");
-        dangerTag.setFont(UIConstants.FONT_SEMIBOLD_12);
-        dangerTag.setForeground(UIConstants.TEXT_PRIMARY);
-        dangerTag.setBorder(new FlatLineBorder(
+        JLabel riskTag = new JLabel(f.getRiskLevel().getKoName());
+        Color tagColor;
+        if (f.getRiskLevel() == RiskLevel.HIGH) {
+            tagColor = new Color(150, 37, 37);
+            riskTag.setForeground(tagColor);
+            riskTag.setBackground(new Color(248, 231, 231));
+        } else if (f.getRiskLevel() == RiskLevel.MEDIUM) {
+            tagColor = new Color(147, 101, 47);
+            riskTag.setForeground(tagColor);
+            riskTag.setBackground(new Color(247, 239, 223));
+        } else {
+            tagColor = new Color(72, 99, 64);
+            riskTag.setForeground(tagColor);
+            riskTag.setBackground(new Color(230, 238, 229));
+        }
+        riskTag.setFont(UIConstants.FONT_SEMIBOLD_12);
+        riskTag.setBorder(new FlatLineBorder(
                 new Insets(4, 8, 4, 8),
-                UIConstants.TEXT_LIGHT,
+                tagColor,
                 0.5f,
                 12
         ));
@@ -498,9 +512,7 @@ public class PetTipsPanel extends Base {
 
         bottom.add(nameLabel);
         bottom.add(Box.createHorizontalGlue());
-        bottom.add(dangerTag);
-//        bottom.add(Box.createHorizontalStrut(8));
-//        bottom.add(xLabel);
+        bottom.add(riskTag);
 
         card.add(bottom, BorderLayout.SOUTH);
 
