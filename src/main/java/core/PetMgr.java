@@ -1,14 +1,14 @@
 package core;
 
-import facade.DataEngineImpl;
 import mgr.Factory;
+import mgr.Manager;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class PetMgr extends DataEngineImpl<Pet> {
+public class PetMgr extends Manager<Pet> {
     private static PetMgr mgr = null;
     private static final String FILE_PATH = "data/pets.txt";
 
@@ -28,15 +28,10 @@ public class PetMgr extends DataEngineImpl<Pet> {
         return null;
     }
 
-    @Override
-    public void addNewRow(String[] uiTexts) {
+    public void registerPet(String[] arr) {
+        // arr = { ownerId, name, species, gender, birthDate, weight, imagePath }
         Pet p = new Pet();
-        p.set(uiTexts);
-        mList.add(p);
-    }
-
-    public void registerPet(String[] uiTexts) {
-        addNewRow(uiTexts);
+        p.apply(arr);
         saveToFile(FILE_PATH);
     }
 
@@ -78,10 +73,11 @@ public class PetMgr extends DataEngineImpl<Pet> {
     public void saveToFile(String filename) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
             for (Pet p: mList) {
-                String[] arr = p.getUITexts();
+                String[] arr = p.toTextArray();
+                // arr = { ownerId, name, species, gender, birthDate, weight, imagePath, tags }
                 pw.printf("%s %s %s %s %s %s %s %s\n",
-                        arr[0], arr[1], arr[2],
-                        arr[3], arr[4], arr[5], arr[6], arr[7]);
+                        arr[0], arr[1], arr[2], arr[3],
+                        arr[4], arr[5], arr[6], arr[7]);
             }
         } catch (IOException e) {
             System.out.println("파일 저장 중 오류 발생");

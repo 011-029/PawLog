@@ -121,11 +121,12 @@ public class MedicineRecordPanel extends Base {
 
         public MedicineCard(MedicineRecord r, MainFrame mainFrame) {
 
-            String title = r.getUITexts()[1];
+            // { indexId, ownerId, petName, medicineName, takenDate, takenTime, dosage }
+            String title = r.toTextArray()[3];
             addTitle(title);
 
-            addLine("날짜: " + r.getUITexts()[2]);
-            addLine("복용량: " + r.getUITexts()[4] +"ml");
+            addLine("날짜: " + r.toTextArray()[4]);
+            addLine("복용량: " + r.toTextArray()[6] +"mg");
 
             // 클릭하면 상세 페이지
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

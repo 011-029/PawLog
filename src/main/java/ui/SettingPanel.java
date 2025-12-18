@@ -82,10 +82,9 @@ public class SettingPanel extends JPanel {
                 new FlatSVGIcon("icons/paw2.svg", 20, 20),
                 () -> {
                     // TODO: 펫 정보 수정 화면으로 전환
-                    // 예시) mainFrame.switchPanel(new PetEditPanel(mainFrame));
                     JOptionPane.showMessageDialog(
                             this,
-                            "펫 정보 수정 화면을 연결해 주세요 :)",
+                            "GUI 구현중 ㅎㅎ",
                             "펫 정보 수정",
                             JOptionPane.INFORMATION_MESSAGE
                     );
@@ -111,13 +110,9 @@ public class SettingPanel extends JPanel {
                             JOptionPane.ERROR_MESSAGE
                     );
                     if (result == JOptionPane.YES_OPTION) {
-                        // TODO: 실제 회원탈퇴 로직 + 로그아웃/시작 화면 이동
-                        // 예시)
-                        // UserMgr.getInstance().deleteCurrentUser();
-                        // mainFrame.logout();
                         JOptionPane.showMessageDialog(
                                 this,
-                                "회원탈퇴 로직을 구현해 주세요.",
+                                "안돼!!!!",
                                 "회원탈퇴",
                                 JOptionPane.INFORMATION_MESSAGE
                         );

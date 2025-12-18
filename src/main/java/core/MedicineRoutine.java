@@ -1,6 +1,5 @@
 package core;
 
-import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
 
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class MedicineRoutine implements Manageable, UIData, PetOwned {
+public class MedicineRoutine implements Manageable, PetOwned {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -201,15 +200,5 @@ public class MedicineRoutine implements Manageable, UIData, PetOwned {
     @Override
     public void setIndexId(int indexId) {
         this.indexId = indexId;
-    }
-
-    @Override
-    public void set(String[] uiTexts) {
-
-    }
-
-    @Override
-    public String[] getUITexts() {
-        return new String[0];
     }
 }

@@ -194,10 +194,8 @@ public class Core {
         LocalDate birth = ReadUtil.readDate(scan);
         System.out.print("체중을 입력하세요(kg): ");
         double weight = scan.nextDouble();
-        System.out.print("성격 태그를 입력하세요(쉼표로 구분, 없으면 엔터): ");
-        scan.nextLine(); // 버퍼 비우기
-        String tagLine = scan.nextLine().trim();
 
+        // arr = { ownerId, name, species, gender, birthDate, weight, imagePath }
         String[] petData = {
                 loggedInUser.getId(),
                 name,
@@ -205,8 +203,7 @@ public class Core {
                 gender + ((check) ? "(중성화)" : ""),
                 birth.toString(),
                 String.valueOf(weight),
-                "",
-                tagLine
+                ""
         };
         petMgr.registerPet(petData);
         System.out.println("펫 등록 완료!");

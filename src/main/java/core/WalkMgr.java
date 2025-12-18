@@ -32,20 +32,6 @@ public class WalkMgr extends PetRecordMgr<WalkRecord> {
         return result;
     }
 
-    public ArrayList<WalkRecord> findBy(Pet pet) {
-        ArrayList<WalkRecord> result = new ArrayList<>();
-        String ownerId = pet.getOwnerId();
-        String petName = pet.getName();
-
-        for (WalkRecord r : mList) {
-            if (r.getOwnerId().equals(ownerId) &&
-            r.getPetName().equals(petName)) {
-                result.add(r);
-            }
-        }
-        return result;
-    }
-
     public int getWalkCountInPeriod(Pet pet, LocalDate start, LocalDate end) {
         int count = 0;
         String ownerId = pet.getOwnerId();
@@ -66,11 +52,6 @@ public class WalkMgr extends PetRecordMgr<WalkRecord> {
         LocalDate today = LocalDate.now();
         LocalDate start = today.minusDays(6); // 오늘 포함 7일
         return getWalkCountInPeriod(pet, start, today);
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
-
     }
 
     public void loadFromFile() {

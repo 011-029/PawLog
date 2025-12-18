@@ -1,12 +1,12 @@
 package content;
 
-import facade.DataEngineImpl;
 import mgr.Factory;
+import mgr.Manager;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class PetTipMgr extends DataEngineImpl<PetTip> {
+public class PetTipMgr extends Manager<PetTip> {
     private static PetTipMgr mgr = null;
     private static final String FILE_PATH = "/static_data/pet_tips.txt";
 
@@ -40,10 +40,5 @@ public class PetTipMgr extends DataEngineImpl<PetTip> {
                 return new PetTip();
             }
         });
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
-
     }
 }

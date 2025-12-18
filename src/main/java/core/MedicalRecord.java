@@ -1,6 +1,5 @@
 package core;
 
-import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.RecordSearchable;
@@ -10,7 +9,7 @@ import util.ReadUtil;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearchable {
+public class MedicalRecord implements Manageable, PetOwned, RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -163,32 +162,7 @@ public class MedicalRecord implements Manageable, UIData, PetOwned, RecordSearch
         this.indexId = indexId;
     }
 
-    @Override
-    public void set(String[] uitexts) {
-        // uitexts = {date, hospital, category, cost}
-        date = LocalDate.parse(uitexts[0]);
-        hospital = uitexts[1];
-        category = uitexts[2];
-        if (uitexts.length > 3 && !uitexts[3].isBlank()) {
-            cost = Integer.parseInt(uitexts[3]);
-        } else {
-            cost = -1;
-        }
-        //TODO 처방약 용 set 나중에 추가 해야함
-    }
-
-    @Override
-    public String[] getUITexts() {
-        return new String[] {
-                date.toString(),
-                hospital,
-                category,
-                cost == -1 ? "" : String.valueOf(cost)
-                //TODO 처방약용 추가
-        };
-    }
-
-    //getter
+    // getter
     public LocalDate getDate(){ return date; }
     public String getHospital(){
         return hospital;

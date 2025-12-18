@@ -1,9 +1,9 @@
 package core;
 
-import facade.DataEngineImpl;
 import mgr.Factory;
+import mgr.Manager;
 
-public class UserMgr extends DataEngineImpl<User> {
+public class UserMgr extends Manager<User> {
     private static UserMgr mgr = null;
     private static final String FILE_PATH = "data/users.txt";
 
@@ -11,14 +11,6 @@ public class UserMgr extends DataEngineImpl<User> {
         if (mgr == null)
             mgr = new UserMgr();
         return mgr;
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
-        // uiTexts → {"id", "password", "name"}
-        User u = new User();
-        u.set(uiTexts);
-        mList.add(u);
     }
 
     public User findUserById(String id) {
@@ -40,8 +32,9 @@ public class UserMgr extends DataEngineImpl<User> {
     public boolean signUp(String id, String pw, String name) {
         if (isDuplicatedId(id)) return false;
         else {
-            String[] arr = {id, pw, name};
-            addNewRow(arr);
+            User u = new User();
+            u.apply(id, pw, name);
+            mList.add(u);
             saveToFile(FILE_PATH);
         }
         return true;

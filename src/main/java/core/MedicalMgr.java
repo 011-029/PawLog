@@ -40,13 +40,6 @@ public class MedicalMgr extends PetRecordMgr<MedicalRecord> {
         return result;
     }
 
-    @Override
-    public void addNewRow(String[] uiTexts) {
-        MedicalRecord r = new MedicalRecord();
-        r.set(uiTexts);
-        mList.add(r);
-    }
-
     public void loadFromFile() {
         readAll(FILE_PATH, new Factory<>() {
             @Override

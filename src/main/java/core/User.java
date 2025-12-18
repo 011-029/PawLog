@@ -1,11 +1,10 @@
 package core;
 
-import facade.UIData;
 import mgr.Manageable;
 
 import java.util.Scanner;
 
-public class User implements Manageable, UIData {
+public class User implements Manageable {
 
     private String id;
     private String password;
@@ -23,6 +22,12 @@ public class User implements Manageable, UIData {
         System.out.printf("[User] %s (%s)\n", name, id);
     }
 
+    public void apply(String id, String pw, String name) {
+        this.id = id;
+        this.password = pw;
+        this.name = name;
+    }
+
     @Override
     public String[] toTextArray() {
         return new String[] {
@@ -33,19 +38,6 @@ public class User implements Manageable, UIData {
     @Override
     public boolean matches(String kwd) {
         return id.contains(kwd) || name.contains(kwd);
-    }
-
-    @Override
-    public void set(String[] uitexts) {
-        // uitexts = {id, password, name}
-        id = uitexts[0];
-        password = uitexts[1];
-        name = uitexts[2];
-    }
-
-    @Override
-    public String[] getUITexts() {
-        return new String[]{id, password, name};
     }
 
     public boolean setName(String name) {

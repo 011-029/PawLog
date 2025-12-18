@@ -6,14 +6,9 @@ import java.util.ArrayList;
 import mgr.Factory;
 import mgr.PetRecordMgr;
 
-// 예방접종 기록 관리 클래스
 public class VaccineMgr extends PetRecordMgr<VaccineRecord> {
     private static VaccineMgr mgr = null;
     private static final String FILE_PATH = "data/vaccine_records.txt";
-
-    private VaccineMgr() {
-        super();
-    }
 
     public static VaccineMgr getInstance() {
         if (mgr == null) {
@@ -43,14 +38,6 @@ public class VaccineMgr extends PetRecordMgr<VaccineRecord> {
             System.out.printf("[%d] ", i);
             mList.get(i).print();
         }
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
-        VaccineRecord rec = new VaccineRecord();
-        rec.set(uiTexts);
-
-        mList.add(rec);
     }
 
     public void loadFromFile() {

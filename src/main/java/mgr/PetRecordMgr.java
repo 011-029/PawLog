@@ -1,12 +1,11 @@
 package mgr;
 
 import core.User;
-import facade.DataEngineImpl;
 
 import java.util.ArrayList;
 
 public abstract class PetRecordMgr<T extends PetOwned & Manageable>
-        extends DataEngineImpl<T> {
+        extends Manager<T> {
 
     protected int nextIndexId = -1;
 

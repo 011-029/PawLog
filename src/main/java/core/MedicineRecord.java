@@ -1,6 +1,5 @@
 package core;
 
-import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.RecordSearchable;
@@ -10,7 +9,7 @@ import util.ReadUtil;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class MedicineRecord implements Manageable, UIData, PetOwned, RecordSearchable {
+public class MedicineRecord implements Manageable, PetOwned, RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -48,6 +47,7 @@ public class MedicineRecord implements Manageable, UIData, PetOwned, RecordSearc
 
     @Override
     public String[] toTextArray() {
+        // { indexId, ownerId, petName, medicineName, takenDate, takenTime, dosage }
         return new String[] {
                 String.valueOf(indexId),
                 ownerId,
@@ -93,22 +93,6 @@ public class MedicineRecord implements Manageable, UIData, PetOwned, RecordSearc
     @Override
     public void setIndexId(int indexId) {
         this.indexId = indexId;
-    }
-
-    @Override
-    public void set(String[] uiTexts) {
-
-    }
-
-    @Override
-    public String[] getUITexts() {
-        return new String[]{
-                String.valueOf(indexId),//0
-                String.valueOf(medicineName),//1
-                takenDate.toString(),//2
-                String.valueOf(takenTime),//3
-                (""+dosage)//4
-        };
     }
 
     public String getMedicineName() {
