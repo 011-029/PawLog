@@ -13,6 +13,11 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("Paw Log");
+        setIconImages(java.util.List.of(
+                new com.formdev.flatlaf.extras.FlatSVGIcon("icons/paw.svg", 16, 16).getImage(),
+                new com.formdev.flatlaf.extras.FlatSVGIcon("icons/paw.svg", 32, 32).getImage(),
+                new com.formdev.flatlaf.extras.FlatSVGIcon("icons/paw.svg", 64, 64).getImage()
+        ));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(420, 830);
         setMinimumSize(new Dimension(400, 700));
