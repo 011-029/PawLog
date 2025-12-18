@@ -1,10 +1,12 @@
 package ui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import uiutil.PlaceholderPasswordField;
 import uiutil.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 
 public class SignUpPanel extends Base {
@@ -22,6 +24,14 @@ public class SignUpPanel extends Base {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setOpaque(false);
+        topBar.setBorder(new EmptyBorder(20, 20, 0, 0));
+
+        topBar.add(createBackBtn(), BorderLayout.WEST);
+
+        add(topBar, BorderLayout.NORTH);
+
         JPanel centerWrapper = new JPanel();
         centerWrapper.setOpaque(false);
         centerWrapper.setLayout(new BoxLayout(centerWrapper, BoxLayout.X_AXIS));
@@ -33,7 +43,7 @@ public class SignUpPanel extends Base {
         contentColumn.setMaximumSize(new Dimension(480, Integer.MAX_VALUE)); // 전체 폭 제한
         contentColumn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        contentColumn.add(Box.createVerticalStrut(110));
+        contentColumn.add(Box.createVerticalStrut(60));
 
         // 환영 문구
         contentColumn.add(createWelcomeText());
@@ -50,6 +60,19 @@ public class SignUpPanel extends Base {
         centerWrapper.add(Box.createHorizontalGlue());
 
         add(centerWrapper, BorderLayout.CENTER);
+    }
+
+    private JComponent createBackBtn() {
+        JButton backBtn = new JButton();
+        backBtn.setIcon(new FlatSVGIcon("icons/arrow-prev.svg", 20, 20));
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setContentAreaFilled(false);
+        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        backBtn.addActionListener(e -> mainFrame.switchPanel(new LoginPanel(mainFrame)));
+
+        return backBtn;
     }
 
     private JComponent createWelcomeText() {
@@ -164,6 +187,8 @@ public class SignUpPanel extends Base {
         signUpBtn.setMaximumSize(new Dimension(360, 48));
         signUpBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         signUpBtn.setBackground(UIConstants.PRIMARY);
+        signUpBtn.setForeground(Color.WHITE);
+        signUpBtn.setFont(UIConstants.FONT_SEMIBOLD_14);
         signUpBtn.putClientProperty("FlatLaf.style", "arc:10");
         signUpBtn.addActionListener(e -> doSignUp());
 
