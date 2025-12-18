@@ -8,10 +8,14 @@ import core.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class HomePanel extends Base {
 
@@ -84,10 +88,11 @@ public class HomePanel extends Base {
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("오늘 복용 루틴",
-                        new String[]{
-                                "오늘 먹어야 할",
-                                "약 체크하기"
-                        },
+//                        new String[]{
+//                                "오늘 먹어야 할",
+//                                "약 체크하기"
+//                        },
+                        createTodayMedicineChecklist(),
                         () -> mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
                 ),
                 gbc
@@ -266,7 +271,7 @@ public class HomePanel extends Base {
                 UIConstants.GRAY_SOFT, 0.5f, 20));
 
         JLabel icon = new JLabel("⚠");
-        JLabel text = new JLabel("4일 후 병원 진료가 예정되어 있습니다.");
+        JLabel text = new JLabel("7일 후 병원 진료가 예정되어 있습니다.");
         JButton btn = new JButton("진료 예약정보");
         btn.setOpaque(false);
         btn.setFocusPainted(false);
@@ -274,8 +279,6 @@ public class HomePanel extends Base {
         btn.putClientProperty(FlatClientProperties.STYLE,
                 "arc:10; background:#FFFFFF; borderColor:#C8C8C8; borderWidth:1;" +
                 "minimumWidth:0; margin:2,2,2,2");
-//        btn.setBorder(new FlatLineBorder(new Insets(5, 5, 5, 5),
-//                UIConstants.GRAY_SOFT, 0.5f, 10));
         btn.addActionListener(e -> JOptionPane.showMessageDialog(
                 this, "구현중"));
 
@@ -296,7 +299,6 @@ public class HomePanel extends Base {
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 손모양
         card.setBackground(new Color(253, 253, 253));
 
-        // ⭐ 카드 클릭 시 실행할 동작
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -326,6 +328,106 @@ public class HomePanel extends Base {
         card.setMinimumSize(new Dimension(100, 150));
 
         return card;
+    }
+
+    private JComponent createSmallCard(String title, JComponent content, Runnable onClick) {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBorder(new FlatLineBorder(new Insets(15, 15, 15, 15),
+                UIConstants.GRAY_SOFT, 0.5f, 20));
+        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        card.setBackground(new Color(253, 253, 253));
+
+        card.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                if (onClick != null) onClick.run();
+            }
+        });
+
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(UIConstants.FONT_SEMIBOLD_16);
+        titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
+
+        card.add(titleLabel);
+        card.add(Box.createVerticalStrut(8));
+
+        content.setAlignmentX(Component.LEFT_ALIGNMENT);
+        card.add(content);
+
+        card.setPreferredSize(new Dimension(160, 150));
+        card.setMaximumSize(new Dimension(160, 150));
+        card.setMinimumSize(new Dimension(100, 150));
+        return card;
+    }
+
+    private JComponent createTodayMedicineChecklist() {
+        JPanel list = new JPanel();
+        list.setOpaque(false);
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+        list.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        String todayDOW = LocalDate.now()
+                .getDayOfWeek()
+                .getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+
+        boolean hasItem = false;
+
+        int count = 0;
+
+        for (MedicineRoutine r : medicineRoutineMgr.getAllByOwner(user)) {
+            if (!r.getTakenDOW().contains(todayDOW)) continue;
+
+            hasItem = true;
+
+            JCheckBox cb = createReadonlyCheckBox(
+                    r.getMedicineName(), r.getIsTaken());
+            cb.setOpaque(false);
+            cb.setFont(UIConstants.FONT_REGULAR_14);
+            cb.setForeground(UIConstants.TEXT_SECONDARY);
+
+            count++;
+            // 3개까지만 노출
+            if (count > 3) {
+                JLabel more = new JLabel("more...");
+                more.setFont(UIConstants.FONT_SEMIBOLD_12);
+                more.setForeground(UIConstants.TEXT_LIGHT);
+                more.setBorder(new EmptyBorder(0, 6, 0, 0));
+                list.add(more);
+                break;
+            }
+
+            list.add(cb);
+            list.add(Box.createVerticalStrut(2));
+        }
+
+        // 오늘 먹을 약이 없을 때
+        if (!hasItem) {
+            JLabel empty = new JLabel("오늘 복용할 약이 없어요");
+            empty.setFont(UIConstants.FONT_REGULAR_14);
+            empty.setForeground(UIConstants.TEXT_LIGHT);
+            list.add(empty);
+        }
+
+        return list;
+    }
+
+    private JCheckBox createReadonlyCheckBox(String text, boolean checked) {
+        return new JCheckBox(text, checked) {
+            @Override
+            protected void processMouseEvent(MouseEvent e) {
+                e.consume(); // 마우스 입력 무시
+            }
+
+            @Override
+            protected void processKeyEvent(KeyEvent e) {
+                e.consume(); // 키보드(스페이스 등) 무시
+            }
+
+            @Override
+            public void doClick(int pressTime) {
+                // 프로그램이 doClick 호출해도 토글 안 되게
+            }
+        };
     }
 
     /* ================== 타임라인 (전체 폭) ================== */
@@ -468,9 +570,9 @@ public class HomePanel extends Base {
             list.add(new TimelineItem(
                     r.getRecordDate(),
                     "놀이",
-                    r.getPlayTime() + "분",
-                    ((r.getPlayType() != null) ? r.getPlayType() : "")
-                            + ((r.getMemo() != null) ? ", " + r.getMemo() : "")
+                    r.getPlayTime() + "분"
+                    + ((r.getPlayType() != null) ? " (" + r.getPlayType() + ")" : ""),
+                    r.getMemo()
             ));
         }
 
@@ -533,7 +635,7 @@ public class HomePanel extends Base {
             case "백신" -> {
                 iconPath = "icons/syringe.svg";
                 iconColor = new Color(112, 96, 116);
-                iconBoxColor = new Color(238, 237, 242);
+                iconBoxColor = new Color(246, 243, 247);
             }
             case "산책" -> {
                 iconPath = "icons/walking-dog.svg";
