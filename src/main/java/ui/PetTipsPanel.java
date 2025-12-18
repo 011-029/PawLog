@@ -7,6 +7,8 @@ import content.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
@@ -520,6 +522,20 @@ public class PetTipsPanel extends Base {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 showFoodPopup(f);
+            }
+        });
+        card.addMouseListener(new MouseAdapter() {
+            final Color normalBg = new Color(250, 250, 250);
+            final Color hoverBg = new Color(241, 241, 241);
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(hoverBg);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(normalBg);
             }
         });
 

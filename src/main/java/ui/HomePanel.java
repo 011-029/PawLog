@@ -344,6 +344,7 @@ public class HomePanel extends Base {
         title.setFont(UIConstants.FONT_SEMIBOLD_16);
         title.setForeground(UIConstants.TEXT_PRIMARY);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setBorder(new EmptyBorder(0, 0, 4, 0));
 
         box.add(title);
         box.add(Box.createVerticalStrut(10));
