@@ -352,9 +352,11 @@ public class HomePanel extends Base {
         java.util.List<TimelineItem> timeline = collectTimelineData();
 
         if (timeline.isEmpty()) {
-            JLabel empty = new JLabel("최근 30일 동안 활동이 없습니다.");
+            JLabel empty = new JLabel("최근 90일 동안 활동이 없습니다.");
+            empty.setBorder(new EmptyBorder(50, 0, 50, 0));
             empty.setFont(UIConstants.FONT_REGULAR_14);
             empty.setForeground(UIConstants.TEXT_SECONDARY);
+            empty.setAlignmentX(CENTER_ALIGNMENT);
             box.add(empty);
             return box;
         }
@@ -453,7 +455,7 @@ public class HomePanel extends Base {
             list.add(new TimelineItem(
                     r.getRecordDate(),
                     "건강",
-                    "몸무게: " + r.getWeight() + "kg",
+                    "체중 " + r.getWeight() + "kg",
                     r.getMemo()
             ));
         }
@@ -568,10 +570,6 @@ public class HomePanel extends Base {
 
         card.add(iconBox, BorderLayout.WEST);
         card.add(textArea, BorderLayout.CENTER);
-
-//        card.add(title, BorderLayout.NORTH);
-//        card.add(detail, BorderLayout.CENTER);
-//        card.add(date, BorderLayout.SOUTH);
 
         return card;
     }
