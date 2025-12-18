@@ -2,19 +2,16 @@ package ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import content.AllowanceLevel;
-import content.PetTip;
-import content.RiskLevel;
-import content.UnsafePetFood;
+import content.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.List;
 
 public class PetTipsPanel extends Base {
-
     private final MainFrame mainFrame;
     private JPanel searchResultContainer;
     private ArrayList<PetTip> petTips = petTipMgr.getAll();
@@ -94,19 +91,49 @@ public class PetTipsPanel extends Base {
         cardRow.setLayout(new BoxLayout(cardRow, BoxLayout.X_AXIS));
         cardRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        String title1 = "고양이는 왜 높은 곳을 좋아할까?";
-        String title2 = "강아지가 배를 보이며 눕는 이유";
-
-        JPanel card1 = createArticleCard(
+        String[] titles = {
+                "반려견은\n왜 산책이\n필요할까?",
+                "고양이도\n산책이\n필요할까?",
+                "반려견에게\n장난감이\n필요한 이유",
+                "사료를\n갑자기 바꾸면\n안 되는 이유",
                 "고양이는 왜\n높은 곳을\n좋아할까?",
-                new FlatSVGIcon("icons/cat.svg", 28, 28),
-                title1
+                "강아지가\n밥을 너무\n빨리 먹을 때",
+                "고양이가\n물을 잘\n안 마시는\n이유",
+                "고양이가\n밤에 활발해지는\n이유",
+                "강아지가\n배를 보이며\n눕는 이유",
+                "고양이가\n물 그릇을\n자꾸 엎는 이유",
+                "고양이가\n‘야간 질주’를\n하는 이유",
+                "강아지가\n흙을 파는\n이유",
+                "고양이가\n모래를 많이\n흩뿌리는 이유",
+                "고양이가\n물그릇을\n멀리 두면 잘\n마시는 이유",
+                "강아지가\n자꾸 하품하는\n이유",
+                "고양이가\n갑자기 우다다\n뛰는 이유",
+                "강아지가\n다른 강아지의\n뒤를 킁킁거리는\n이유",
+                "강아지가\n신발끈이나\n옷감을 물어뜯는\n이유",
+                "고양이가\n창밖을\n오래 보는\n이유",
+                "고양이가\n모래 대신\n바닥에 배변하는\n이유",
+                "고양이가\n침대를 좋아하는\n이유",
+                "고양이가\n사람을 빤히\n바라보는 이유",
+                "고양이가\n배를 보이지만\n만지면 싫어하는\n이유",
+                "고양이가\n물을 손으로\n휘젓는 이유",
+                "반려견은\n하루 이틀 정도\n혼자 있어도\n될까?"
+        };
+
+        List<String> picked = pickTwoDistinct(titles);
+        PetTip pickedTip1 = petTipMgr.findByTitle(picked.get(0));
+        PetTip pickedTip2 = petTipMgr.findByTitle(picked.get(1));
+
+        List<Color[]> cardColor = pickTwoDistinct(GRADIENT_SETS);
+        JPanel card1 = createArticleCard(
+                picked.get(0),
+                pickedTip1,
+                cardColor.get(0)
         );
 
         JPanel card2 = createArticleCard(
-                "강아지가\n배를 보이며\n눕는 이유",
-                new FlatSVGIcon("icons/dog.svg", 22, 22),
-                title2
+                picked.get(1),
+                pickedTip2,
+                cardColor.get(1)
         );
 
         cardRow.add(card1);
@@ -121,7 +148,7 @@ public class PetTipsPanel extends Base {
         searchLabel.setFont(UIConstants.FONT_SEMIBOLD_18);
         searchLabel.setForeground(UIConstants.TEXT_PRIMARY);
 
-        JLabel searchLabel2 = new JLabel("위험한 음식을 검색해 보세요");
+        JLabel searchLabel2 = new JLabel("궁금한 음식을 검색해 보세요");
         searchLabel2.setFont(UIConstants.FONT_SEMIBOLD_18);
         searchLabel2.setForeground(UIConstants.TEXT_PRIMARY);
 
@@ -184,14 +211,24 @@ public class PetTipsPanel extends Base {
     }
 
     /* 짤막 상식 카드 UI */
-    private JPanel createArticleCard(String text, Icon icon, String title) {
+    private JPanel createArticleCard(String text, PetTip tip, Color[] cardColor) {
         Color borderColor = UIConstants.GRAY_LIGHT;
 
-        Color[] g = pickRandomGradient();
+        Icon icon;
+        FlatSVGIcon dog = new FlatSVGIcon("icons/dog.svg", 22, 22);
+        FlatSVGIcon cat = new FlatSVGIcon("icons/cat.svg", 28, 28);
+        FlatSVGIcon both = new FlatSVGIcon("icons/heart.svg", 22, 22);
+
+        if (tip.getPetType().size() >= 2)
+            icon = both;
+        else if (tip.getPetType().contains(PetType.CAT))
+            icon = cat;
+        else
+            icon = dog;
 
         JPanel card = new DiagonalGradientPanel(
-                g[0],
-                g[1]
+                cardColor[0],
+                cardColor[1]
         );
 
         card.setLayout(new BorderLayout());
@@ -208,7 +245,7 @@ public class PetTipsPanel extends Base {
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                mainFrame.switchPanel(new PetTipsDetailPanel(mainFrame, title));
+                mainFrame.switchPanel(new PetTipsDetailPanel(mainFrame, tip));
             }
         });
 
@@ -285,11 +322,8 @@ public class PetTipsPanel extends Base {
         }
     }
 
-    private static final Random RND = new Random();
-
     private static final Color[][] GRADIENT_SETS = {
             { UIConstants.PRIMARY, new Color(206, 238, 203, 255) },
-            { new Color(206, 238, 203, 255), UIConstants.PRIMARY },
             { UIConstants.PRIMARY, UIConstants.ACCENT_PINK },
             { new Color(0x95e0e1), new Color(0xffeac2) },
             { new Color(0xEFB499), new Color(0x95e0e1) },
@@ -300,10 +334,6 @@ public class PetTipsPanel extends Base {
             { new Color(0xc5e2ba), new Color(0xECC5EA) },
             { new Color(0xEBB5C7), new Color(0xFFEEDB) }
     };
-
-    private static Color[] pickRandomGradient() {
-        return GRADIENT_SETS[RND.nextInt(GRADIENT_SETS.length)];
-    }
 
     /* 검색 박스 (네모 + 오른쪽 검색 아이콘) */
     private JComponent createSearchBox() {
@@ -587,5 +617,17 @@ public class PetTipsPanel extends Base {
         dialog.setSize(300, 250);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
+    }
+
+    private static <T> List<T> pickTwoDistinct(T[] arr) {
+        Random rand = new Random();
+
+        int i = rand.nextInt(arr.length);
+        int j;
+        do {
+            j = rand.nextInt(arr.length);
+        } while (j == i);
+
+        return List.of(arr[i], arr[j]);
     }
 }

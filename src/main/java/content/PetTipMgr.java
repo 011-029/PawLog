@@ -31,6 +31,20 @@ public class PetTipMgr extends Manager<PetTip> {
         fileIn.close();
     }
 
+    public PetTip findByTitle(String title) {
+        for (PetTip t : mList) {
+            if (t == null || t.getTitle() == null) continue;
+            if (normalize(title).equals(normalize(t.getTitle()))) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    private String normalize(String s) {
+        return s.replaceAll("[\\s\\\\n]+", "");
+    }
+
     public void loadFromFile() {
         InputStream is = getClass().getResourceAsStream(FILE_PATH);
         if (is == null)

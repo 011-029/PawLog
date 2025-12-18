@@ -1,6 +1,7 @@
 package ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import content.Category;
 import content.PetTip;
 import content.PetType;
 
@@ -13,11 +14,11 @@ import java.util.Random;
 public class PetTipsDetailPanel extends Base {
 
     private final MainFrame mainFrame;
-    private ArrayList<PetTip> petTips = petTipMgr.getAll();
     private PetTip tip;
-    private PetType petType;
+    private ArrayList<PetType> petType;
+    private Category category;
 
-    private static final String[] HERO_IMAGE_PATHS = {
+    private static final String[] CAT_IMAGE_PATHS = {
             "/images/pet_tips/cat-1.jpg",
             "/images/pet_tips/cat-2.jpg",
             "/images/pet_tips/cat-3.jpg",
@@ -28,20 +29,30 @@ public class PetTipsDetailPanel extends Base {
             "/images/pet_tips/cat-8.jpg"
     };
 
+    private static final String[] DOG_IMAGE_PATHS = {
+            "/images/pet_tips/dog-1.jpg",
+            "/images/pet_tips/dog-2.jpg",
+            "/images/pet_tips/dog-3.jpg",
+            "/images/pet_tips/dog-4.jpg",
+            "/images/pet_tips/dog-5.jpg",
+            "/images/pet_tips/dog-6.jpg",
+            "/images/pet_tips/dog-7.jpg",
+            "/images/pet_tips/dog-8.jpg"
+    };
+
+    private static final String[] BOTH_IMAGE_PATHS = {
+            "/images/pet_tips/both-1.jpg",
+            "/images/pet_tips/both-2.jpg"
+    };
+
     private static final Random RND = new Random();
 
-    public PetTipsDetailPanel(MainFrame mainFrame, String title) {
+    public PetTipsDetailPanel(MainFrame mainFrame, PetTip tip) {
         super(mainFrame);
         this.mainFrame = mainFrame;
-        String inputTitle = title.replace(" ", "")
-                .replace("\\n", "");
-        for (PetTip t : petTips) {
-            String thisTitle = t.getTitle().replace(" ", "")
-                    .replace("\\n", "");
-            if (inputTitle.equals(thisTitle)) {
-                        tip = t;
-            }
-        }
+        this.tip = tip;
+        this.petType = tip.getPetType();
+        this.category = tip.getCategory();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -70,12 +81,19 @@ public class PetTipsDetailPanel extends Base {
         container.setBorder(new EmptyBorder(24, 10, 24, 10));
 
         // ── 사진 영역 ─────────────────────────────
-        String heroImagePath = HERO_IMAGE_PATHS[RND.nextInt(HERO_IMAGE_PATHS.length)];
+        String heroImagePath;
+        if (petType.size() >= 2)
+            heroImagePath = BOTH_IMAGE_PATHS[RND.nextInt(BOTH_IMAGE_PATHS.length)];
+        else if (petType.contains(PetType.DOG))
+            heroImagePath = DOG_IMAGE_PATHS[RND.nextInt(DOG_IMAGE_PATHS.length)];
+        else
+            heroImagePath = CAT_IMAGE_PATHS[RND.nextInt(CAT_IMAGE_PATHS.length)];
+
         Image heroImage = loadHeroImage(heroImagePath);
 
         HeroPanel heroPanel = new HeroPanel(
                 heroImage,
-                tip.getCategory().getKoName(),
+                category.getKoName(),
                 tip.getTitle()
         );
         heroPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -148,7 +166,7 @@ public class PetTipsDetailPanel extends Base {
             setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
             setLayout(new BorderLayout());
 
-            // ── 아래쪽 텍스트 영역 ──
+            // 제목
             JPanel textArea = new JPanel();
             textArea.setOpaque(false);
             textArea.setLayout(new BoxLayout(textArea, BoxLayout.Y_AXIS));
@@ -172,7 +190,6 @@ public class PetTipsDetailPanel extends Base {
             textArea.add(titleLabel);
 
             add(textArea, BorderLayout.SOUTH);
-
 
             // 오른쪽 상단 원형 아이콘
             JPanel circle = new JPanel(new BorderLayout());
