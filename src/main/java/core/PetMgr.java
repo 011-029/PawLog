@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 public class PetMgr extends Manager<Pet> {
     private static PetMgr mgr = null;
@@ -28,11 +29,17 @@ public class PetMgr extends Manager<Pet> {
         return null;
     }
 
-    public void registerPet(String[] arr) {
+    public boolean registerPet(String[] arr) {
         // arr = { ownerId, name, species, gender, birthDate, weight, imagePath }
         Pet p = new Pet();
-        p.apply(arr);
-        saveToFile(FILE_PATH);
+        try {
+            p.apply(arr);
+            mList.add(p);
+            saveToFile(FILE_PATH);
+            return true;
+        } catch (InputMismatchException e) {
+            return false;
+        }
     }
 
     public void updateProfileImage(String ownerId, String petName, String imagePath) {

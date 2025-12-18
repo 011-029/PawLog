@@ -77,7 +77,7 @@ public class Pet implements Manageable {
         this.gender = arr[3];
         this.birthDate = LocalDate.parse(arr[4]);
         this.weight = Double.parseDouble(arr[5]);
-        this.imagePath = (imagePath.equals("0") ? "null" : arr[6]);
+        this.imagePath = arr[6];
     }
 
     @Override

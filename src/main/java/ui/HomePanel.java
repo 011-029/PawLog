@@ -10,6 +10,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.time.LocalDate;
 
 public class HomePanel extends Base {
@@ -272,7 +273,7 @@ public class HomePanel extends Base {
         btn.setBorderPainted(false);
         btn.putClientProperty(FlatClientProperties.STYLE,
                 "arc:10; background:#FFFFFF; borderColor:#C8C8C8; borderWidth:1;" +
-                "minimumWidth:0; margin:3,6,3,6");
+                "minimumWidth:0; margin:2,2,2,2");
 //        btn.setBorder(new FlatLineBorder(new Insets(5, 5, 5, 5),
 //                UIConstants.GRAY_SOFT, 0.5f, 10));
         btn.addActionListener(e -> JOptionPane.showMessageDialog(
@@ -424,7 +425,7 @@ public class HomePanel extends Base {
                     r.getTakenDate(),
                     "복용",
                     r.getMedicineName(),
-                    r.getTakenTime() + " | " + r.getDosage() + "mg"
+                    r.getTakenTime() + " " + r.getDosage() + "mg"
             ));
         }
 
@@ -582,16 +583,25 @@ public class HomePanel extends Base {
         Image tmpImage = null;
         FlatSVGIcon tmpSvg = null;
 
-        java.net.URL url = null;
-        try {
-            if (imagePath != null && !imagePath.isBlank()) {
-                url = getClass().getResource(imagePath);
-            }
-            if (url != null) {
-                tmpImage = new ImageIcon(url).getImage();
-            }
-        } catch (Exception ignored) {}
+        // 1. classpath 리소스에서 시도
+        if (imagePath != null && !imagePath.isBlank()) {
+            try {
+                java.net.URL url = getClass().getResource(imagePath);
+                if (url != null) {
+                    tmpImage = new ImageIcon(url).getImage();
+                }
+            } catch (Exception ignored) {}
+        }
 
+        // 2. 실패하면 파일 경로로 시도
+        if (tmpImage == null && imagePath != null && !imagePath.isBlank()) {
+            File file = new File("src/main/resources/" + imagePath);
+            if (file.exists()) {
+                tmpImage = new ImageIcon(file.getAbsolutePath()).getImage();
+            }
+        }
+
+        // 3. 둘 다 실패하면 기본 이미지
         if (tmpImage == null) {
             tmpSvg = new FlatSVGIcon("icons/default-profile.svg", 78, 78);
         }
