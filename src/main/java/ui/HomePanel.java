@@ -462,6 +462,18 @@ public class HomePanel extends Base {
             ));
         }
 
+        /* ----------- 건강 기록 ----------- */
+        for (PlayRecord r : playMgr.getAllByOwner(user)) {
+            if (r.getRecordDate().isBefore(minDate)) continue;
+            list.add(new TimelineItem(
+                    r.getRecordDate(),
+                    "놀이",
+                    r.getPlayTime() + "분",
+                    ((r.getPlayType() != null) ? r.getPlayType() : "")
+                            + ((r.getMemo() != null) ? ", " + r.getMemo() : "")
+            ));
+        }
+
         // 날짜 최신순 정렬
         list.sort((a, b) -> b.date.compareTo(a.date));
 
@@ -525,13 +537,18 @@ public class HomePanel extends Base {
             }
             case "산책" -> {
                 iconPath = "icons/walking-dog.svg";
-                iconColor = new Color(94, 119, 106);
-                iconBoxColor = new Color(237, 242, 240);
+                iconColor = new Color(94, 119, 111);
+                iconBoxColor = new Color(243, 247, 244);
             }
             case "건강" -> {
                 iconPath = "icons/heart.svg";
                 iconColor = new Color(112, 89, 89);
                 iconBoxColor = new Color(245, 241, 241);
+            }
+            case "놀이" -> {
+                iconPath = "icons/toy.svg";
+                iconColor = new Color(126, 119, 105);
+                iconBoxColor = new Color(245, 244, 241);
             }
             default -> {
                 iconPath = "icons/paw2.svg";
