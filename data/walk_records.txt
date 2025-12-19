@@ -8,3 +8,4 @@
 8 test01 후추 2025-01-19 30 1.5 /images/walk/walk8.jpg 우끼끼끼
 9 test01 후추 2025-01-22 45 2.3 /images/walk/walk9.jpg 독꺠꺠꺠꺠꺠
 10 test01 후추 2025-01-25 55 3.0 /images/walk/walk10.jpg 드르렁
+11 test01 후추 2025-12-18 30 1.4 0 0

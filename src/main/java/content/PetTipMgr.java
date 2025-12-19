@@ -1,12 +1,12 @@
 package content;
 
-import facade.DataEngineImpl;
 import mgr.Factory;
+import mgr.Manager;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class PetTipMgr extends DataEngineImpl<PetTip> {
+public class PetTipMgr extends Manager<PetTip> {
     private static PetTipMgr mgr = null;
     private static final String FILE_PATH = "/static_data/pet_tips.txt";
 
@@ -31,6 +31,20 @@ public class PetTipMgr extends DataEngineImpl<PetTip> {
         fileIn.close();
     }
 
+    public PetTip findByTitle(String title) {
+        for (PetTip t : mList) {
+            if (t == null || t.getTitle() == null) continue;
+            if (normalize(title).equals(normalize(t.getTitle()))) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    private String normalize(String s) {
+        return s.replaceAll("[\\s\\\\n]+", "");
+    }
+
     public void loadFromFile() {
         InputStream is = getClass().getResourceAsStream(FILE_PATH);
         if (is == null)
@@ -40,10 +54,5 @@ public class PetTipMgr extends DataEngineImpl<PetTip> {
                 return new PetTip();
             }
         });
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
-
     }
 }

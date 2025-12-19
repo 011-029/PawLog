@@ -1,13 +1,12 @@
 package content;
 
-import facade.UIData;
 import mgr.Manageable;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class UnsafePetFood implements Manageable, UIData {
+public class UnsafePetFood implements Manageable {
     String foodName;
     ArrayList<PetType> petType = new ArrayList<>();
     AllowanceLevel allowanceLevel;
@@ -70,16 +69,6 @@ public class UnsafePetFood implements Manageable, UIData {
     public String[] toTextArray() {
         return new String[] {
         };
-    }
-
-    @Override
-    public void set(String[] uitexts) {
-
-    }
-
-    @Override
-    public String[] getUITexts() {
-        return new String[0];
     }
 
     // getter

@@ -174,13 +174,15 @@ public class VaccineRecordPanel extends Base {
     protected static class VaccineCard extends BaseCard {
 
         public VaccineCard(VaccineRecord r, MainFrame mainFrame) {
-            String title = r.getUITexts()[0];
+
+            // { indexId, ownerId, petName, date, vaccine, hospital, memo }
+            String title = r.toTextArray()[4];
             String dday = r.getDDayText();
 
             addTitle(title);
 
-            addLine("날짜: " + r.getUITexts()[1]);
-            addLine("병원: " + r.getUITexts()[2]);
+            addLine("날짜: " + r.toTextArray()[5]);
+            addLine("병원: " + r.toTextArray()[6]);
             addDDayLabel(dday);
 
             // 클릭하면 상세 페이지

@@ -1,12 +1,11 @@
 package content;
 
-import facade.UIData;
 import mgr.Manageable;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class PetTip implements Manageable, UIData {
+public class PetTip implements Manageable {
     String title;
     Category category;
     ArrayList<PetType> petType = new ArrayList<>();
@@ -48,16 +47,6 @@ public class PetTip implements Manageable, UIData {
     }
 
     public String[] toTextArray() {
-        return new String[0];
-    }
-
-    @Override
-    public void set(String[] uitexts) {
-
-    }
-
-    @Override
-    public String[] getUITexts() {
         return new String[0];
     }
 

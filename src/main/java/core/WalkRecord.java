@@ -1,6 +1,5 @@
 package core;
 
-import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.RecordSearchable;
@@ -10,7 +9,7 @@ import util.ReadUtil;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class WalkRecord implements Manageable, UIData, PetOwned, RecordSearchable {
+public class WalkRecord implements Manageable, PetOwned, RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -96,15 +95,6 @@ public class WalkRecord implements Manageable, UIData, PetOwned, RecordSearchabl
     @Override
     public void setIndexId(int indexId) {
         this.indexId = indexId;
-    }
-
-    @Override
-    public void set(String[] uitexts) {
-    }
-
-    @Override
-    public String[] getUITexts() {
-        return new String[0];
     }
 
     public int getWalkTime() {

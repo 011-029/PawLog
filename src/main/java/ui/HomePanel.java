@@ -1,5 +1,6 @@
 package ui;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import core.*;
@@ -7,9 +8,16 @@ import core.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Locale;
+import java.util.List;
 
 public class HomePanel extends Base {
 
@@ -82,10 +90,7 @@ public class HomePanel extends Base {
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("오늘 복용 루틴",
-                        new String[]{
-                                "오늘 먹어야 할",
-                                "약 체크하기"
-                        },
+                        createTodayMedicineChecklist(),
                         () -> mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
                 ),
                 gbc
@@ -94,27 +99,23 @@ public class HomePanel extends Base {
         gbc.gridx = 1;
         gbc.insets = cardInsetsRight;
         content.add(createSmallCard("건강 기록",
-                        new String[]{
-                                "식사량, 음수량,",
-                                "체중, 이상 증상,",
-                                "메모 기록"
-                        },
+                        createWeightChartOnly(),
                         () -> mainFrame.switchPanel(new HealthPanel(mainFrame))
                 ),
                 gbc
         );
-
 
         // 3: 2x2 카드 (아래 줄)
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("의료 기록",
-                        new String[]{
-                                "복약 기록,",
-                                "예방접종, 진료 기록을",
-                                "한 곳에서 관리"
-                        },
+//                        new String[]{
+//                                "복약 기록,",
+//                                "예방접종, 진료 기록을",
+//                                "한 곳에서 관리"
+//                        },
+                        createUpcomingSection(),
                         () -> mainFrame.switchPanel(new MedicalHomePanel(mainFrame
                         ))
                 ),
@@ -197,6 +198,7 @@ public class HomePanel extends Base {
         JPanel center = new JPanel();
         center.setOpaque(false);
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setBorder(new EmptyBorder(0, 4, 0, 0));
 
         // 펫 정보 표시 영역
         JLabel name = new JLabel(pet.getName());
@@ -232,7 +234,7 @@ public class HomePanel extends Base {
         dday.setFont(UIConstants.FONT_SEMIBOLD_14);
         dday.setForeground(UIConstants.PRIMARY);
 
-        center.add(Box.createVerticalStrut(4));
+        center.add(Box.createVerticalStrut(10));
         center.add(nameRow);
         center.add(Box.createVerticalStrut(4));
         center.add(breed);
@@ -263,14 +265,16 @@ public class HomePanel extends Base {
                 UIConstants.GRAY_SOFT, 0.5f, 20));
 
         JLabel icon = new JLabel("⚠");
-        JLabel text = new JLabel("4일 후 병원 진료가 예정되어 있습니다.");
+        JLabel text = new JLabel("7일 후 병원 진료가 예정되어 있습니다.");
         JButton btn = new JButton("진료 예약정보");
         btn.setOpaque(false);
         btn.setFocusPainted(false);
-        btn.setBackground(Color.WHITE);
-        btn.putClientProperty("FlatLaf.style", "arc:10");
-        btn.setBorder(new FlatLineBorder(new Insets(5, 5, 5, 5),
-                UIConstants.GRAY_SOFT, 0.5f, 10));
+        btn.setBorderPainted(false);
+        btn.putClientProperty(FlatClientProperties.STYLE,
+                "arc:10; background:#FFFFFF; borderColor:#C8C8C8; borderWidth:1;" +
+                "minimumWidth:0; margin:2,2,2,2");
+        btn.addActionListener(e -> JOptionPane.showMessageDialog(
+                this, "구현중"));
 
         banner.add(icon, BorderLayout.WEST);
         banner.add(text, BorderLayout.CENTER);
@@ -289,7 +293,6 @@ public class HomePanel extends Base {
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 손모양
         card.setBackground(new Color(253, 253, 253));
 
-        // ⭐ 카드 클릭 시 실행할 동작
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -321,6 +324,241 @@ public class HomePanel extends Base {
         return card;
     }
 
+    private JComponent createSmallCard(String title, JComponent content, Runnable onClick) {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBorder(new FlatLineBorder(new Insets(15, 15, 15, 15),
+                UIConstants.GRAY_SOFT, 0.5f, 20));
+        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        card.setBackground(new Color(253, 253, 253));
+
+        card.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                if (onClick != null) onClick.run();
+            }
+        });
+
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(UIConstants.FONT_SEMIBOLD_16);
+        titleLabel.setForeground(UIConstants.TEXT_PRIMARY);
+
+        card.add(titleLabel);
+        card.add(Box.createVerticalStrut(8));
+
+        content.setAlignmentX(Component.LEFT_ALIGNMENT);
+        card.add(content);
+
+        card.setPreferredSize(new Dimension(160, 150));
+        card.setMaximumSize(new Dimension(160, 150));
+        card.setMinimumSize(new Dimension(100, 150));
+        return card;
+    }
+
+    private JComponent createTodayMedicineChecklist() {
+        JPanel list = new JPanel();
+        list.setOpaque(false);
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+        list.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        String todayDOW = LocalDate.now()
+                .getDayOfWeek()
+                .getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+
+        boolean hasItem = false;
+
+        int count = 0;
+
+        for (MedicineRoutine r : medicineRoutineMgr.getAllByOwner(user)) {
+            if (!r.getTakenDOW().contains(todayDOW)) continue;
+
+            hasItem = true;
+
+            JCheckBox cb = createReadonlyCheckBox(
+                    r.getMedicineName(), r.getIsTaken());
+            cb.setOpaque(false);
+            cb.setFont(UIConstants.FONT_REGULAR_14);
+            cb.setForeground(UIConstants.TEXT_SECONDARY);
+
+            count++;
+            // 3개까지만 노출
+            if (count > 3) {
+                JLabel more = new JLabel("more...");
+                more.setFont(UIConstants.FONT_SEMIBOLD_12);
+                more.setForeground(UIConstants.TEXT_LIGHT);
+                more.setBorder(new EmptyBorder(0, 6, 0, 0));
+                list.add(more);
+                break;
+            }
+
+            list.add(cb);
+            list.add(Box.createVerticalStrut(2));
+        }
+
+        // 오늘 먹을 약이 없을 때
+        if (!hasItem) {
+            JLabel empty = createEmptyLabel("오늘 복용할 약이 없어요");
+            list.add(empty);
+        }
+
+        return list;
+    }
+
+    private JCheckBox createReadonlyCheckBox(String text, boolean checked) {
+        return new JCheckBox(text, checked) {
+            @Override
+            protected void processMouseEvent(MouseEvent e) {
+                e.consume(); // 마우스 입력 무시
+            }
+
+            @Override
+            protected void processKeyEvent(KeyEvent e) {
+                e.consume(); // 키보드(스페이스 등) 무시
+            }
+
+            @Override
+            public void doClick(int pressTime) {
+                // 프로그램이 doClick 호출해도 토글 안 되게
+            }
+        };
+    }
+
+    /* ================== 체중 그래프 ================== */
+    private JComponent createWeightChartOnly() {
+
+        ArrayList<HealthRecord> recent7 = new ArrayList<>(
+                healthMgr.getAllByOwner(user).stream()
+                        .sorted(Comparator.comparing(HealthRecord::getDate).reversed())
+                        .limit(7)
+                        .toList()
+        );
+
+        if (recent7.isEmpty()) {
+            JLabel empty = createEmptyLabel("체중 기록이 없어요");
+            return empty;
+        }
+
+        double[] weights = recent7.stream()
+                .mapToDouble(HealthRecord::getWeight)
+                .toArray();
+
+        // 과거순 정렬
+        for (int i = 0; i < weights.length / 2; i++) {
+            double tmp = weights[i];
+            weights[i] = weights[weights.length - 1 - i];
+            weights[weights.length - 1 - i] = tmp;
+        }
+
+        String[] labels = recent7.stream()
+                .map(r -> r.getDate().toString().substring(5))
+                .toArray(String[]::new);
+
+        for (int i = 0; i < labels.length / 2; i++) {
+            String tmp = labels[i];
+            labels[i] = labels[labels.length - 1 - i];
+            labels[labels.length - 1 - i] = tmp;
+        }
+
+        UIComponents.WeightChartPanel chart = new UIComponents.WeightChartPanel(weights, labels);
+        chart.setOpaque(false);
+
+        chart.setPreferredSize(new Dimension(160, 86));
+        chart.setMinimumSize(new Dimension(160, 86));
+        chart.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
+
+        return chart;
+    }
+
+    private JComponent createUpcomingSection() {
+        List<MedicalHomePanel.UpcomingCardData> upcoming = collectUpcoming();
+
+        JPanel box = new JPanel();
+        box.setOpaque(false);
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        if (upcoming.isEmpty()) {
+            JLabel empty = createEmptyLabel("예정된 일정이 없어요");
+            box.add(empty);
+            return box;
+        }
+
+        for (int i = 0; i < upcoming.size(); i++) {
+            MedicalHomePanel.UpcomingCardData data = upcoming.get(i);
+
+            // 한 줄(제목 + D-day) 패널
+            JPanel row = new JPanel(new BorderLayout());
+            row.setOpaque(false);
+
+            // 왼쪽: 제목
+            JPanel left = new JPanel();
+            left.setOpaque(false);
+            left.setLayout(new BoxLayout(left, BoxLayout.X_AXIS));
+
+            JLabel innerTitle = new JLabel(data.title());
+            innerTitle.setFont(UIConstants.FONT_REGULAR_14);
+            innerTitle.setForeground(UIConstants.TEXT_SECONDARY);
+
+            left.add(innerTitle);
+
+            // 오른쪽: 디데이
+            JLabel dday = new JLabel(data.ddayText());
+            dday.setFont(UIConstants.FONT_SEMIBOLD_14);
+            dday.setForeground(UIConstants.PRIMARY);
+
+            row.add(left, BorderLayout.WEST);
+            row.add(dday, BorderLayout.EAST);
+
+            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+
+            row.setAlignmentX(Component.LEFT_ALIGNMENT);
+            box.add(row);
+
+            // 줄 사이 간격 (마지막 줄 제외)
+            if (i != upcoming.size() - 1) {
+                box.add(Box.createVerticalStrut(6));
+            }
+        }
+        box.add(Box.createVerticalGlue());
+
+        return box;
+    }
+
+    protected List<MedicalHomePanel.UpcomingCardData> collectUpcoming() {
+
+        ArrayList<MedicalHomePanel.UpcomingCardData> list = new ArrayList<>();
+
+        // 진료 기록
+        for (MedicalRecord m : medicalMgr.getAllByOwner(user)) {
+            if (m.getDDay() >= 0) {
+                list.add(new MedicalHomePanel.UpcomingCardData(
+                        m.getCategory(),
+                        m.getDDay(),
+                        m.getDDayText(),
+                        m.getHospital()
+                ));
+            }
+        }
+
+        // 예방접종 기록
+        for (VaccineRecord v : vaccineMgr.getAllByOwner(user)) {
+            if (v.getDDay() >= 0) {
+                list.add(new MedicalHomePanel.UpcomingCardData(
+                        v.getVaccine(),
+                        v.getDDay(),
+                        v.getDDayText(),
+                        v.getHospital()
+                ));
+            }
+        }
+
+        list.sort(Comparator.comparingLong(a -> a.dDay()));
+
+        if (list.size() > 4)
+            return list.subList(0, 4);
+
+        return list;
+    }
+
     /* ================== 타임라인 (전체 폭) ================== */
     private JComponent createTimeline() {
         JPanel box = new JPanel();
@@ -338,6 +576,7 @@ public class HomePanel extends Base {
         title.setFont(UIConstants.FONT_SEMIBOLD_16);
         title.setForeground(UIConstants.TEXT_PRIMARY);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setBorder(new EmptyBorder(0, 0, 4, 0));
 
         box.add(title);
         box.add(Box.createVerticalStrut(10));
@@ -346,9 +585,11 @@ public class HomePanel extends Base {
         java.util.List<TimelineItem> timeline = collectTimelineData();
 
         if (timeline.isEmpty()) {
-            JLabel empty = new JLabel("최근 30일 동안 활동이 없습니다.");
+            JLabel empty = new JLabel("최근 90일 동안 활동이 없습니다.");
+            empty.setBorder(new EmptyBorder(50, 0, 50, 0));
             empty.setFont(UIConstants.FONT_REGULAR_14);
-            empty.setForeground(UIConstants.TEXT_SECONDARY);
+            empty.setForeground(UIConstants.TEXT_LIGHT);
+            empty.setAlignmentX(CENTER_ALIGNMENT);
             box.add(empty);
             return box;
         }
@@ -373,6 +614,13 @@ public class HomePanel extends Base {
         }
     }
 
+    private JLabel createEmptyLabel(String text) {
+        JLabel empty = new JLabel(text);
+        empty.setFont(UIConstants.FONT_REGULAR_14);
+        empty.setForeground(UIConstants.TEXT_LIGHT);
+        return empty;
+    }
+
     /* ================== 타임라인 아이템 DTO ================== */
     private static class TimelineItem {
         LocalDate date;
@@ -393,11 +641,12 @@ public class HomePanel extends Base {
 
         java.util.List<TimelineItem> list = new java.util.ArrayList<>();
 
+        // 최근 90일 내 데이터만 수집
         LocalDate today = LocalDate.now();
-        LocalDate minDate = today.minusDays(30);
+        LocalDate minDate = today.minusDays(90);
 
         /* ----------- 진료 기록 ----------- */
-        for (MedicalRecord r : medicalMgr.mList) {
+        for (MedicalRecord r : medicalMgr.getAllByOwner(user)) {
             if (r.getDate().isBefore(minDate)) continue;
             list.add(new TimelineItem(
                     r.getDate(),
@@ -408,18 +657,18 @@ public class HomePanel extends Base {
         }
 
         /* ----------- 복용 기록 ----------- */
-        for (MedicineRecord r : medicineRecordMgr.mList) {
+        for (MedicineRecord r : medicineRecordMgr.getAllByOwner(user)) {
             if (r.getTakenDate().isBefore(minDate)) continue;
             list.add(new TimelineItem(
                     r.getTakenDate(),
                     "복용",
                     r.getMedicineName(),
-                    r.getTakenTime() + " / " + r.getDosage() + "mg"
+                    r.getTakenTime() + " " + r.getDosage() + "mg"
             ));
         }
 
         /* ----------- 백신 기록 ----------- */
-        for (VaccineRecord r : vaccineMgr.mList) {
+        for (VaccineRecord r : vaccineMgr.getAllByOwner(user)) {
             if (r.getDate().isBefore(minDate)) continue;
             list.add(new TimelineItem(
                     r.getDate(),
@@ -430,7 +679,7 @@ public class HomePanel extends Base {
         }
 
         /* ----------- 산책 기록 ----------- */
-        for (WalkRecord r : walkMgr.mList) {
+        for (WalkRecord r : walkMgr.getAllByOwner(user)) {
             if (r.getRecordDate().isBefore(minDate)) continue;
             list.add(new TimelineItem(
                     r.getRecordDate(),
@@ -441,18 +690,38 @@ public class HomePanel extends Base {
         }
 
         /* ----------- 건강 기록 ----------- */
-        for (HealthRecord r : healthMgr.mList) {
+        for (HealthRecord r : healthMgr.getAllByOwner(user)) {
             if (r.getRecordDate().isBefore(minDate)) continue;
             list.add(new TimelineItem(
                     r.getRecordDate(),
                     "건강",
-                    "몸무게: " + r.getWeight(),
+                    "체중 " + r.getWeight() + "kg",
+                    r.getMemo()
+            ));
+        }
+
+        /* ----------- 건강 기록 ----------- */
+        for (PlayRecord r : playMgr.getAllByOwner(user)) {
+            if (r.getRecordDate().isBefore(minDate)) continue;
+            list.add(new TimelineItem(
+                    r.getRecordDate(),
+                    "놀이",
+                    r.getPlayTime() + "분"
+                    + ((r.getPlayType() != null) ? " (" + r.getPlayType() + ")" : ""),
                     r.getMemo()
             ));
         }
 
         // 날짜 최신순 정렬
         list.sort((a, b) -> b.date.compareTo(a.date));
+
+        // 미래 기록 포함 안함
+        list.removeIf(item -> item.date.isAfter(today));
+
+        // 최근 10건만 노출
+        int limit = 10;
+        if (list.size() > limit)
+            list = list.subList(0, limit);
 
         return list;
     }
@@ -465,10 +734,78 @@ public class HomePanel extends Base {
 
         card.setBorder(new FlatLineBorder(
                 new Insets(10, 12, 10, 12),
-                UIConstants.GRAY_SOFT,
+                UIConstants.GRAY_LIGHT,
                 0.8f,
+                16
+        ));
+
+        // 아이콘 영역
+        JPanel iconBox = new JPanel(new GridBagLayout());
+        iconBox.setOpaque(false);
+        iconBox.setPreferredSize(new Dimension(52, 50));
+        iconBox.setBorder(new FlatLineBorder(
+                new Insets(0, 0, 0, 0),
+                UIConstants.GRAY_LIGHT,
+                0,
                 12
         ));
+        iconBox.putClientProperty(
+                FlatClientProperties.STYLE,
+                "arc: 10"
+        );
+
+        String iconPath;
+        Color iconColor;
+        Color iconBoxColor;
+        switch (item.type) {
+            case "진료" -> {
+                iconPath = "icons/medical.svg";
+                iconColor = new Color(110, 122, 104);
+                iconBoxColor = new Color(242, 245, 242);
+            }
+            case "복용" -> {
+                iconPath = "icons/pill.svg";
+                iconColor = new Color(99, 105, 125);
+                iconBoxColor = new Color(241, 243, 245);
+            }
+            case "백신" -> {
+                iconPath = "icons/syringe.svg";
+                iconColor = new Color(112, 96, 116);
+                iconBoxColor = new Color(246, 243, 247);
+            }
+            case "산책" -> {
+                iconPath = "icons/walking-dog.svg";
+                iconColor = new Color(94, 119, 111);
+                iconBoxColor = new Color(243, 247, 244);
+            }
+            case "건강" -> {
+                iconPath = "icons/heart.svg";
+                iconColor = new Color(112, 89, 89);
+                iconBoxColor = new Color(245, 241, 241);
+            }
+            case "놀이" -> {
+                iconPath = "icons/toy.svg";
+                iconColor = new Color(126, 119, 105);
+                iconBoxColor = new Color(245, 244, 241);
+            }
+            default -> {
+                iconPath = "icons/paw2.svg";
+                iconColor = new Color(92, 92, 92);
+                iconBoxColor = new Color(247, 247, 247);
+            }
+        }
+        FlatSVGIcon icon = new FlatSVGIcon(iconPath, 20, 20);
+        icon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> iconColor));
+        iconBox.setBackground(iconBoxColor);
+
+        JLabel iconLabel = new JLabel(icon);
+        iconBox.add(iconLabel);
+
+        // 텍스트 영역
+        JPanel textArea = new JPanel();
+        textArea.setOpaque(false);
+        textArea.setLayout(new BoxLayout(textArea, BoxLayout.Y_AXIS));
+        textArea.setBorder(new EmptyBorder(0, 12, 0, 0));
 
         JLabel title = new JLabel(item.type + " · " + item.title);
         title.setFont(UIConstants.FONT_SEMIBOLD_14);
@@ -482,9 +819,14 @@ public class HomePanel extends Base {
         date.setFont(UIConstants.FONT_REGULAR_12);
         date.setForeground(Color.GRAY);
 
-        card.add(title, BorderLayout.NORTH);
-        card.add(detail, BorderLayout.CENTER);
-        card.add(date, BorderLayout.SOUTH);
+        textArea.add(title);
+        textArea.add(Box.createVerticalStrut(4));
+        textArea.add(detail);
+        textArea.add(Box.createVerticalStrut(2));
+        textArea.add(date);
+
+        card.add(iconBox, BorderLayout.WEST);
+        card.add(textArea, BorderLayout.CENTER);
 
         return card;
     }
@@ -496,16 +838,25 @@ public class HomePanel extends Base {
         Image tmpImage = null;
         FlatSVGIcon tmpSvg = null;
 
-        java.net.URL url = null;
-        try {
-            if (imagePath != null && !imagePath.isBlank()) {
-                url = getClass().getResource(imagePath);
-            }
-            if (url != null) {
-                tmpImage = new ImageIcon(url).getImage();
-            }
-        } catch (Exception ignored) {}
+        // 1. classpath 리소스에서 시도
+        if (imagePath != null && !imagePath.isBlank()) {
+            try {
+                java.net.URL url = getClass().getResource(imagePath);
+                if (url != null) {
+                    tmpImage = new ImageIcon(url).getImage();
+                }
+            } catch (Exception ignored) {}
+        }
 
+        // 2. 실패하면 파일 경로로 시도
+        if (tmpImage == null && imagePath != null && !imagePath.isBlank()) {
+            File file = new File("src/main/resources/" + imagePath);
+            if (file.exists()) {
+                tmpImage = new ImageIcon(file.getAbsolutePath()).getImage();
+            }
+        }
+
+        // 3. 둘 다 실패하면 기본 이미지
         if (tmpImage == null) {
             tmpSvg = new FlatSVGIcon("icons/default-profile.svg", 78, 78);
         }

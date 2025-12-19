@@ -65,11 +65,6 @@ public class MedicineRecordMgr extends PetRecordMgr<MedicineRecord> {
         saveToFile(FILE_PATH);
     }
 
-    @Override
-    public void addNewRow(String[] uiTexts) {
-
-    }
-
     public void loadFromFile() {
         readAll(FILE_PATH, new Factory<MedicineRecord>() {
             public MedicineRecord create() {

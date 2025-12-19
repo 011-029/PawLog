@@ -9,8 +9,6 @@ import java.util.ArrayList;
 public class HealthMgr extends PetRecordMgr<HealthRecord> {
     private static HealthMgr mgr = null;
     private final String FILE_PATH = "data/health_records.txt";
-    private int nextIndex = 1;
-
 
     private HealthMgr() { }
 
@@ -191,16 +189,6 @@ public class HealthMgr extends PetRecordMgr<HealthRecord> {
         }
 
         return (zeroMeal >= 2 || memoDanger);
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
-        HealthRecord r = new HealthRecord();
-        r.set(uiTexts);
-        r.indexId = nextIndex++;
-
-        mList.add(r);
-
     }
 
     public void loadFromFile() {

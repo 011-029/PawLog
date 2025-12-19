@@ -103,11 +103,6 @@ public class MedicineRoutineMgr extends PetRecordMgr<MedicineRoutine> {
         }
     }
 
-    @Override
-    public void addNewRow(String[] uiTexts) {
-
-    }
-
     public void loadFromFile() {
         readAll(FILE_PATH, new Factory<MedicineRoutine>() {
             public MedicineRoutine create() {

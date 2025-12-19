@@ -1,12 +1,12 @@
 package content;
 
-import facade.DataEngineImpl;
 import mgr.Factory;
+import mgr.Manager;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class UnsafePetFoodMgr extends DataEngineImpl<UnsafePetFood> {
+public class UnsafePetFoodMgr extends Manager<UnsafePetFood> {
     private static UnsafePetFoodMgr mgr = null;
     private static final String FILE_PATH = "/static_data/unsafe_pet_foods.txt";
 
@@ -40,9 +40,5 @@ public class UnsafePetFoodMgr extends DataEngineImpl<UnsafePetFood> {
                 return new UnsafePetFood();
             }
         });
-    }
-
-    @Override
-    public void addNewRow(String[] uiTexts) {
     }
 }

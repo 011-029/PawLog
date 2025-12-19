@@ -90,4 +90,10 @@ public class Manager<T extends Manageable> {
             System.out.println(filename + ": 파일 저장 중 오류 발생");
         }
     }
+
+    public ArrayList<T> getAll() {
+        ArrayList<T> records = new ArrayList<>();
+        records.addAll(mList);
+        return records;
+    }
 }

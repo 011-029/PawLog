@@ -2,14 +2,14 @@ package core;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-import facade.UIData;
+
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.RecordSearchable;
 import util.DateUtil;
 import util.ReadUtil;
 
-public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearchable {
+public class VaccineRecord implements Manageable, PetOwned, RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -59,6 +59,7 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
 
     @Override
     public String[] toTextArray() {
+        // { indexId, ownerId, petName, date, vaccine, hospital, memo }
         return new String[] {
                 String.valueOf(indexId),
                 ownerId,
@@ -82,23 +83,6 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
 
     public boolean matchesPeriod(LocalDate start, LocalDate end){
         return DateUtil.matchesInPeriod(date, start, end);
-    }
-
-    @Override
-    public void set(String[] uiTexts) {
-        if (uiTexts == null) return;
-
-        if (uiTexts.length > 0) date     = LocalDate.parse(uiTexts[0]);
-        if (uiTexts.length > 1) vaccine  = uiTexts[1];
-        if (uiTexts.length > 2) hospital = uiTexts[2];
-        if (uiTexts.length > 3) memo     = uiTexts[3];
-
-    }
-
-    @Override
-    public String[] getUITexts() {
-        // 변수 내용을 UI(테이블 등)에 보여주기 위해 배열로 반환
-        return new String[] { vaccine, String.valueOf(date), hospital };
     }
 
     public LocalDate getDate() {
@@ -162,4 +146,3 @@ public class VaccineRecord implements Manageable, UIData, PetOwned , RecordSearc
         this.vaccine = vaccine;
     }
 }
-

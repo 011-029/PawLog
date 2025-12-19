@@ -1,6 +1,5 @@
 package core;
 
-import facade.UIData;
 import mgr.Manageable;
 import mgr.PetOwned;
 import mgr.RecordSearchable;
@@ -10,7 +9,7 @@ import util.ReadUtil;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearchable {
+public class HealthRecord implements Manageable, PetOwned, RecordSearchable {
     int indexId;     // 인덱스 번호 (고유)
     String ownerId;  // 어떤 유저의
     String petName;  // 어떤 펫의 기록인지
@@ -39,8 +38,16 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
         }
     }
 
-    public void apply(Pet pet, LocalDate date, int meal,
-                    int waterMl, double weight, String brushed, String memo) {
+    public void print() {
+        System.out.printf("[%d] %s | 식사:%d 음수:%d 양치:%s | %s%n",
+                indexId, date, meal, waterMl,
+                brushed != null ? brushed : "",
+                memo != null ? memo : ""
+        );
+    }
+
+    public void apply(Pet pet, LocalDate date, int meal, int waterMl,
+                      double weight, String brushed, String memo) {
         this.ownerId = pet.getOwnerId();
         this.petName = pet.getName();
         this.date = date;
@@ -49,14 +56,6 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
         this.weight = weight;
         this.brushed = brushed;
         this.memo = memo;
-    }
-
-    public void print() {
-        System.out.printf("[%d] %s | 식사:%d 음수:%d 양치:%s | %s%n",
-                indexId, date, meal, waterMl,
-                brushed != null ? brushed : "",
-                memo != null ? memo : ""
-        );
     }
 
     @Override
@@ -120,6 +119,8 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     }
 
     public String getMemo() {
+        if (memo.equals("0"))
+            return null;
         return memo;
     }
 
@@ -131,28 +132,5 @@ public class HealthRecord implements Manageable, UIData, PetOwned, RecordSearcha
     @Override
     public LocalDate getRecordDate() {
         return date;
-    }
-
-    @Override
-    public void set(String[] uiTexts) {
-        //date = uiTexts[0];
-        meal = Integer.parseInt(uiTexts[1]);
-        waterMl = Integer.parseInt(uiTexts[2]);
-        weight = Double.parseDouble(uiTexts[3]);
-        brushed = uiTexts[4];
-        memo = uiTexts[5];
-    }
-
-    @Override
-    public String[] getUITexts() {
-    return new String[]{
-    String.valueOf(indexId),
-    date.toString(),
-    String.valueOf(meal),
-    String.valueOf(waterMl),
-            String.valueOf(weight),
-    brushed,
-    memo
-    };
     }
 }

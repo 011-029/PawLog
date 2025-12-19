@@ -33,11 +33,6 @@ public class PlayMgr extends PetRecordMgr<PlayRecord> {
         return result;
     }
 
-    @Override
-    public void addNewRow(String[] uiTexts) {
-
-    }
-
     public void loadFromFile() {
         readAll(FILE_PATH, new Factory<PlayRecord>() {
             public PlayRecord create() {

@@ -59,7 +59,8 @@ public class MedicalDetailPanel extends Base {
         listPanel.add(withLeft(makeInfoRow("병원", r.getHospital())));
         listPanel.add(Box.createVerticalStrut(8));
 
-        String costText = (r.getCost() == -1) ? "미정" : r.getCost() + "원";
+        String costText = (r.getCost() == -1) ?
+                "미정" : String.format("%,d원", r.getCost());
         listPanel.add(withLeft(makeInfoRow("비용", costText)));
 
         listPanel.add(Box.createVerticalStrut(24));
