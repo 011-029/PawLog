@@ -188,7 +188,7 @@ public class MedicalHomePanel extends Base {
             hospital.setForeground(UIConstants.TEXT_LIGHT);
 
             left.add(title);
-            left.add(Box.createHorizontalStrut(8)); // 간격!
+            left.add(Box.createHorizontalStrut(8));
             left.add(hospital);
 
             // 오른쪽: 디데이
@@ -256,7 +256,6 @@ public class MedicalHomePanel extends Base {
         return tile;
     }
 
-
     /* 임박 일정 수집기 */
     private List<UpcomingCardData> collectUpcoming() {
 
@@ -294,6 +293,6 @@ public class MedicalHomePanel extends Base {
         return list;
     }
 
-    private record UpcomingCardData(String title, long dDay, String ddayText,
+    protected record UpcomingCardData(String title, long dDay, String ddayText,
                                     String hospital) { }
 }

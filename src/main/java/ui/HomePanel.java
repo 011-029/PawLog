@@ -17,6 +17,7 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.List;
 
 public class HomePanel extends Base {
 
@@ -109,11 +110,12 @@ public class HomePanel extends Base {
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("의료 기록",
-                        new String[]{
-                                "복약 기록,",
-                                "예방접종, 진료 기록을",
-                                "한 곳에서 관리"
-                        },
+//                        new String[]{
+//                                "복약 기록,",
+//                                "예방접종, 진료 기록을",
+//                                "한 곳에서 관리"
+//                        },
+                        createUpcomingSection(),
                         () -> mainFrame.switchPanel(new MedicalHomePanel(mainFrame
                         ))
                 ),
@@ -464,6 +466,97 @@ public class HomePanel extends Base {
         chart.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
 
         return chart;
+    }
+
+    private JComponent createUpcomingSection() {
+        List<MedicalHomePanel.UpcomingCardData> upcoming = collectUpcoming();
+
+        JPanel box = new JPanel();
+        box.setOpaque(false);
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        if (upcoming.isEmpty()) {
+            JLabel empty = createEmptyLabel("예정된 일정이 없어요");
+            box.add(empty);
+            return box;
+        }
+
+        for (int i = 0; i < upcoming.size(); i++) {
+            MedicalHomePanel.UpcomingCardData data = upcoming.get(i);
+
+            // 한 줄(제목 + D-day) 패널
+            JPanel row = new JPanel(new BorderLayout());
+            row.setOpaque(false);
+
+            // 왼쪽: 제목
+            JPanel left = new JPanel();
+            left.setOpaque(false);
+            left.setLayout(new BoxLayout(left, BoxLayout.X_AXIS));
+
+            JLabel innerTitle = new JLabel(data.title());
+            innerTitle.setFont(UIConstants.FONT_REGULAR_14);
+            innerTitle.setForeground(UIConstants.TEXT_SECONDARY);
+
+            left.add(innerTitle);
+
+            // 오른쪽: 디데이
+            JLabel dday = new JLabel(data.ddayText());
+            dday.setFont(UIConstants.FONT_SEMIBOLD_14);
+            dday.setForeground(UIConstants.PRIMARY);
+
+            row.add(left, BorderLayout.WEST);
+            row.add(dday, BorderLayout.EAST);
+
+            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+
+            row.setAlignmentX(Component.LEFT_ALIGNMENT);
+            box.add(row);
+
+            // 줄 사이 간격 (마지막 줄 제외)
+            if (i != upcoming.size() - 1) {
+                box.add(Box.createVerticalStrut(6));
+            }
+        }
+        box.add(Box.createVerticalGlue());
+
+        return box;
+    }
+
+    protected List<MedicalHomePanel.UpcomingCardData> collectUpcoming() {
+
+        ArrayList<MedicalHomePanel.UpcomingCardData> list = new ArrayList<>();
+
+        // 진료 기록
+        for (MedicalRecord m : medicalMgr.getAllByOwner(user)) {
+            if (m.getDDay() >= 0) {
+                list.add(new MedicalHomePanel.UpcomingCardData(
+                        m.getCategory(),
+                        m.getDDay(),
+                        m.getDDayText(),
+                        m.getHospital()
+                ));
+            }
+        }
+
+        // 예방접종 기록
+        for (VaccineRecord v : vaccineMgr.getAllByOwner(user)) {
+            if (v.getDDay() >= 0) {
+                list.add(new MedicalHomePanel.UpcomingCardData(
+                        v.getVaccine(),
+                        v.getDDay(),
+                        v.getDDayText(),
+                        v.getHospital()
+                ));
+            }
+        }
+
+        list.sort(Comparator.comparingLong(a -> a.dDay()));
+
+        if (list.size() > 4)
+            return list.subList(0, 4);
+
+        return list;
     }
 
     /* ================== 타임라인 (전체 폭) ================== */
