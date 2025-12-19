@@ -119,6 +119,8 @@ public class HealthRecord implements Manageable, PetOwned, RecordSearchable {
     }
 
     public String getMemo() {
+        if (memo.equals("0"))
+            return null;
         return memo;
     }
 

@@ -8,13 +8,14 @@ import core.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 
 public class HomePanel extends Base {
@@ -88,10 +89,6 @@ public class HomePanel extends Base {
         gbc.gridx = 0;
         gbc.insets = cardInsets;
         content.add(createSmallCard("오늘 복용 루틴",
-//                        new String[]{
-//                                "오늘 먹어야 할",
-//                                "약 체크하기"
-//                        },
                         createTodayMedicineChecklist(),
                         () -> mainFrame.switchPanel(new MedicineRoutinePanel(mainFrame))
                 ),
@@ -101,16 +98,11 @@ public class HomePanel extends Base {
         gbc.gridx = 1;
         gbc.insets = cardInsetsRight;
         content.add(createSmallCard("건강 기록",
-                        new String[]{
-                                "식사량, 음수량,",
-                                "체중, 이상 증상,",
-                                "메모 기록"
-                        },
+                        createWeightChartOnly(),
                         () -> mainFrame.switchPanel(new HealthPanel(mainFrame))
                 ),
                 gbc
         );
-
 
         // 3: 2x2 카드 (아래 줄)
         gbc.gridy++;
@@ -402,9 +394,7 @@ public class HomePanel extends Base {
 
         // 오늘 먹을 약이 없을 때
         if (!hasItem) {
-            JLabel empty = new JLabel("오늘 복용할 약이 없어요");
-            empty.setFont(UIConstants.FONT_REGULAR_14);
-            empty.setForeground(UIConstants.TEXT_LIGHT);
+            JLabel empty = createEmptyLabel("오늘 복용할 약이 없어요");
             list.add(empty);
         }
 
@@ -428,6 +418,52 @@ public class HomePanel extends Base {
                 // 프로그램이 doClick 호출해도 토글 안 되게
             }
         };
+    }
+
+    /* ================== 체중 그래프 ================== */
+    private JComponent createWeightChartOnly() {
+
+        ArrayList<HealthRecord> recent7 = new ArrayList<>(
+                healthMgr.getAllByOwner(user).stream()
+                        .sorted(Comparator.comparing(HealthRecord::getDate).reversed())
+                        .limit(7)
+                        .toList()
+        );
+
+        if (recent7.isEmpty()) {
+            JLabel empty = createEmptyLabel("체중 기록이 없어요");
+            return empty;
+        }
+
+        double[] weights = recent7.stream()
+                .mapToDouble(HealthRecord::getWeight)
+                .toArray();
+
+        // 과거순 정렬
+        for (int i = 0; i < weights.length / 2; i++) {
+            double tmp = weights[i];
+            weights[i] = weights[weights.length - 1 - i];
+            weights[weights.length - 1 - i] = tmp;
+        }
+
+        String[] labels = recent7.stream()
+                .map(r -> r.getDate().toString().substring(5))
+                .toArray(String[]::new);
+
+        for (int i = 0; i < labels.length / 2; i++) {
+            String tmp = labels[i];
+            labels[i] = labels[labels.length - 1 - i];
+            labels[labels.length - 1 - i] = tmp;
+        }
+
+        UIComponents.WeightChartPanel chart = new UIComponents.WeightChartPanel(weights, labels);
+        chart.setOpaque(false);
+
+        chart.setPreferredSize(new Dimension(160, 86));
+        chart.setMinimumSize(new Dimension(160, 86));
+        chart.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
+
+        return chart;
     }
 
     /* ================== 타임라인 (전체 폭) ================== */
@@ -459,7 +495,7 @@ public class HomePanel extends Base {
             JLabel empty = new JLabel("최근 90일 동안 활동이 없습니다.");
             empty.setBorder(new EmptyBorder(50, 0, 50, 0));
             empty.setFont(UIConstants.FONT_REGULAR_14);
-            empty.setForeground(UIConstants.TEXT_SECONDARY);
+            empty.setForeground(UIConstants.TEXT_LIGHT);
             empty.setAlignmentX(CENTER_ALIGNMENT);
             box.add(empty);
             return box;
@@ -483,6 +519,13 @@ public class HomePanel extends Base {
         if (choice == JOptionPane.YES_OPTION) {
             mainFrame.switchPanel(new LoginPanel(mainFrame));
         }
+    }
+
+    private JLabel createEmptyLabel(String text) {
+        JLabel empty = new JLabel(text);
+        empty.setFont(UIConstants.FONT_REGULAR_14);
+        empty.setForeground(UIConstants.TEXT_LIGHT);
+        return empty;
     }
 
     /* ================== 타임라인 아이템 DTO ================== */

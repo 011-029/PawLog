@@ -128,13 +128,13 @@ public class HealthPanel extends Base {
 
         card.add(title, BorderLayout.NORTH);
 
-        ArrayList<HealthRecord> recent5 = new ArrayList<>(
+        ArrayList<HealthRecord> recent7 = new ArrayList<>(
         records.stream()
                 .sorted(Comparator.comparing(HealthRecord::getDate).reversed())
-                .limit(5)
+                .limit(7)
                 .toList()
         );
-        double[] weights = recent5.stream()
+        double[] weights = recent7.stream()
                 .mapToDouble(HealthRecord::getWeight)
                 .toArray();
         for (int i = 0; i < weights.length / 2; i++) {
@@ -143,7 +143,7 @@ public class HealthPanel extends Base {
             weights[weights.length - 1 - i] = tmp;
         }
 
-        String[] dateLabels = recent5.stream()
+        String[] dateLabels = recent7.stream()
                 .map(r -> r.getDate().toString().substring(5))
                 .toArray(String[]::new);
         for (int i = 0; i < dateLabels.length / 2; i++) {
@@ -152,131 +152,11 @@ public class HealthPanel extends Base {
             dateLabels[dateLabels.length - 1 - i] = tmp;
         }
 
-        WeightChartPanel chart = new WeightChartPanel(weights, dateLabels);
+        UIComponents.WeightChartPanel chart = new UIComponents.WeightChartPanel(weights, dateLabels);
         chart.setOpaque(false);
         card.add(chart, BorderLayout.CENTER);
 
         return card;
-    }
-
-    /* 실제 라인 그래프 그리는 패널 */
-    private static class WeightChartPanel extends JPanel {
-        private final double[] weights;
-        private final String[] labels;
-
-        public WeightChartPanel(double[] weights, String[] labels) {
-            this.weights = weights;
-            this.labels = labels;
-            setPreferredSize(new Dimension(310, 150));
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            if (weights == null || weights.length == 0) return;
-
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            int w = getWidth();
-            int h = getHeight();
-
-            int left = 30;
-            int right = 15;
-            int top = 15;
-            int bottom = 18;
-
-            int chartW = w - left - right;
-            int chartH = h - top - bottom;
-            int x0 = left;
-            int y0 = top + chartH;
-
-            // 배경
-            g2.setColor(new Color(248, 248, 248));
-            g2.fillRoundRect(left, top, chartW, chartH, 12, 12);
-
-            // 최소/최대 값 먼저 계산
-            double min = weights[0], max = weights[0];
-            for (double v : weights) {
-                min = Math.min(min, v);
-                max = Math.max(max, v);
-            }
-            if (Math.abs(max - min) < 0.01) {
-                max += 0.05;
-                min -= 0.05;
-            }
-            double mid = (min + max) / 2.0;
-            double[] lineValues = { min, mid, max };
-
-            g2.setFont(g2.getFont().deriveFont(11f));
-            FontMetrics fm = g2.getFontMetrics();
-            Stroke oldStroke = g2.getStroke();
-            Stroke dashed = new BasicStroke(
-                    1f,
-                    BasicStroke.CAP_BUTT,
-                    BasicStroke.JOIN_MITER,
-                    10f,
-                    new float[]{4f, 4f}, // 점선 패턴
-                    0f
-            );
-
-            for (double value : lineValues) {
-                double ratio = (value - min) / (max - min);
-                int y = y0 - (int) (ratio * chartH);
-
-                // 점선 보조 라인
-                g2.setColor(new Color(210, 210, 210));
-                g2.setStroke(dashed);
-                g2.drawLine(left, y, left + chartW, y);
-
-                // 숫자 라벨
-                String text = String.format("%.2f", value);
-                int strW = fm.stringWidth(text);
-                int textX = left - strW - 6;
-                int textY = y + fm.getAscent() / 2 - 2;
-
-                g2.setStroke(oldStroke);
-                g2.setColor(new Color(120, 120, 120));
-                g2.drawString(text, textX, textY);
-            }
-
-            Path2D path = new Path2D.Double();
-            int n = weights.length;
-            for (int i = 0; i < n; i++) {
-                double t = (double) i / (n - 1);
-                int x = x0 + (int) (t * chartW);
-                double ratio = (weights[i] - min) / (max - min);
-                int y = y0 - (int) (ratio * chartH);
-
-                if (i == 0) path.moveTo(x, y);
-                else path.lineTo(x, y);
-            }
-
-            g2.setStroke(new BasicStroke(2f));
-            g2.setColor(UIConstants.PRIMARY);
-            g2.draw(path);
-
-            g2.setColor(UIConstants.PRIMARY);
-            for (int i = 0; i < n; i++) {
-                double t = (double) i / (n - 1);
-                int x = x0 + (int) (t * chartW);
-                double ratio = (weights[i] - min) / (max - min);
-                int y = y0 - (int) (ratio * chartH);
-                g2.fillOval(x - 3, y - 3, 6, 6);
-            }
-
-            g2.setFont(g2.getFont().deriveFont(10f));
-            g2.setColor(new Color(120, 120, 120));
-            for (int i = 0; i < n; i++) {
-                double t = (double) i / (n - 1);
-                int x = x0 + (int) (t * chartW);
-                String label = labels != null && i < labels.length ? labels[i] : "";
-                int strW = g2.getFontMetrics().stringWidth(label);
-                g2.drawString(label, x - strW / 2, y0 + 16);
-            }
-
-            g2.dispose();
-        }
     }
 
     /* ================== 건강 기록 카드 ================== */
