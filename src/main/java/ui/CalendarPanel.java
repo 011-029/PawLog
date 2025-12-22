@@ -492,12 +492,10 @@ public class CalendarPanel extends Base {
         recordsByDate.clear();
 
         LocalDate today = LocalDate.now();
-        LocalDate minDate = today.minusDays(30);
 
         /* ─────────── 진료 기록 ─────────── */
         for (MedicalRecord r : medicalMgr.getAllByOwner(user)) {
             LocalDate d = r.getDate();
-            if (d.isBefore(minDate)) continue;
 
             RecordItem item = new RecordItem(
                     d,
@@ -513,7 +511,6 @@ public class CalendarPanel extends Base {
         /* ─────────── 복용 기록 ─────────── */
         for (MedicineRecord r : medicineRecordMgr.getAllByOwner(user)) {
             LocalDate d = r.getTakenDate();
-            if (d.isBefore(minDate)) continue;
 
             RecordItem item = new RecordItem(
                     d,
@@ -529,7 +526,6 @@ public class CalendarPanel extends Base {
         /* ─────────── 백신 기록 ─────────── */
         for (VaccineRecord r : vaccineMgr.getAllByOwner(user)) {
             LocalDate d = r.getDate();
-            if (d.isBefore(minDate)) continue;
 
             RecordItem item = new RecordItem(
                     d,
@@ -545,7 +541,6 @@ public class CalendarPanel extends Base {
         /* ─────────── 산책 기록 ─────────── */
         for (WalkRecord r : walkMgr.getAllByOwner(user)) {
             LocalDate d = r.getRecordDate();
-            if (d.isBefore(minDate)) continue;
 
             RecordItem item = new RecordItem(
                     d,
@@ -561,7 +556,6 @@ public class CalendarPanel extends Base {
         /* ─────────── 놀이 기록 ─────────── */
         for (PlayRecord r : playMgr.getAllByOwner(user)) {
             LocalDate d = r.getRecordDate();
-            if (d.isBefore(minDate)) continue;
 
             RecordItem item = new RecordItem(
                     d,
@@ -577,7 +571,6 @@ public class CalendarPanel extends Base {
         /* ─────────── 건강 기록 ─────────── */
         for (HealthRecord r : healthMgr.getAllByOwner(user)) {
             LocalDate d = r.getRecordDate();
-            if (d.isBefore(minDate)) continue;
 
             RecordItem item = new RecordItem(
                     d,
